@@ -1,0 +1,48 @@
+//
+//  OGImage.h
+//  OGImageDemo
+//
+//  Created by Art Gillespie on 11/26/12.
+//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface OGImage : NSObject
+
+/**
+ * Will asynchronously load the image at `url`, updating the `image` property
+ * when loading is complete or updating the `error` property if there's a problem.
+ */
+- (id)initWithURL:(NSURL *)url;
+
+/**
+ * Synchronously sets the `image` property with `placeholderImage` and then
+ * asynchronously loads the image at `url`, updating the `image` property
+ * when loading is complete or updating the `error` property if there's a problem.
+ */
+- (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
+
+/**
+ * Observe this property to be notified when the image has finished loading.
+ *
+ * If `initWithURL:placeholderImage` initializer was used, this will return
+ * the placeholder image until the image at `url` has finished loading.
+ *
+ * If there's an error loading and the `initWithURL:placeholderImage` initializer
+ * was used, this will continue to return the placeholder image even after the
+ * error occurs.
+ */
+@property (nonatomic, readonly, strong) UIImage *image;
+
+/**
+ * Observe this property to be notified if there was an error loading the image.
+ */
+@property (nonatomic, readonly, strong) NSError *error;
+
+/**
+ * The image's url (provided to init methods)
+ */
+@property (nonatomic, readonly, strong) NSURL *url;
+
+@end
