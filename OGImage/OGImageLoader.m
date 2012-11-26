@@ -68,7 +68,7 @@ static OGImageLoader * OGImageLoaderInstance;
 - (void)enqueueImageRequest:(NSURL *)imageURL completionBlock:(OGImageLoaderCompletionBlock)completionBlock {
     /**
      * This could get confusing, so let me record my thinking here for posterity:
-     * 
+     *
      * What we basically have here is a LIFO queue (or stack, if you prefer) in `_requests` access to which
      * is serialized by the serial dispatch queue `_requestsSerializationQueue`.
      * (The overloaded use of the term "queue" here is a possible source of confusion.
@@ -111,7 +111,7 @@ static OGImageLoader * OGImageLoaderInstance;
 
 - (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
     // TODO: [alg] We need to have separate handling for file URLs
-    
+
     // TODO: we might want to tweak the cache policy here?
     NSURLRequest *request = [NSURLRequest requestWithURL:info.url];
     [NSURLConnection sendAsynchronousRequest:request queue:_imageCompletionQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
