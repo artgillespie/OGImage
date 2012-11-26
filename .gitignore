@@ -16,3 +16,5 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+OGImageDemo/Pods/
+OGImageDemo/Podfile.lock
