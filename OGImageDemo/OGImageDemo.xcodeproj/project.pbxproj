@@ -1,0 +1,496 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		416DC6759A8046D6AED27FFE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 467479B3192A45B8984313B7 /* libPods.a */; };
+		C871144116640E510015A743 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88272181663DBDF007D409F /* UIKit.framework */; };
+		C871144216640E510015A743 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721A1663DBDF007D409F /* Foundation.framework */; };
+		C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721C1663DBDF007D409F /* CoreGraphics.framework */; };
+		C871144916640E510015A743 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C871144716640E510015A743 /* InfoPlist.strings */; };
+		C871144B16640E510015A743 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C871144A16640E510015A743 /* main.m */; };
+		C871145116640E510015A743 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C871145016640E510015A743 /* Default.png */; };
+		C871145316640E510015A743 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C871145216640E510015A743 /* Default@2x.png */; };
+		C871145516640E510015A743 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C871145416640E510015A743 /* Default-568h@2x.png */; };
+		C871145E16640F2E0015A743 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 467479B3192A45B8984313B7 /* libPods.a */; };
+		C871146116640F7D0015A743 /* OGImageAsyncTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C871146016640F7D0015A743 /* OGImageAsyncTests.m */; };
+		C8711462166410CD0015A743 /* OGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C882723D1663E5B0007D409F /* OGImage.m */; };
+		C8711465166417DE0015A743 /* OGImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C8711464166417DE0015A743 /* OGImageLoader.m */; };
+		C8711466166417E20015A743 /* OGImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C8711464166417DE0015A743 /* OGImageLoader.m */; };
+		C88272191663DBDF007D409F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88272181663DBDF007D409F /* UIKit.framework */; };
+		C882721B1663DBDF007D409F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721A1663DBDF007D409F /* Foundation.framework */; };
+		C882721D1663DBDF007D409F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721C1663DBDF007D409F /* CoreGraphics.framework */; };
+		C88272231663DBDF007D409F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88272211663DBDF007D409F /* InfoPlist.strings */; };
+		C88272251663DBDF007D409F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C88272241663DBDF007D409F /* main.m */; };
+		C88272291663DBDF007D409F /* OGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C88272281663DBDF007D409F /* OGAppDelegate.m */; };
+		C882722B1663DBDF007D409F /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C882722A1663DBDF007D409F /* Default.png */; };
+		C882722D1663DBDF007D409F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C882722C1663DBDF007D409F /* Default@2x.png */; };
+		C882722F1663DBDF007D409F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C882722E1663DBDF007D409F /* Default-568h@2x.png */; };
+		C88272321663DBDF007D409F /* OGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C88272311663DBDF007D409F /* OGViewController.m */; };
+		C88272351663DBDF007D409F /* OGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C88272331663DBDF007D409F /* OGViewController.xib */; };
+		C882723E1663E5B0007D409F /* OGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C882723D1663E5B0007D409F /* OGImage.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		467479B3192A45B8984313B7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F932054786D4C9BA76B5EBE /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		C871143F16640E510015A743 /* OGImageTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGImageTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C871144616640E510015A743 /* OGImageTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGImageTests-Info.plist"; sourceTree = "<group>"; };
+		C871144816640E510015A743 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C871144A16640E510015A743 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C871144C16640E510015A743 /* OGImageTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OGImageTests-Prefix.pch"; sourceTree = "<group>"; };
+		C871145016640E510015A743 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		C871145216640E510015A743 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		C871145416640E510015A743 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C871146016640F7D0015A743 /* OGImageAsyncTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageAsyncTests.m; sourceTree = "<group>"; };
+		C8711463166417DE0015A743 /* OGImageLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageLoader.h; sourceTree = "<group>"; };
+		C8711464166417DE0015A743 /* OGImageLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageLoader.m; sourceTree = "<group>"; };
+		C88272141663DBDF007D409F /* OGImageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGImageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C88272181663DBDF007D409F /* UIKit.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C882721A1663DBDF007D409F /* Foundation.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C882721C1663DBDF007D409F /* CoreGraphics.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C88272201663DBDF007D409F /* OGImageDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGImageDemo-Info.plist"; sourceTree = "<group>"; };
+		C88272221663DBDF007D409F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C88272241663DBDF007D409F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C88272261663DBDF007D409F /* OGImageDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OGImageDemo-Prefix.pch"; sourceTree = "<group>"; };
+		C88272271663DBDF007D409F /* OGAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OGAppDelegate.h; sourceTree = "<group>"; };
+		C88272281663DBDF007D409F /* OGAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OGAppDelegate.m; sourceTree = "<group>"; };
+		C882722A1663DBDF007D409F /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		C882722C1663DBDF007D409F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		C882722E1663DBDF007D409F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C88272301663DBDF007D409F /* OGViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OGViewController.h; sourceTree = "<group>"; };
+		C88272311663DBDF007D409F /* OGViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OGViewController.m; sourceTree = "<group>"; };
+		C88272341663DBDF007D409F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/OGViewController.xib; sourceTree = "<group>"; };
+		C882723C1663E5B0007D409F /* OGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImage.h; sourceTree = "<group>"; };
+		C882723D1663E5B0007D409F /* OGImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImage.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C871143C16640E510015A743 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C871144116640E510015A743 /* UIKit.framework in Frameworks */,
+				C871144216640E510015A743 /* Foundation.framework in Frameworks */,
+				C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */,
+				C871145E16640F2E0015A743 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C88272111663DBDF007D409F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88272191663DBDF007D409F /* UIKit.framework in Frameworks */,
+				C882721B1663DBDF007D409F /* Foundation.framework in Frameworks */,
+				C882721D1663DBDF007D409F /* CoreGraphics.framework in Frameworks */,
+				416DC6759A8046D6AED27FFE /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C871144416640E510015A743 /* OGImageTests */ = {
+			isa = PBXGroup;
+			children = (
+				C871144516640E510015A743 /* Supporting Files */,
+				C871146016640F7D0015A743 /* OGImageAsyncTests.m */,
+			);
+			path = OGImageTests;
+			sourceTree = "<group>";
+		};
+		C871144516640E510015A743 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C871144616640E510015A743 /* OGImageTests-Info.plist */,
+				C871144716640E510015A743 /* InfoPlist.strings */,
+				C871144A16640E510015A743 /* main.m */,
+				C871144C16640E510015A743 /* OGImageTests-Prefix.pch */,
+				C871145016640E510015A743 /* Default.png */,
+				C871145216640E510015A743 /* Default@2x.png */,
+				C871145416640E510015A743 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C88272091663DBDF007D409F = {
+			isa = PBXGroup;
+			children = (
+				C882721E1663DBDF007D409F /* OGImageDemo */,
+				C871144416640E510015A743 /* OGImageTests */,
+				C88272171663DBDF007D409F /* Frameworks */,
+				C88272151663DBDF007D409F /* Products */,
+				9F932054786D4C9BA76B5EBE /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		C88272151663DBDF007D409F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C88272141663DBDF007D409F /* OGImageDemo.app */,
+				C871143F16640E510015A743 /* OGImageTests.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C88272171663DBDF007D409F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C88272181663DBDF007D409F /* UIKit.framework */,
+				C882721A1663DBDF007D409F /* Foundation.framework */,
+				C882721C1663DBDF007D409F /* CoreGraphics.framework */,
+				467479B3192A45B8984313B7 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C882721E1663DBDF007D409F /* OGImageDemo */ = {
+			isa = PBXGroup;
+			children = (
+				C882723B1663E570007D409F /* OGImage */,
+				C88272271663DBDF007D409F /* OGAppDelegate.h */,
+				C88272281663DBDF007D409F /* OGAppDelegate.m */,
+				C88272301663DBDF007D409F /* OGViewController.h */,
+				C88272311663DBDF007D409F /* OGViewController.m */,
+				C88272331663DBDF007D409F /* OGViewController.xib */,
+				C882721F1663DBDF007D409F /* Supporting Files */,
+			);
+			path = OGImageDemo;
+			sourceTree = "<group>";
+		};
+		C882721F1663DBDF007D409F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C88272201663DBDF007D409F /* OGImageDemo-Info.plist */,
+				C88272211663DBDF007D409F /* InfoPlist.strings */,
+				C88272241663DBDF007D409F /* main.m */,
+				C88272261663DBDF007D409F /* OGImageDemo-Prefix.pch */,
+				C882722A1663DBDF007D409F /* Default.png */,
+				C882722C1663DBDF007D409F /* Default@2x.png */,
+				C882722E1663DBDF007D409F /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C882723B1663E570007D409F /* OGImage */ = {
+			isa = PBXGroup;
+			children = (
+				C882723C1663E5B0007D409F /* OGImage.h */,
+				C882723D1663E5B0007D409F /* OGImage.m */,
+				C8711463166417DE0015A743 /* OGImageLoader.h */,
+				C8711464166417DE0015A743 /* OGImageLoader.m */,
+			);
+			name = OGImage;
+			path = ../../OGImage;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C871143E16640E510015A743 /* OGImageTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C871145816640E510015A743 /* Build configuration list for PBXNativeTarget "OGImageTests" */;
+			buildPhases = (
+				C871143B16640E510015A743 /* Sources */,
+				C871143C16640E510015A743 /* Frameworks */,
+				C871143D16640E510015A743 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OGImageTests;
+			productName = OGImageTests;
+			productReference = C871143F16640E510015A743 /* OGImageTests.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C88272131663DBDF007D409F /* OGImageDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C88272381663DBDF007D409F /* Build configuration list for PBXNativeTarget "OGImageDemo" */;
+			buildPhases = (
+				C88272101663DBDF007D409F /* Sources */,
+				C88272111663DBDF007D409F /* Frameworks */,
+				C88272121663DBDF007D409F /* Resources */,
+				26C6689D95B040EC8766A2D4 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OGImageDemo;
+			productName = OGImageDemo;
+			productReference = C88272141663DBDF007D409F /* OGImageDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C882720B1663DBDF007D409F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = OG;
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Origami Labs";
+			};
+			buildConfigurationList = C882720E1663DBDF007D409F /* Build configuration list for PBXProject "OGImageDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C88272091663DBDF007D409F;
+			productRefGroup = C88272151663DBDF007D409F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C88272131663DBDF007D409F /* OGImageDemo */,
+				C871143E16640E510015A743 /* OGImageTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C871143D16640E510015A743 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C871144916640E510015A743 /* InfoPlist.strings in Resources */,
+				C871145116640E510015A743 /* Default.png in Resources */,
+				C871145316640E510015A743 /* Default@2x.png in Resources */,
+				C871145516640E510015A743 /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C88272121663DBDF007D409F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88272231663DBDF007D409F /* InfoPlist.strings in Resources */,
+				C882722B1663DBDF007D409F /* Default.png in Resources */,
+				C882722D1663DBDF007D409F /* Default@2x.png in Resources */,
+				C882722F1663DBDF007D409F /* Default-568h@2x.png in Resources */,
+				C88272351663DBDF007D409F /* OGViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		26C6689D95B040EC8766A2D4 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C871143B16640E510015A743 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C871144B16640E510015A743 /* main.m in Sources */,
+				C871146116640F7D0015A743 /* OGImageAsyncTests.m in Sources */,
+				C8711462166410CD0015A743 /* OGImage.m in Sources */,
+				C8711466166417E20015A743 /* OGImageLoader.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C88272101663DBDF007D409F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88272251663DBDF007D409F /* main.m in Sources */,
+				C88272291663DBDF007D409F /* OGAppDelegate.m in Sources */,
+				C88272321663DBDF007D409F /* OGViewController.m in Sources */,
+				C882723E1663E5B0007D409F /* OGImage.m in Sources */,
+				C8711465166417DE0015A743 /* OGImageLoader.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C871144716640E510015A743 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C871144816640E510015A743 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C88272211663DBDF007D409F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C88272221663DBDF007D409F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C88272331663DBDF007D409F /* OGViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C88272341663DBDF007D409F /* en */,
+			);
+			name = OGViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C871145616640E510015A743 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGImageTests/OGImageTests-Prefix.pch";
+				INFOPLIST_FILE = "OGImageTests/OGImageTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C871145716640E510015A743 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGImageTests/OGImageTests-Prefix.pch";
+				INFOPLIST_FILE = "OGImageTests/OGImageTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C88272361663DBDF007D409F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				SDKROOT = iphoneos;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		C88272371663DBDF007D409F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+		C88272391663DBDF007D409F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGImageDemo/OGImageDemo-Prefix.pch";
+				INFOPLIST_FILE = "OGImageDemo/OGImageDemo-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C882723A1663DBDF007D409F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGImageDemo/OGImageDemo-Prefix.pch";
+				INFOPLIST_FILE = "OGImageDemo/OGImageDemo-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C871145816640E510015A743 /* Build configuration list for PBXNativeTarget "OGImageTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C871145616640E510015A743 /* Debug */,
+				C871145716640E510015A743 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C882720E1663DBDF007D409F /* Build configuration list for PBXProject "OGImageDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C88272361663DBDF007D409F /* Debug */,
+				C88272371663DBDF007D409F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C88272381663DBDF007D409F /* Build configuration list for PBXNativeTarget "OGImageDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C88272391663DBDF007D409F /* Debug */,
+				C882723A1663DBDF007D409F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C882720B1663DBDF007D409F /* Project object */;
+}
