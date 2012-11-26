@@ -8,6 +8,11 @@ subdirectory to your target.
 
 ## Usage
 
+OGImage has a simple interface, just instantiate with the image's URL and
+listen for KVO notifications on the `image` property. You can also specify a
+placeholder image to use until loading is complete with
+`initWithURL:placeholderImage`
+
 ```objc
 #import "OGImage.h"
 
@@ -22,6 +27,8 @@ OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:@"http://some
     if ([keyPath isEqualToString:@"image"]) {
         // image was loaded!
         ...
+    } else if ([keyPath isEqualToString:@"error"]) {
+        // error loading image
     }
 }
 ```
@@ -40,3 +47,6 @@ are no external dependencies for the library itself, only for the tests
 ## TODO:
 
 * Add hooks and/or subclasses for caching and processing the images.
+* *Maybe* add a change block property. (Problem with this is blocks are 1:1...
+  KVO enables 1:N)
+
