@@ -31,8 +31,6 @@
     NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
     if ([keyPath isEqualToString:@"image"]) {
         self.imageView.image = self.image.image;
-        [self.imageView setNeedsDisplay];
-        [self setNeedsDisplay];
     } else if ([keyPath isEqualToString:@"error"]) {
         
     }

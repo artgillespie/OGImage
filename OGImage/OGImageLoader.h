@@ -29,4 +29,10 @@ typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error);
  */
 - (void)enqueueImageRequest:(NSURL *)imageURL completionBlock:(OGImageLoaderCompletionBlock)completionBlock;
 
+/**
+ * The maximum number of concurrent network requests that can be in-flight at
+ * any one time. (Default: 4)
+ */
+@property (nonatomic, assign) NSInteger maxConcurrentNetworkRequests;
+
 @end

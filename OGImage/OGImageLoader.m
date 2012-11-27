@@ -39,12 +39,16 @@ static OGImageLoader * OGImageLoaderInstance;
 #pragma mark -
 
 @implementation OGImageLoader {
+    // Blocks on this queue check to see if it's time to fire off another request
+    dispatch_queue_t _requestWorkerQueue;
     // The queue on which our `NSURLConnection` completion block is executed.
     NSOperationQueue *_imageCompletionQueue;
     // A LIFO queue of _OGImageLoaderInfo instances
     NSMutableArray *_requests;
     // Serializes access to the the request queue
     dispatch_queue_t _requestsSerializationQueue;
+
+    NSInteger _inFlightRequestCount;
 }
 
 + (OGImageLoader *)shared {
@@ -58,9 +62,14 @@ static OGImageLoader * OGImageLoaderInstance;
 - (id)init {
     self = [super init];
     if (nil != self) {
+        self.maxConcurrentNetworkRequests = 4;
         _requests = [NSMutableArray arrayWithCapacity:128];
         _requestsSerializationQueue = dispatch_queue_create("com.origami.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
+        _requestWorkerQueue = dispatch_queue_create("com.origami.requestWorkerQueue", DISPATCH_QUEUE_SERIAL);
+        dispatch_set_target_queue(_requestWorkerQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         _imageCompletionQueue = [[NSOperationQueue alloc] init];
+        // make our network completion calls serial so there's no thrashing.
+        _imageCompletionQueue.maxConcurrentOperationCount = 1;
     }
     return self;
 }
@@ -94,20 +103,21 @@ static OGImageLoader * OGImageLoaderInstance;
         // serialize access to the request LIFO 'queue'
         _OGImageLoaderInfo *info = [_OGImageLoaderInfo infoWithURL:imageURL block:completionBlock];
         [_requests addObject:info];
-        [_imageCompletionQueue addOperationWithBlock:^{
-            dispatch_sync(_requestsSerializationQueue, ^{
-                // we have 'locked' access to the request queue here
-                if (0 < [_requests count]) {
-                    _OGImageLoaderInfo *info = [_requests lastObject];
-                    [_requests removeLastObject];
-                    [self performRequestWithInfo:info];
-                }
-            });
-        }];
+        [self checkForWork];
     });
 }
 
 #pragma mark - Private
+
+- (void)checkForWork {
+    dispatch_async(_requestsSerializationQueue, ^{
+        while(self.maxConcurrentNetworkRequests >= _inFlightRequestCount && 0 < [_requests count]) {
+            _OGImageLoaderInfo *info = [_requests lastObject];
+            [_requests removeLastObject];
+            [self performRequestWithInfo:info];
+        }
+    });
+}
 
 - (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
     // TODO: [alg] We need to have separate handling for file URLs
@@ -141,7 +151,10 @@ static OGImageLoader * OGImageLoaderInstance;
         dispatch_async(dispatch_get_main_queue(), ^{
             info.block(tmpImage, tmpError);
         });
+        _inFlightRequestCount--;
+        [self checkForWork];
     }];
+    _inFlightRequestCount++;
 }
 
 @end
