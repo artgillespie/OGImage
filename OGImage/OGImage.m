@@ -37,14 +37,16 @@
     return self;
 }
 
-#pragma mark - Properties
+- (void)imageDidLoad:(UIImage *)image {
+    [self _setImage:image];
+}
 
 #pragma mark - Private
 
 - (void)loadImage {
     [[OGImageLoader shared] enqueueImageRequest:_url completionBlock:^(UIImage *image, NSError *error) {
         if (nil != image) {
-            [self _setImage:image];
+            [self imageDidLoad:image];
         } else if (nil != error) {
             [self _setError:error];
         }

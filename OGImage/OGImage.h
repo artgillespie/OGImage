@@ -24,6 +24,15 @@
 - (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ * Subclasses can override this method to perform caching, processing, etc., but
+ * must make sure that KVO notifications are fired *on the main queue* once the
+ * `image` property is ready for display.
+ *
+ * This method will always be called on the main queue.
+ */
+- (void)imageDidLoad:(UIImage *)image;
+
+/**
  * Observe this property to be notified when the image has finished loading.
  *
  * If `initWithURL:placeholderImage` initializer was used, this will return
