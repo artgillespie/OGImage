@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OGViewController : UIViewController
+@interface OGViewController : UITableViewController
 
 @end

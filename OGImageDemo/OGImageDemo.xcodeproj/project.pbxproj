@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		416DC6759A8046D6AED27FFE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 467479B3192A45B8984313B7 /* libPods.a */; };
+		C803062A166526A900073395 /* james_bond.json in Resources */ = {isa = PBXBuildFile; fileRef = C8030629166526A900073395 /* james_bond.json */; };
+		C803062D1665295A00073395 /* OGImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C803062C1665295A00073395 /* OGImageTableViewCell.m */; };
+		C803063016652E8200073395 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = C803062E16652E8200073395 /* placeholder.png */; };
+		C803063116652E8200073395 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C803062F16652E8200073395 /* placeholder@2x.png */; };
 		C871144116640E510015A743 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88272181663DBDF007D409F /* UIKit.framework */; };
 		C871144216640E510015A743 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721A1663DBDF007D409F /* Foundation.framework */; };
 		C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721C1663DBDF007D409F /* CoreGraphics.framework */; };
@@ -38,6 +42,11 @@
 /* Begin PBXFileReference section */
 		467479B3192A45B8984313B7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F932054786D4C9BA76B5EBE /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		C8030629166526A900073395 /* james_bond.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = james_bond.json; path = "Demo Data/james_bond.json"; sourceTree = "<group>"; };
+		C803062B1665295A00073395 /* OGImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageTableViewCell.h; sourceTree = "<group>"; };
+		C803062C1665295A00073395 /* OGImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageTableViewCell.m; sourceTree = "<group>"; };
+		C803062E16652E8200073395 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		C803062F16652E8200073395 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
 		C871143F16640E510015A743 /* OGImageTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGImageTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C871144616640E510015A743 /* OGImageTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGImageTests-Info.plist"; sourceTree = "<group>"; };
 		C871144816640E510015A743 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -95,6 +104,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C80306271665269B00073395 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C803062E16652E8200073395 /* placeholder.png */,
+				C803062F16652E8200073395 /* placeholder@2x.png */,
+				C8030629166526A900073395 /* james_bond.json */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		C871144416640E510015A743 /* OGImageTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +177,9 @@
 				C88272301663DBDF007D409F /* OGViewController.h */,
 				C88272311663DBDF007D409F /* OGViewController.m */,
 				C88272331663DBDF007D409F /* OGViewController.xib */,
+				C803062B1665295A00073395 /* OGImageTableViewCell.h */,
+				C803062C1665295A00073395 /* OGImageTableViewCell.m */,
+				C80306271665269B00073395 /* Resources */,
 				C882721F1663DBDF007D409F /* Supporting Files */,
 			);
 			path = OGImageDemo;
@@ -276,6 +298,9 @@
 				C882722D1663DBDF007D409F /* Default@2x.png in Resources */,
 				C882722F1663DBDF007D409F /* Default-568h@2x.png in Resources */,
 				C88272351663DBDF007D409F /* OGViewController.xib in Resources */,
+				C803062A166526A900073395 /* james_bond.json in Resources */,
+				C803063016652E8200073395 /* placeholder.png in Resources */,
+				C803063116652E8200073395 /* placeholder@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +344,7 @@
 				C88272321663DBDF007D409F /* OGViewController.m in Sources */,
 				C882723E1663E5B0007D409F /* OGImage.m in Sources */,
 				C8711465166417DE0015A743 /* OGImageLoader.m in Sources */,
+				C803062D1665295A00073395 /* OGImageTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +497,7 @@
 				C871145716640E510015A743 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C882720E1663DBDF007D409F /* Build configuration list for PBXProject "OGImageDemo" */ = {
 			isa = XCConfigurationList;
