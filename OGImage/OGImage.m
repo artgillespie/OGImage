@@ -11,9 +11,7 @@
 
 @interface OGImage()
 // make these read/write within the class
-@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSError *error;
-@property (nonatomic, strong) NSURL *url;
 @end
 
 @implementation OGImage
@@ -22,7 +20,7 @@
     self = [super init];
     if (nil != self) {
         _url = url;
-        [self loadImage];
+        [self loadImageFromURL];
     }
     return self;
 }
@@ -32,21 +30,21 @@
     if (nil != self) {
         _image = placeholderImage;
         _url = url;
-        [self loadImage];
+        [self loadImageFromURL];
     }
     return self;
 }
 
-- (void)imageDidLoad:(UIImage *)image {
+- (void)imageDidLoadFromURL:(UIImage *)image {
     [self _setImage:image];
 }
 
-#pragma mark - Private
+#pragma mark - Protected
 
-- (void)loadImage {
+- (void)loadImageFromURL {
     [[OGImageLoader shared] enqueueImageRequest:_url completionBlock:^(UIImage *image, NSError *error) {
         if (nil != image) {
-            [self imageDidLoad:image];
+            [self imageDidLoadFromURL:image];
         } else if (nil != error) {
             [self _setError:error];
         }

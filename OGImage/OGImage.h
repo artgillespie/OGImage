@@ -30,7 +30,13 @@
  *
  * This method will always be called on the main queue.
  */
-- (void)imageDidLoad:(UIImage *)image;
+- (void)imageDidLoadFromURL:(UIImage *)image;
+
+/**
+ * Subclasses can override this method to check caches, etc., before initiating
+ * loading the image from `url`.
+ */
+- (void)loadImageFromURL;
 
 /**
  * Observe this property to be notified when the image has finished loading.
@@ -42,7 +48,7 @@
  * was used, this will continue to return the placeholder image even after the
  * error occurs.
  */
-@property (nonatomic, readonly, strong) UIImage *image;
+@property (nonatomic, strong) UIImage *image;
 
 /**
  * Observe this property to be notified if there was an error loading the image.
@@ -52,6 +58,6 @@
 /**
  * The image's url (provided to init methods)
  */
-@property (nonatomic, readonly, strong) NSURL *url;
+@property (nonatomic, strong) NSURL *url;
 
 @end

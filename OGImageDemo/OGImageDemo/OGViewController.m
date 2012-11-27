@@ -7,7 +7,7 @@
 //
 
 #import "OGViewController.h"
-#import "OGImage.h"
+#import "OGCachedImage.h"
 #import "OGImageTableViewCell.h"
 
 @interface OGViewController ()
@@ -64,7 +64,7 @@
         cell = [[OGImageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:OGImageCellIdentifier];
     }
     NSURL *imageURL = [NSURL URLWithString:_urls[indexPath.row]];
-    OGImage *image = [[OGImage alloc] initWithURL:imageURL placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    OGCachedImage *image = [[OGCachedImage alloc] initWithURL:imageURL key:[NSString stringWithFormat:@"Image-%03d", indexPath.row] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     cell.image = image;
     cell.textLabel.text = _urls[indexPath.row];
     return cell;
