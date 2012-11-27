@@ -39,8 +39,6 @@ static OGImageLoader * OGImageLoaderInstance;
 #pragma mark -
 
 @implementation OGImageLoader {
-    // Blocks on this queue check to see if it's time to fire off another request
-    dispatch_queue_t _requestWorkerQueue;
     // The queue on which our `NSURLConnection` completion block is executed.
     NSOperationQueue *_imageCompletionQueue;
     // A LIFO queue of _OGImageLoaderInfo instances
@@ -65,8 +63,6 @@ static OGImageLoader * OGImageLoaderInstance;
         self.maxConcurrentNetworkRequests = 4;
         _requests = [NSMutableArray arrayWithCapacity:128];
         _requestsSerializationQueue = dispatch_queue_create("com.origami.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
-        _requestWorkerQueue = dispatch_queue_create("com.origami.requestWorkerQueue", DISPATCH_QUEUE_SERIAL);
-        dispatch_set_target_queue(_requestWorkerQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         _imageCompletionQueue = [[NSOperationQueue alloc] init];
         // make our network completion calls serial so there's no thrashing.
         _imageCompletionQueue.maxConcurrentOperationCount = 1;
