@@ -43,6 +43,7 @@
     [_image removeObserver:self forKeyPath:@"image"];
     _image = image;
     self.imageView.image = _image.image;
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
     [_image addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
     
