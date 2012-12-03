@@ -8,6 +8,7 @@
 
 #import "OGImageCache.h"
 #import "OGImage.h"
+#import <CommonCrypto/CommonDigest.h>
 
 static OGImageCache *OGImageCacheShared;
 
@@ -21,6 +22,17 @@ NSString *OGImageCachePath() {
     NSString *cachePath = [[array[0] stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]] stringByAppendingPathComponent:@"OGImageCache"];
     [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:nil];
     return cachePath;
+}
+
+NSString *OGImageCachePathForKey(NSString *key) {
+    const char *d = [key UTF8String];
+    unsigned char r[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(d, strlen(d), r);
+    NSMutableString *hexString = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH];
+    for (int ii = 0; ii < CC_MD5_DIGEST_LENGTH; ++ii) {
+        [hexString appendFormat:@"%02x", r[ii]];
+    }
+    return [OGImageCachePath() stringByAppendingPathComponent:hexString];
 }
 
 @implementation OGImageCache {
@@ -57,7 +69,7 @@ NSString *OGImageCachePath() {
     }
     dispatch_async(_cacheFileTasksQueue, ^{
         // Check to see if the image is cached locally
-        NSString *cachePath = [OGImageCachePath() stringByAppendingPathComponent:key];
+        NSString *cachePath = OGImageCachePathForKey(key);
         UIImage *image = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
             image = [UIImage imageWithContentsOfFile:cachePath];
@@ -78,7 +90,7 @@ NSString *OGImageCachePath() {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = [OGImageCachePath() stringByAppendingPathComponent:key];
+        NSString *cachePath = OGImageCachePathForKey(key);
         NSData *imgData = UIImagePNGRepresentation(image);
         [imgData writeToFile:cachePath atomically:YES];
     });
@@ -89,7 +101,7 @@ NSString *OGImageCachePath() {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = [OGImageCachePath() stringByAppendingPathComponent:key];
+        NSString *cachePath = OGImageCachePathForKey(key);
         NSData *imgData = nil;
         if (OGImageFileFormatJPEG == format) {
             imgData = UIImageJPEGRepresentation(image, 5);
