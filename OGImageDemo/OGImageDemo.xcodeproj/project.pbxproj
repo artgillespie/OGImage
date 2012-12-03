@@ -15,6 +15,10 @@
 		C80306341665421300073395 /* OGCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C80306331665421300073395 /* OGCachedImage.m */; };
 		C80306351665421300073395 /* OGCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C80306331665421300073395 /* OGCachedImage.m */; };
 		C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C84972B0166564D000DB15D1 /* OGImageCache.m */; };
+		C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
+		C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
+		C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */; };
+		C86E0BF216680030006063B6 /* OGImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C84972B0166564D000DB15D1 /* OGImageCache.m */; };
 		C871144116640E510015A743 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88272181663DBDF007D409F /* UIKit.framework */; };
 		C871144216640E510015A743 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721A1663DBDF007D409F /* Foundation.framework */; };
 		C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C882721C1663DBDF007D409F /* CoreGraphics.framework */; };
@@ -54,6 +58,9 @@
 		C80306331665421300073395 /* OGCachedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGCachedImage.m; sourceTree = "<group>"; };
 		C84972AF166564D000DB15D1 /* OGImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageCache.h; sourceTree = "<group>"; };
 		C84972B0166564D000DB15D1 /* OGImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageCache.m; sourceTree = "<group>"; };
+		C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageProcessing.h; sourceTree = "<group>"; };
+		C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageProcessing.m; sourceTree = "<group>"; };
+		C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageProcessingTests.m; sourceTree = "<group>"; };
 		C871143F16640E510015A743 /* OGImageTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGImageTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C871144616640E510015A743 /* OGImageTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGImageTests-Info.plist"; sourceTree = "<group>"; };
 		C871144816640E510015A743 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -126,6 +133,7 @@
 			children = (
 				C871144516640E510015A743 /* Supporting Files */,
 				C871146016640F7D0015A743 /* OGImageAsyncTests.m */,
+				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
 			);
 			path = OGImageTests;
 			sourceTree = "<group>";
@@ -217,6 +225,8 @@
 				C84972B0166564D000DB15D1 /* OGImageCache.m */,
 				C8711463166417DE0015A743 /* OGImageLoader.h */,
 				C8711464166417DE0015A743 /* OGImageLoader.m */,
+				C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */,
+				C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */,
 			);
 			name = OGImage;
 			path = ../../OGImage;
@@ -344,6 +354,9 @@
 				C8711462166410CD0015A743 /* OGImage.m in Sources */,
 				C8711466166417E20015A743 /* OGImageLoader.m in Sources */,
 				C80306351665421300073395 /* OGCachedImage.m in Sources */,
+				C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */,
+				C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */,
+				C86E0BF216680030006063B6 /* OGImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +372,7 @@
 				C803062D1665295A00073395 /* OGImageTableViewCell.m in Sources */,
 				C80306341665421300073395 /* OGCachedImage.m in Sources */,
 				C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */,
+				C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

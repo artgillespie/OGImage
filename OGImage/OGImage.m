@@ -19,7 +19,7 @@
 - (id)initWithURL:(NSURL *)url {
     self = [super init];
     if (nil != self) {
-        _url = url;
+        self.url = url;
         [self loadImageFromURL];
     }
     return self;
@@ -28,15 +28,15 @@
 - (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
     self = [super init];
     if (nil != self) {
-        _image = placeholderImage;
-        _url = url;
+        self.image = placeholderImage;
+        self.url = url;
         [self loadImageFromURL];
     }
     return self;
 }
 
 - (void)imageDidLoadFromURL:(UIImage *)image {
-    [self _setImage:image];
+    self.image = image;
 }
 
 #pragma mark - Protected
@@ -53,10 +53,6 @@
 
 - (void)_setError:(NSError *)error {
     [self setValue:error forKey:@"error"];
-}
-
-- (void)_setImage:(UIImage *)image {
-    [self setValue:image forKey:@"image"];
 }
 
 @end

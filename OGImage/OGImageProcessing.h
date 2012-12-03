@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void (^OGImageProcessingBlock)(UIImage *image);
+
+CGSize OGAspectFit(CGSize from, CGSize to);
+
 @interface OGImageProcessing : NSObject
+
++ (OGImageProcessing *)shared;
+
+/**
+ * Scale `image` to `size` using aspect fit.
+ */
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block;
 
 @end
