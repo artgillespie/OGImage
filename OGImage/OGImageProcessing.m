@@ -26,6 +26,29 @@ CGSize OGAspectFit(CGSize from, CGSize to) {
     return CGSizeZero;
 }
 
+/*
+ * Don't forget to free buffer->data.
+ */
+OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer) {
+    OSStatus err = noErr;
+    CGImageRef cgImage = image.CGImage;
+    size_t width = CGImageGetWidth(cgImage);
+    size_t height = CGImageGetHeight(cgImage);
+    buffer->data = malloc(width * height * 4);
+    buffer->width = width;
+    buffer->height = height;
+    buffer->rowBytes = width * 4;
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(buffer->data,
+                                             buffer->width,
+                                             buffer->height, 32,
+                                             buffer->rowBytes, colorSpace, kCGImageAlphaLast);
+    CGContextDrawImage(ctx, CGRectMake(0.f, 0.f, width, height), cgImage);
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(ctx);
+    return err;
+}
+
 @implementation OGImageProcessing {
     dispatch_queue_t _imageProcessingQueue;
 }
