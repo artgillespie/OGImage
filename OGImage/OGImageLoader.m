@@ -47,6 +47,8 @@ static OGImageLoader * OGImageLoaderInstance;
     dispatch_queue_t _requestsSerializationQueue;
 
     NSInteger _inFlightRequestCount;
+
+    dispatch_source_t _timer;
 }
 
 + (OGImageLoader *)shared {
@@ -63,11 +65,23 @@ static OGImageLoader * OGImageLoaderInstance;
         self.maxConcurrentNetworkRequests = 4;
         _requests = [NSMutableArray arrayWithCapacity:128];
         _requestsSerializationQueue = dispatch_queue_create("com.origamilabs.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
+        dispatch_set_target_queue(_requestsSerializationQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
         _imageCompletionQueue = [[NSOperationQueue alloc] init];
         // make our network completion calls serial so there's no thrashing.
         _imageCompletionQueue.maxConcurrentOperationCount = 1;
+        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _requestsSerializationQueue);
+        dispatch_source_set_event_handler(_timer, ^{
+            [self checkForWork];
+        });
+        // 33ms timer w/10 ms leeway
+        dispatch_source_set_timer(_timer, DISPATCH_TIME_NOW, 33000000, 10000000);
+        dispatch_resume(_timer);
     }
     return self;
+}
+
+- (void)dealloc {
+    dispatch_suspend(_timer);
 }
 
 - (void)enqueueImageRequest:(NSURL *)imageURL completionBlock:(OGImageLoaderCompletionBlock)completionBlock {
@@ -99,20 +113,21 @@ static OGImageLoader * OGImageLoaderInstance;
         // serialize access to the request LIFO 'queue'
         _OGImageLoaderInfo *info = [_OGImageLoaderInfo infoWithURL:imageURL block:completionBlock];
         [_requests addObject:info];
-        [self checkForWork];
     });
 }
 
 #pragma mark - Private
 
 - (void)checkForWork {
-    dispatch_async(_requestsSerializationQueue, ^{
-        while(self.maxConcurrentNetworkRequests >= _inFlightRequestCount && 0 < [_requests count]) {
-            _OGImageLoaderInfo *info = [_requests lastObject];
-            [_requests removeLastObject];
-            [self performRequestWithInfo:info];
+    if (self.maxConcurrentNetworkRequests >= _inFlightRequestCount && 0 < [_requests count]) {
+        _OGImageLoaderInfo *info = [_requests lastObject];
+        [_requests removeLastObject];
+        [self performRequestWithInfo:info];
+    } else {
+        if (0 < [_requests count]) {
+            NSLog(@"checkForWork: %d / %d", _inFlightRequestCount, [_requests count]);
         }
-    });
+    }
 }
 
 - (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
