@@ -47,7 +47,7 @@ static OGImageLoader * OGImageLoaderInstance;
     dispatch_queue_t _requestsSerializationQueue;
 
     NSInteger _inFlightRequestCount;
-
+    // We use this timer to periodically check _requestSerializationQueue for requests to fire off
     dispatch_source_t _timer;
 }
 
@@ -65,7 +65,7 @@ static OGImageLoader * OGImageLoaderInstance;
         self.maxConcurrentNetworkRequests = 4;
         _requests = [NSMutableArray arrayWithCapacity:128];
         _requestsSerializationQueue = dispatch_queue_create("com.origamilabs.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
-        dispatch_set_target_queue(_requestsSerializationQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
+        self.priority = OGImageLoaderPriority_Low;
         _imageCompletionQueue = [[NSOperationQueue alloc] init];
         // make our network completion calls serial so there's no thrashing.
         _imageCompletionQueue.maxConcurrentOperationCount = 1;
@@ -166,6 +166,19 @@ static OGImageLoader * OGImageLoaderInstance;
         [self checkForWork];
     }];
     _inFlightRequestCount++;
+}
+
+#pragma mark - Properties
+
+- (void)setPriority:(OGImageLoaderPriority)priority {
+    _priority = priority;
+    dispatch_queue_priority_t newPriority = DISPATCH_QUEUE_PRIORITY_LOW;
+    if (OGImageLoaderPriority_High == _priority) {
+        newPriority = DISPATCH_QUEUE_PRIORITY_HIGH;
+    } else if (OGImageLoaderPriority_Default) {
+        newPriority = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+    }
+    dispatch_set_target_queue(_requestsSerializationQueue, dispatch_get_global_queue(newPriority, 0));
 }
 
 @end

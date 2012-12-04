@@ -10,6 +10,12 @@
 
 extern const NSInteger OGImageLoadingError;
 
+typedef NS_ENUM(NSInteger, OGImageLoaderPriority) {
+    OGImageLoaderPriority_Low,
+    OGImageLoaderPriority_Default,
+    OGImageLoaderPriority_High
+};
+
 /**
  * This block is called when an image is loaded or fails to load. If `error` is
  * nil, `image` should be valid.
@@ -34,5 +40,10 @@ typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error);
  * any one time. (Default: 4)
  */
 @property (nonatomic, assign) NSInteger maxConcurrentNetworkRequests;
+
+/**
+ * The priority of the image loader request queue. Default: OGImageLoaderPriority_Low
+ */
+@property (nonatomic, assign) OGImageLoaderPriority priority;
 
 @end
