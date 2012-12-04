@@ -25,14 +25,7 @@ NSString *OGImageCachePath() {
 }
 
 NSString *OGImageCachePathForKey(NSString *key) {
-    const char *d = [key UTF8String];
-    unsigned char r[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(d, strlen(d), r);
-    NSMutableString *hexString = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH];
-    for (int ii = 0; ii < CC_MD5_DIGEST_LENGTH; ++ii) {
-        [hexString appendFormat:@"%02x", r[ii]];
-    }
-    return [OGImageCachePath() stringByAppendingPathComponent:hexString];
+    return [OGImageCachePath() stringByAppendingPathComponent:[OGImageCache MD5:key]];
 }
 
 @implementation OGImageCache {
@@ -46,6 +39,17 @@ NSString *OGImageCachePathForKey(NSString *key) {
         OGImageCacheShared = [[OGImageCache alloc] init];
     });
     return OGImageCacheShared;
+}
+
++ (NSString *)MD5:(NSString *)string {
+    const char *d = [string UTF8String];
+    unsigned char r[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(d, strlen(d), r);
+    NSMutableString *hexString = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH];
+    for (int ii = 0; ii < CC_MD5_DIGEST_LENGTH; ++ii) {
+        [hexString appendFormat:@"%02x", r[ii]];
+    }
+    return [NSString stringWithString:hexString];
 }
 
 - (id)init {

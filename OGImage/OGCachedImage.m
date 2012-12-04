@@ -12,19 +12,18 @@
 @implementation OGCachedImage
 
 - (id)initWithURL:(NSURL *)url key:(NSString *)key {
-    self = [super init];
-    if (nil != self) {
-        _key = key;
-        self.url = url;
-        [self loadImageFromURL];
-    }
-    return self;
+    return [self initWithURL:url key:key placeholderImage:nil];
 }
 
 - (id)initWithURL:(NSURL *)url key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
+    NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
-        _key = key;
+        if (nil == key) {
+            _key = [OGImageCache MD5:[url absoluteString]];
+        } else {
+            _key = key;
+        }
         self.url = url;
         self.image = placeholderImage;
         [self loadImageFromURL];

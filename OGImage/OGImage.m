@@ -17,15 +17,11 @@
 @implementation OGImage
 
 - (id)initWithURL:(NSURL *)url {
-    self = [super init];
-    if (nil != self) {
-        self.url = url;
-        [self loadImageFromURL];
-    }
-    return self;
+    return [self initWithURL:url placeholderImage:nil];
 }
 
 - (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage {
+    NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
         self.image = placeholderImage;

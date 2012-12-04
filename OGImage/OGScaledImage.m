@@ -20,19 +20,11 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key {
-    self = [super init];
-    if (nil != self) {
-        self.key = key;
-        self.url = url;
-        _scaledSize = size;
-        _scaledKey = OGKeyWithSize(self.key, _scaledSize);
-        [self loadImageFromURL];
-    }
-    return self;
-
+    return [self initWithURL:url size:size key:key placeholderImage:nil];
 }
 
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
+    NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
         self.key = key;
