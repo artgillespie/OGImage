@@ -52,8 +52,8 @@ NSString *OGImageCachePathForKey(NSString *key) {
     self = [super init];
     if (self) {
         _memoryCache = [[NSCache alloc] init];
-        [_memoryCache setName:@"com.origami.OGImageCache"];
-        _cacheFileTasksQueue = dispatch_queue_create("com.origami.OGImageCache.filetasks", DISPATCH_QUEUE_SERIAL);
+        [_memoryCache setName:@"com.origamilabs.OGImageCache"];
+        _cacheFileTasksQueue = dispatch_queue_create("com.origamilabs.OGImageCache.filetasks", DISPATCH_QUEUE_SERIAL);
         dispatch_set_target_queue(_cacheFileTasksQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
     }
     return self;

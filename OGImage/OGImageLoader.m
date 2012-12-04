@@ -62,7 +62,7 @@ static OGImageLoader * OGImageLoaderInstance;
     if (nil != self) {
         self.maxConcurrentNetworkRequests = 4;
         _requests = [NSMutableArray arrayWithCapacity:128];
-        _requestsSerializationQueue = dispatch_queue_create("com.origami.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
+        _requestsSerializationQueue = dispatch_queue_create("com.origamilabs.requestSerializationQueue", DISPATCH_QUEUE_SERIAL);
         _imageCompletionQueue = [[NSOperationQueue alloc] init];
         // make our network completion calls serial so there's no thrashing.
         _imageCompletionQueue.maxConcurrentOperationCount = 1;

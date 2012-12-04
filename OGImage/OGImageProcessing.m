@@ -80,7 +80,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 {
     self = [super init];
     if (self) {
-        _imageProcessingQueue = dispatch_queue_create("com.origami.imageProcessing", DISPATCH_QUEUE_CONCURRENT);
+        _imageProcessingQueue = dispatch_queue_create("com.origamilabs.imageProcessing", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
