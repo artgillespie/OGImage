@@ -7,8 +7,9 @@
 //
 
 #import "OGAppDelegate.h"
-
 #import "OGViewController.h"
+#import "DDLog.h"
+#import "DDTTYLogger.h"
 
 @implementation OGAppDelegate
 
@@ -18,7 +19,12 @@
     self.viewController = [[OGViewController alloc] initWithNibName:@"OGViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    [self setupLogging];
     return YES;
+}
+
+- (void)setupLogging {
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -17,7 +17,7 @@ CGSize OGAspectFit(CGSize from, CGSize to);
 + (OGImageProcessing *)shared;
 
 /**
- * Scale `image` to `size` using aspect fit.
+ * Scale `image` to `size` using aspect fit. Note `size` is specified in points.
  */
 - (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block;
 

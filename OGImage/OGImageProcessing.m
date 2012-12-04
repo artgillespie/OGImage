@@ -22,9 +22,9 @@ CGSize OGAspectFit(CGSize from, CGSize to) {
     CGFloat r1 = from.width / from.height;
     CGFloat r2 = to.width / to.height;
     if (r2 > r1) {
-        return CGSizeMake(from.width * to.height/from.height, to.height);
+        return CGSizeMake(ceilf(from.width * to.height/from.height), ceilf(to.height));
     } else {
-        return CGSizeMake(to.width, from.height * (to.width / from.width));
+        return CGSizeMake(ceilf(to.width), ceilf(from.height * (to.width / from.width)));
     }
     return CGSizeZero;
 }
@@ -83,7 +83,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 {
     self = [super init];
     if (self) {
-        _imageProcessingQueue = dispatch_queue_create("com.origami.imageProcessing", DISPATCH_QUEUE_CONCURRENT);
+        _imageProcessingQueue = dispatch_queue_create("com.origami.imageProcessing", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
@@ -91,6 +91,9 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 - (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block {
     dispatch_async(_imageProcessingQueue, ^{
         CGSize newSize = OGAspectFit(image.size, size);
+        DDLogInfo(@"Scaling %@ to %@ (%f)", NSStringFromCGSize(image.size), NSStringFromCGSize(newSize), image.scale);
+        newSize.width *= [UIScreen mainScreen].scale;
+        newSize.height *= [UIScreen mainScreen].scale;
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
         if (noErr != err) {
@@ -110,7 +113,9 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer);
         free(vBuffer.data);
         free(dBuffer.data);
-        block(scaledImage);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block(scaledImage);
+        });
     });
 }
 
