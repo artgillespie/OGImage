@@ -9,9 +9,6 @@
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
 #import "OGImageProcessing.h"
-#import "DDLog.h"
-
-static int ddLogLevel = LOG_LEVEL_INFO;
 
 NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     return [NSString stringWithFormat:@"%@-%f-%f", origKey, size.width, size.height];
@@ -51,20 +48,18 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 - (void)loadImageFromURL {
     [[OGImageCache shared] imageForKey:_scaledKey block:^(UIImage *image) {
         if (nil == image) {
-            DDLogInfo(@"cache miss for scaled key: %@", _scaledKey);
             [super loadImageFromURL];
         } else {
-            DDLogInfo(@"cache hit for scaled key: %@", _scaledKey);
             self.scaledImage = image;
         }
     }];
 }
 
-- (void)setImage:(UIImage *)image {
-    [super setImage:image];
+- (void)imageDidLoadFromURL:(UIImage *)image {
+    [super imageDidLoadFromURL:image];
     [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize completionBlock:^(UIImage *image) {
-        DDLogInfo(@"scaling image: %@", _scaledKey);
         self.scaledImage = image;
+        [[OGImageCache shared] setImage:image forKey:_scaledKey];
     }];
 }
 

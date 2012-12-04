@@ -25,7 +25,7 @@
 
 /**
  * Subclasses can override this method to perform caching, processing, etc., but
- * must make sure that KVO notifications are fired *on the main queue* once the
+ * must make sure that KVO notifications are fired once the
  * `image` property is ready for display.
  *
  * This method will always be called on the main queue.

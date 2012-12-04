@@ -8,9 +8,6 @@
 
 #import "OGImageProcessing.h"
 #import <Accelerate/Accelerate.h>
-#import "DDLog.h"
-
-static int ddLogLevel = LOG_LEVEL_INFO;
 
 /*
  * Return the size that aspect fits `from` into `to`
@@ -61,7 +58,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
     CGImageRef theImage = CGBitmapContextCreateImage(ctx);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
-    UIImage *ret = [UIImage imageWithCGImage:theImage];
+    UIImage *ret = [UIImage imageWithCGImage:theImage scale:2.f orientation:UIImageOrientationUp];
     CGImageRelease(theImage);
     return ret;
 }
@@ -83,7 +80,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 {
     self = [super init];
     if (self) {
-        _imageProcessingQueue = dispatch_queue_create("com.origami.imageProcessing", DISPATCH_QUEUE_SERIAL);
+        _imageProcessingQueue = dispatch_queue_create("com.origami.imageProcessing", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -91,13 +88,12 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 - (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block {
     dispatch_async(_imageProcessingQueue, ^{
         CGSize newSize = OGAspectFit(image.size, size);
-        DDLogInfo(@"Scaling %@ to %@ (%f)", NSStringFromCGSize(image.size), NSStringFromCGSize(newSize), image.scale);
         newSize.width *= [UIScreen mainScreen].scale;
         newSize.height *= [UIScreen mainScreen].scale;
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
         if (noErr != err) {
-            DDLogError(@"Couldn't create vImage_Buffer: %ld", err);
+            // TODO: [alg] modify block to accept an NSError instance
         }
         vImage_Buffer dBuffer;
         dBuffer.width = newSize.width;
@@ -107,7 +103,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
 
         vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
         if (kvImageNoError != vErr) {
-            DDLogError(@"Couldn't scale the vImage: %ld", vErr);
+            // TODO: [alg] modify block to accept an NSError instance
         }
 
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer);

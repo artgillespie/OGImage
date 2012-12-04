@@ -8,9 +8,6 @@
 
 #import "OGCachedImage.h"
 #import "OGImageCache.h"
-#import "DDLog.h"
-
-static const int ddLogLevel = LOG_LEVEL_INFO;
 
 @implementation OGCachedImage
 
@@ -38,17 +35,14 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)loadImageFromURL {
     [[OGImageCache shared] imageForKey:_key block:^(UIImage *image) {
         if (nil == image) {
-            DDLogInfo(@"cache miss for key: %@", _key);
             [super loadImageFromURL];
         } else {
-            DDLogInfo(@"cache hit for key: %@", _key);
-            self.image = image;
+            [self imageDidLoadFromURL:image];
         }
     }];
 }
 
 - (void)imageDidLoadFromURL:(UIImage *)image {
-    DDLogInfo(@"image loaded, caching for key: %@", _key);
     [[OGImageCache shared] setImage:image forKey:_key];
     [super imageDidLoadFromURL:image];
 }
