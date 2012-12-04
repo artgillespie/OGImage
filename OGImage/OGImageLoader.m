@@ -86,7 +86,6 @@ static OGImageLoader * OGImageLoaderInstance;
 
 - (void)enqueueImageRequest:(NSURL *)imageURL completionBlock:(OGImageLoaderCompletionBlock)completionBlock {
     /**
-     * This could get confusing, so let me record my thinking here for posterity:
      *
      * What we basically have here is a LIFO queue (or stack, if you prefer) in `_requests` access to which
      * is serialized by the serial dispatch queue `_requestsSerializationQueue`.
@@ -96,18 +95,18 @@ static OGImageLoader * OGImageLoaderInstance;
      *
      * `_OGImageLoaderInfo` instances are pushed onto the LIFO queue (stack) on the
      * serialization stack. It's not important when this happens, so we `dispatch_async`
-     * it. When the request is enqueued, we also enqueue a block operation onto
-     * the network queue that will act as the LIFO queue's consumer. Whenever the
-     * network queue (which is concurrent) can, it will grab the last queued object
-     * off the LIFO queue (which may or may not correspond to the object that was
-     * queued when the block operation was created)
+     * it.
+     *
+     * Periodically, a timer (see the dispatch_source `_timer` ivar) will call
+     * `checkForWork` (also on `_requestsSerializationQueue`) and fire off a network
+     * request for the most recently added `_OGImageLoaderInfo` in `_requests`, assuming
+     * the number of in-flight requests is not greater or equal to `self.maxConcurrentNetworkRequests`
      *
      * The idea here is that if a bunch of image load requests come in in a short
-     * period of time (as might be the case when, e.g., scrolling a `UITableView`,
+     * period of time (as might be the case when, e.g., scrolling a `UITableView`)
      * the most recently requested will always have the highest priority for the next
      * available network request.
      *
-     * This is essentially a poor-man's quick-and-dirty producer/consumer implementation.
      */
     dispatch_async(_requestsSerializationQueue, ^{
         // serialize access to the request LIFO 'queue'
@@ -119,21 +118,16 @@ static OGImageLoader * OGImageLoaderInstance;
 #pragma mark - Private
 
 - (void)checkForWork {
-    if (self.maxConcurrentNetworkRequests >= _inFlightRequestCount && 0 < [_requests count]) {
+    if (self.maxConcurrentNetworkRequests > _inFlightRequestCount && 0 < [_requests count]) {
         _OGImageLoaderInfo *info = [_requests lastObject];
         [_requests removeLastObject];
         [self performRequestWithInfo:info];
-    } else {
-        if (0 < [_requests count]) {
-            NSLog(@"checkForWork: %d / %d", _inFlightRequestCount, [_requests count]);
-        }
     }
 }
 
 - (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
-    // TODO: [alg] We need to have separate handling for file URLs
+    // TODO: [alg] We should have separate handling for file URLs
 
-    // TODO: we might want to tweak the cache policy here?
     NSURLRequest *request = [NSURLRequest requestWithURL:info.url];
     [NSURLConnection sendAsynchronousRequest:request queue:_imageCompletionQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         NSError *tmpError = nil;
