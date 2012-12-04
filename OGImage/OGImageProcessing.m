@@ -49,7 +49,7 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer) {
     return err;
 }
 
-UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
+UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreateWithData(buffer->data,
                                                      buffer->width,
@@ -58,7 +58,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
     CGImageRef theImage = CGBitmapContextCreateImage(ctx);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
-    UIImage *ret = [UIImage imageWithCGImage:theImage scale:2.f orientation:UIImageOrientationUp];
+    UIImage *ret = [UIImage imageWithCGImage:theImage scale:scale orientation:UIImageOrientationUp];
     CGImageRelease(theImage);
     return ret;
 }
@@ -106,7 +106,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
             // TODO: [alg] modify block to accept an NSError instance
         }
 
-        UIImage *scaledImage = VImageBufferToUIImage(&dBuffer);
+        UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
         free(vBuffer.data);
         free(dBuffer.data);
         dispatch_async(dispatch_get_main_queue(), ^{

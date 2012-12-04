@@ -72,7 +72,11 @@ NSString *OGImageCachePathForKey(NSString *key) {
         NSString *cachePath = OGImageCachePathForKey(key);
         UIImage *image = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
-            image = [UIImage imageWithContentsOfFile:cachePath];
+            NSData *data = [NSData dataWithContentsOfFile:cachePath];
+            // we assume here that we cached images at the same scale as the device
+            // which makes sense, though there may be cases in the simulator where
+            // you get images at the wrong scale.
+            image = [UIImage imageWithData:data scale:[UIScreen mainScreen].scale];
         }
         // if we have the image in the on-disk cache, store it to the in-memory cache
         if (nil != image) {
