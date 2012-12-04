@@ -1,6 +1,5 @@
 //
 //  OGImageLoader.h
-//  OGImageDemo
 //
 //  Created by Art Gillespie on 11/26/12.
 //  Copyright (c) 2012 Origami Labs. All rights reserved.
