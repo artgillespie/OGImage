@@ -31,6 +31,8 @@
     NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
     if ([keyPath isEqualToString:@"scaledImage"]) {
         self.imageView.image = self.image.scaledImage;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        self.textLabel.text = [NSString stringWithFormat:@"kvo:%@ %@ %f", NSStringFromCGSize(self.imageView.frame.size), NSStringFromCGSize(_image.scaledImage.size), self.image.scaledImage.scale];
     } else if ([keyPath isEqualToString:@"error"]) {
         
     }
@@ -42,8 +44,9 @@
     [_image removeObserver:self forKeyPath:@"error"];
     [_image removeObserver:self forKeyPath:@"scaledImage"];
     _image = image;
-    self.imageView.image = _image.image;
+    self.imageView.image = _image.scaledImage;
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.textLabel.text = [NSString stringWithFormat:@"set:%@ %@ %f", NSStringFromCGSize(self.imageView.frame.size), NSStringFromCGSize(_image.scaledImage.size), self.image.scaledImage.scale];
     [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
     [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
     
