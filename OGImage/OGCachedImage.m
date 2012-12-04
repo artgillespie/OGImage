@@ -42,7 +42,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             [super loadImageFromURL];
         } else {
             DDLogInfo(@"cache hit for key: %@", _key);
-            [self setValue:image forKey:@"image"];
+            self.image = image;
         }
     }];
 }

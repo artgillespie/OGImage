@@ -7,7 +7,7 @@
 //
 
 #import "OGImageTableViewCell.h"
-#import "OGImage.h"
+#import "OGScaledImage.h"
 
 @implementation OGImageTableViewCell
 
@@ -29,8 +29,8 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
-    if ([keyPath isEqualToString:@"image"]) {
-        self.imageView.image = self.image.image;
+    if ([keyPath isEqualToString:@"scaledImage"]) {
+        self.imageView.image = self.image.scaledImage;
     } else if ([keyPath isEqualToString:@"error"]) {
         
     }
@@ -38,14 +38,14 @@
 
 #pragma mark - Properties
 
-- (void)setImage:(OGImage *)image {
+- (void)setImage:(OGScaledImage *)image {
     [_image removeObserver:self forKeyPath:@"error"];
-    [_image removeObserver:self forKeyPath:@"image"];
+    [_image removeObserver:self forKeyPath:@"scaledImage"];
     _image = image;
     self.imageView.image = _image.image;
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
-    [_image addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+    [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
     
 }
 

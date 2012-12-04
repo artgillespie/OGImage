@@ -44,8 +44,8 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer) {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreate(buffer->data,
                                              buffer->width,
-                                             buffer->height, 32,
-                                             buffer->rowBytes, colorSpace, kCGImageAlphaFirst);
+                                             buffer->height, 8,
+                                             buffer->rowBytes, colorSpace, kCGImageAlphaPremultipliedFirst);
     CGContextDrawImage(ctx, CGRectMake(0.f, 0.f, width, height), cgImage);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
@@ -57,7 +57,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer) {
     CGContextRef ctx = CGBitmapContextCreateWithData(buffer->data,
                                                      buffer->width,
                                                      buffer->height,
-                                                     32, buffer->rowBytes, colorSpace, kCGImageAlphaFirst, NULL, NULL);
+                                                     8, buffer->rowBytes, colorSpace, kCGImageAlphaPremultipliedFirst, NULL, NULL);
     CGImageRef theImage = CGBitmapContextCreateImage(ctx);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);

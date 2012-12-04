@@ -44,6 +44,8 @@
 		C88272321663DBDF007D409F /* OGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C88272311663DBDF007D409F /* OGViewController.m */; };
 		C88272351663DBDF007D409F /* OGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C88272331663DBDF007D409F /* OGViewController.xib */; };
 		C882723E1663E5B0007D409F /* OGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C882723D1663E5B0007D409F /* OGImage.m */; };
+		C8975AEA166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
+		C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
 		C8FADED9166D5DB100829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
 		C8FADEDB166D5DCA00829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
@@ -92,6 +94,8 @@
 		C88272341663DBDF007D409F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/OGViewController.xib; sourceTree = "<group>"; };
 		C882723C1663E5B0007D409F /* OGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImage.h; sourceTree = "<group>"; };
 		C882723D1663E5B0007D409F /* OGImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImage.m; sourceTree = "<group>"; };
+		C8975AE8166E09BB00C2D53A /* OGScaledImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGScaledImage.h; sourceTree = "<group>"; };
+		C8975AE9166E09BB00C2D53A /* OGScaledImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGScaledImage.m; sourceTree = "<group>"; };
 		C8FADED8166D5DB100829179 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -233,6 +237,8 @@
 				C8711464166417DE0015A743 /* OGImageLoader.m */,
 				C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */,
 				C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */,
+				C8975AE8166E09BB00C2D53A /* OGScaledImage.h */,
+				C8975AE9166E09BB00C2D53A /* OGScaledImage.m */,
 			);
 			name = OGImage;
 			path = ../../OGImage;
@@ -363,6 +369,7 @@
 				C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */,
 				C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */,
 				C86E0BF216680030006063B6 /* OGImageCache.m in Sources */,
+				C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +386,7 @@
 				C80306341665421300073395 /* OGCachedImage.m in Sources */,
 				C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */,
 				C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */,
+				C8975AEA166E09BB00C2D53A /* OGScaledImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
