@@ -3,7 +3,7 @@
 //  OGImageDemo
 //
 //  Created by Art Gillespie on 11/26/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import "OGViewController.h"
@@ -61,12 +61,11 @@
     static NSString * const OGImageCellIdentifier = @"OGImageCellIdentifier";
     OGImageTableViewCell *cell = (OGImageTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:OGImageCellIdentifier];
     if (nil == cell) {
-        cell = [[OGImageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:OGImageCellIdentifier];
+        cell = [[OGImageTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:OGImageCellIdentifier];
     }
     NSURL *imageURL = [NSURL URLWithString:_urls[indexPath.row]];
     OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:CGSizeMake(43.f, 43.f) key:[NSString stringWithFormat:@"Image-%03d", indexPath.row] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     cell.image = image;
-    // cell.textLabel.text = _urls[indexPath.row];
     return cell;
 }
 

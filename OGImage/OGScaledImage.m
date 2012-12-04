@@ -2,7 +2,7 @@
 //  OGScaledImage.m
 //
 //  Created by Art Gillespie on 12/4/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import "OGScaledImage.h"

@@ -2,7 +2,7 @@
 //  OGImageLoader.m
 //
 //  Created by Art Gillespie on 11/26/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import "OGImageLoader.h"
@@ -128,7 +128,9 @@ static OGImageLoader * OGImageLoaderInstance;
     // TODO: [alg] We should have separate handling for file URLs
 
     NSURLRequest *request = [NSURLRequest requestWithURL:info.url];
+    NSDate *startTime = [NSDate date];
     [NSURLConnection sendAsynchronousRequest:request queue:_imageCompletionQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSTimeInterval elapsed = [startTime timeIntervalSinceNow];
         NSError *tmpError = nil;
         UIImage *tmpImage = nil;
         if (nil != error) {
@@ -153,10 +155,9 @@ static OGImageLoader * OGImageLoaderInstance;
         }
         NSAssert((nil == tmpImage && nil != tmpError) || (nil != tmpImage && nil == tmpError), @"One of tmpImage or tmpError should be non-nil");
         dispatch_async(dispatch_get_main_queue(), ^{
-            info.block(tmpImage, tmpError);
+            info.block(tmpImage, tmpError, elapsed);
         });
         _inFlightRequestCount--;
-        [self checkForWork];
     }];
     _inFlightRequestCount++;
 }

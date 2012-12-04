@@ -2,7 +2,7 @@
 //  OGImageLoader.h
 //
 //  Created by Art Gillespie on 11/26/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,7 +19,7 @@ typedef NS_ENUM(NSInteger, OGImageLoaderPriority) {
  * This block is called when an image is loaded or fails to load. If `error` is
  * nil, `image` should be valid.
  */
-typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error);
+typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error, NSTimeInterval loadTime);
 
 @interface OGImageLoader : NSObject
 

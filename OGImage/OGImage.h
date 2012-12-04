@@ -2,7 +2,7 @@
 //  OGImage.h
 //
 //  Created by Art Gillespie on 11/26/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -58,5 +58,11 @@
  * The image's url (provided to init methods)
  */
 @property (nonatomic, strong) NSURL *url;
+
+/**
+ * The amount of time it took to load the image from the network.
+ */
+@property (nonatomic, assign) NSTimeInterval loadTime;
+
 
 @end

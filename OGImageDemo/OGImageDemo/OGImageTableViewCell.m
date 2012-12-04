@@ -3,7 +3,7 @@
 //  OGImageDemo
 //
 //  Created by Art Gillespie on 11/27/12.
-//  Copyright (c) 2012 Origami Labs. All rights reserved.
+//  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
 #import "OGImageTableViewCell.h"
@@ -32,7 +32,8 @@
     if ([keyPath isEqualToString:@"scaledImage"]) {
         self.imageView.image = self.image.scaledImage;
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        self.textLabel.text = [NSString stringWithFormat:@"kvo:%@ %@ %f", NSStringFromCGSize(self.imageView.frame.size), NSStringFromCGSize(_image.scaledImage.size), self.image.scaledImage.scale];
+        self.textLabel.text = [[self.image.url path] lastPathComponent];
+        self.detailTextLabel.text = [NSString stringWithFormat:@"%.2f", self.image.loadTime];
     } else if ([keyPath isEqualToString:@"error"]) {
         
     }
@@ -46,7 +47,8 @@
     _image = image;
     self.imageView.image = _image.scaledImage;
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.textLabel.text = [NSString stringWithFormat:@"set:%@ %@ %f", NSStringFromCGSize(self.imageView.frame.size), NSStringFromCGSize(_image.scaledImage.size), self.image.scaledImage.scale];
+    self.textLabel.text = [[self.image.url path] lastPathComponent];
+    self.detailTextLabel.text = NSLocalizedString(@"Loading", @"");
     [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
     [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
     
