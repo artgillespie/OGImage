@@ -8,8 +8,8 @@ over HTTP in a simple, extensible interface.
 
 ### Philosophy
 
-1. The default use case should be *ridiculously* simple to execute. In OGImage,
-   you can load, cache, and scale an image with the following call:
+* The default use case should be *ridiculously* simple to execute. In OGImage,
+  you can load, cache, and scale an image with the following call:
 
     ```objc
     OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
@@ -17,19 +17,19 @@ over HTTP in a simple, extensible interface.
     // there is no step 3!
     ```
 
-2. Networking belongs in the Model. Views (and to some degree, Controllers)
-   shouldn't know anything about where images come from: That's the model's
-   job. OGImage is designed as a model object: Controllers and Views learn
-   about changes to it (e.g., when an image has loaded) through KVO.
-3. Generally, more recently requested images should have higher loading
-   priority. For example, if images are being loaded on demand as a user
-   scrolls through a table view, the user experience is improved if they don't
-   have to wait for all the images they've scrolled past to load before the
-   images that are visible are loaded. At the same time, we don't believe in
-   waiting until a table view has finished scrolling to start loading images.
-   OGImage addresses these competing requirements by pushing image load
-   requests into a LIFO queue.
-4. Each subsystem should have its own GCD queue.
+* Networking belongs in the Model. Views (and to some degree, Controllers)
+  shouldn't know anything about where images come from: That's the model's job.
+  OGImage is designed as a model object: Controllers and Views learn about
+  changes to it (e.g., when an image has loaded) through KVO.
+* Generally, more recently requested images should have higher loading
+  priority. For example, if images are being loaded on demand as a user scrolls
+  through a table view, the user experience is improved if they don't have to
+  wait for all the images they've scrolled past to load before the images that
+  are visible are loaded. At the same time, we don't believe in waiting until a
+  table view has finished scrolling to start loading images.  OGImage addresses
+  these competing requirements by pushing image load requests into a LIFO
+  queue.
+* Each subsystem should have its own GCD queue.
 
 ## Installation
 
