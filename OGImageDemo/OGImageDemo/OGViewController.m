@@ -64,7 +64,8 @@
         cell = [[OGImageTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:OGImageCellIdentifier];
     }
     NSURL *imageURL = [NSURL URLWithString:_urls[indexPath.row]];
-    OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:CGSizeMake(43.f, 43.f) key:[NSString stringWithFormat:@"Image-%03d", indexPath.row] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    CGFloat imageSide = self.tableView.rowHeight;
+    OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:CGSizeMake(imageSide, imageSide) key:[NSString stringWithFormat:@"Image-%03d", indexPath.row] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     cell.image = image;
     return cell;
 }
