@@ -55,7 +55,6 @@ static const CGSize TEST_IMAGE_SIZE = {317.f, 400.f};
 @end
 
 @implementation OGImageTest1
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSAssert(YES == [NSThread isMainThread], @"Expected `observeValueForKeyPath` to only be called on main thread");
     if ([keyPath isEqualToString:@"image"]) {
