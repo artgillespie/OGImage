@@ -11,11 +11,11 @@ over HTTP in a simple, extensible interface.
 1. The default use case should be *ridiculously* simple to execute. In OGImage,
    you can load, cache, and scale an image with the following call:
 
-```objc
-OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
-[ogImage addObserver:self forKey:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
-// there is no step 3!
-```
+    ```objc
+    OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
+    [ogImage addObserver:self forKey:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+    // there is no step 3!
+    ```
 
 2. Networking belongs in the Model. Views (and to some degree, Controllers)
    shouldn't know anything about where images come from: That's the model's
