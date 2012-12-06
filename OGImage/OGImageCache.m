@@ -23,10 +23,6 @@ NSString *OGImageCachePath() {
     return cachePath;
 }
 
-NSString *OGImageCachePathForKey(NSString *key) {
-    return [OGImageCachePath() stringByAppendingPathComponent:[OGImageCache MD5:key]];
-}
-
 @implementation OGImageCache {
     NSCache *_memoryCache;
     dispatch_queue_t _cacheFileTasksQueue;
@@ -51,6 +47,10 @@ NSString *OGImageCachePathForKey(NSString *key) {
     return [NSString stringWithString:hexString];
 }
 
++ (NSString *)filePathForKey:(NSString *)key {
+    return [OGImageCachePath() stringByAppendingPathComponent:[OGImageCache MD5:key]];
+}
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -72,7 +72,7 @@ NSString *OGImageCachePathForKey(NSString *key) {
     }
     dispatch_async(_cacheFileTasksQueue, ^{
         // Check to see if the image is cached locally
-        NSString *cachePath = OGImageCachePathForKey(key);
+        NSString *cachePath = [OGImageCache filePathForKey:(key)];
         UIImage *image = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
             NSData *data = [NSData dataWithContentsOfFile:cachePath];
@@ -97,7 +97,7 @@ NSString *OGImageCachePathForKey(NSString *key) {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = OGImageCachePathForKey(key);
+        NSString *cachePath = [OGImageCache filePathForKey:(key)];
         NSData *imgData = UIImagePNGRepresentation(image);
         [imgData writeToFile:cachePath atomically:YES];
     });
@@ -108,7 +108,7 @@ NSString *OGImageCachePathForKey(NSString *key) {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = OGImageCachePathForKey(key);
+        NSString *cachePath = [OGImageCache filePathForKey:key];
         NSData *imgData = nil;
         if (OGImageFileFormatJPEG == format) {
             imgData = UIImageJPEGRepresentation(image, 5);
