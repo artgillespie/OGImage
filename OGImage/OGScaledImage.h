@@ -20,6 +20,11 @@
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ * Scale the given image to `size` and cache it at `key`
+ */
+- (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key;
+
+/**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.
  * Clients should listen for KVO notifications on this property and `image` as
  * appropriate.
