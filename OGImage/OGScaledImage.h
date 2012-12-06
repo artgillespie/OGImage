@@ -10,7 +10,9 @@
 @interface OGScaledImage : OGCachedImage
 
 /**
- * Scale the image at `url` to aspect-fit into `size` (specified in points)
+ * Scale the image at `url` to aspect-fit into `size` (specified in points). Note
+ * that the full-sized image will be cached at `key` and the scaled image cached
+ * using a generated key based on key + size.
  *
  * If `key` is nil, one will be generated from `url`
  */

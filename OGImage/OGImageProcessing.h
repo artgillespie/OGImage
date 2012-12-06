@@ -7,8 +7,17 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^OGImageProcessingBlock)(UIImage *image);
+typedef void (^OGImageProcessingBlock)(UIImage *image, NSError *error);
 
+extern NSString * const OGImageProcessingErrorDomain;
+
+enum {
+    OGImageProcessingError = -65535,
+};
+
+/*
+ * Returns the aspect fit size when scaling `from` to `to`
+ */
 CGSize OGAspectFit(CGSize from, CGSize to);
 
 @interface OGImageProcessing : NSObject

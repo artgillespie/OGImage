@@ -8,11 +8,6 @@
 #import "OGImage.h"
 #import "OGImageLoader.h"
 
-@interface OGImage()
-// make these read/write within the class
-@property (nonatomic, strong) NSError *error;
-@end
-
 @implementation OGImage
 
 - (id)initWithURL:(NSURL *)url {

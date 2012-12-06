@@ -48,9 +48,13 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 
 - (void)imageDidLoadFromURL:(UIImage *)image {
     [super imageDidLoadFromURL:image];
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize completionBlock:^(UIImage *image) {
-        self.scaledImage = image;
-        [[OGImageCache shared] setImage:image forKey:_scaledKey];
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize completionBlock:^(UIImage *image, NSError *error) {
+        if (nil != error) {
+            self.error = error;
+        } else {
+            self.scaledImage = image;
+            [[OGImageCache shared] setImage:image forKey:_scaledKey];
+        }
     }];
 }
 

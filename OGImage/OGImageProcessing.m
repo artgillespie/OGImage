@@ -8,6 +8,8 @@
 #import "OGImageProcessing.h"
 #import <Accelerate/Accelerate.h>
 
+NSString * const OGImageProcessingErrorDomain = @"OGImageProcessingErrorDomain";
+
 /*
  * Return the size that aspect fits `from` into `to`
  */
@@ -92,7 +94,12 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
         if (noErr != err) {
-            // TODO: [alg] modify block to accept an NSError instance
+            NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
+                                                 code:err userInfo:@{NSLocalizedDescriptionKey : @"Error converting UIImage to vImage"}];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(nil, error);
+            });
+            return;
         }
         vImage_Buffer dBuffer;
         dBuffer.width = newSize.width;
@@ -102,14 +109,19 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
 
         vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
         if (kvImageNoError != vErr) {
-            // TODO: [alg] modify block to accept an NSError instance
+            NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
+                                                 code:err userInfo:@{NSLocalizedDescriptionKey : @"Error scaling image"}];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(nil, error);
+            });
+            return;
         }
 
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
         free(vBuffer.data);
         free(dBuffer.data);
         dispatch_async(dispatch_get_main_queue(), ^{
-            block(scaledImage);
+            block(scaledImage, nil);
         });
     });
 }

@@ -52,7 +52,7 @@
 /**
  * Observe this property to be notified if there was an error loading the image.
  */
-@property (nonatomic, readonly, strong) NSError *error;
+@property (nonatomic, strong) NSError *error;
 
 /**
  * The image's url (provided to init methods)
@@ -63,6 +63,5 @@
  * The amount of time it took to load the image from the network.
  */
 @property (nonatomic, assign) NSTimeInterval loadTime;
-
 
 @end
