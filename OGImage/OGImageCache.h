@@ -22,6 +22,8 @@ typedef NS_ENUM(NSInteger, OGImageFileFormat) {
 
 + (NSString *)MD5:(NSString *)string;
 
++ (NSString *)filePathForKey:(NSString *)key;
+
 /**
  * Check in-memory and on-disk caches for image corresponding to `key`. `block`
  * called on main queue when check is complete. If `image` parameter is `nil`,
