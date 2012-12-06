@@ -119,4 +119,19 @@ NSString *OGImageCachePathForKey(NSString *key) {
     });
 }
 
+- (void)purgeCache:(BOOL)wait {
+    [_memoryCache removeAllObjects];
+    void (^purgeFilesBlock)(void) = ^{
+        NSString *cachePath = OGImageCachePath();
+        for (NSString *file in [[NSFileManager defaultManager] enumeratorAtPath:cachePath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:[cachePath stringByAppendingPathComponent:file] error:nil];
+        }
+    };
+    if (YES == wait) {
+        dispatch_sync(_cacheFileTasksQueue, purgeFilesBlock);
+    } else {
+        dispatch_async(_cacheFileTasksQueue, purgeFilesBlock);
+    }
+}
+
 @end

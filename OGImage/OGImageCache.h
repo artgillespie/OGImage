@@ -39,4 +39,10 @@ typedef NS_ENUM(NSInteger, OGImageFileFormat) {
  */
 - (void)setImage:(UIImage *)image forKey:(NSString *)key format:(OGImageFileFormat)format;
 
+/**
+ * Remove all cached images from in-memory and on-disk caches. If `wait` is `YES`
+ * this will block the calling thread until the purge is complete.
+ */
+- (void)purgeCache:(BOOL)wait;
+
 @end
