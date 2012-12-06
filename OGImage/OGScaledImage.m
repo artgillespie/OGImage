@@ -26,7 +26,11 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
-        self.key = key;
+        if (nil == key) {
+            self.key = [OGImageCache MD5:[url absoluteString]];
+        } else {
+            self.key = key;
+        }
         self.url = url;
         self.scaledImage = placeholderImage;
         _scaledSize = size;
