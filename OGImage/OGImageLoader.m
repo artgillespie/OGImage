@@ -125,12 +125,13 @@ static OGImageLoader * OGImageLoaderInstance;
 }
 
 - (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
-    // TODO: [alg] We should have separate handling for file URLs
+
+    // TODO: [alg] Should we have separate handling for file URLs?
 
     NSURLRequest *request = [NSURLRequest requestWithURL:info.url];
     NSDate *startTime = [NSDate date];
     [NSURLConnection sendAsynchronousRequest:request queue:_imageCompletionQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        NSTimeInterval elapsed = [startTime timeIntervalSinceNow];
+        NSTimeInterval elapsed = fabs([startTime timeIntervalSinceNow]);
         NSError *tmpError = nil;
         UIImage *tmpImage = nil;
         if (nil != error) {
