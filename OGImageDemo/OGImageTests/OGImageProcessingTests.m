@@ -11,6 +11,9 @@
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
 
+extern CGSize OGAspectFit(CGSize from, CGSize to);
+extern CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset);
+
 static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinkagain/wp-content/uploads/2009/05/james-bond.jpg";
 static const CGSize TEST_IMAGE_SIZE = {317.f, 400.f};
 static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
@@ -20,24 +23,44 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
 
 @implementation OGImageProcessingTests
 
-- (void)testAspectFill_1 {
+- (void)testAspectFit_1 {
     CGSize newSize = OGAspectFit(CGSizeMake(600.f, 1024.f), CGSizeMake(64.f, 64.f));
     GHAssertTrue(CGSizeEqualToSize(newSize, CGSizeMake(38.f, 64.f)), @"Invalid dimensions...");
 }
 
-- (void)testAspectFill_2 {
+- (void)testAspectFit_2 {
     CGSize newSize = OGAspectFit(CGSizeMake(1024.f, 1024.f), CGSizeMake(64.f, 64.f));
     GHAssertTrue(CGSizeEqualToSize(newSize, CGSizeMake(64.f, 64.f)), @"Invalid dimensions...");
 }
 
-- (void)testAspectFill_3 {
+- (void)testAspectFit_3 {
     CGSize newSize = OGAspectFit(CGSizeMake(64.f, 100.f), CGSizeMake(128.f, 128.f));
     GHAssertTrue(CGSizeEqualToSize(newSize, CGSizeMake(82.f, 128.f)), @"Invalid dimensions...");
 }
 
-- (void)testAspectFill_4 {
+- (void)testAspectFit_4 {
     CGSize newSize = OGAspectFit(CGSizeMake(64.f, 100.f), CGSizeMake(64.f, 100.f));
     GHAssertTrue(CGSizeEqualToSize(newSize, CGSizeMake(64.f, 100.f)), @"Invalid dimensions...");
+}
+
+- (void)testAspectFit_5 {
+    GHAssertThrows(OGAspectFit(CGSizeMake(0.f, 0.f), CGSizeMake(0.f, 0.f)), @"Expect OGAspectFit to throw when any dimension is zero.");
+}
+
+- (void)testAspectFill_1 {
+    CGPoint pt = CGPointZero;
+    GHAssertThrows(OGAspectFill(CGSizeMake(0.f, 0.f), CGSizeMake(0.f, 0.f), &pt), @"Expect OGAspectFill to throw when any dimension is zero.");
+}
+
+- (void)testAspectFill_2 {
+    GHAssertThrows(OGAspectFill(CGSizeMake(128.f, 128.f), CGSizeMake(1024.f, 1024.f), NULL), @"Expect OGAspectFill to throw when `offset` parameter is NULL.");
+}
+
+- (void)testAspectFill_3 {
+    CGPoint pt = CGPointZero;
+    CGSize newSize = OGAspectFill(CGSizeMake(1920.f, 1024.f), CGSizeMake(256.f, 256.f), &pt);
+    GHAssertTrue(CGSizeEqualToSize(newSize, CGSizeMake(480.f, 256.f)), @"Expected 480, 256");
+    GHAssertTrue(pt.x == 112.f && pt.y == 0.f, @"Expected offset point at 112, 0");
 }
 
 @end
@@ -63,8 +86,11 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
         OGScaledImage *image = (OGScaledImage *)object;
         GHTestLog(@"Image loaded: %@ : %@", image.image, NSStringFromCGSize(image.image.size));
         CGSize expectedSize = OGAspectFit(TEST_IMAGE_SIZE, TEST_SCALE_SIZE);
-        GHAssertTrue(CGSizeEqualToSize(image.scaledImage.size, expectedSize), @"Unexpected image size");
-        [self notify:kGHUnitWaitStatusSuccess];
+        if (NO == CGSizeEqualToSize(image.scaledImage.size, expectedSize)) {
+            [self notify:kGHUnitWaitStatusFailure];
+        } else {
+            [self notify:kGHUnitWaitStatusSuccess];
+        }
         return;
     }
     GHTestLog(@"Unexpected key change...");

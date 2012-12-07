@@ -60,8 +60,11 @@ static const CGSize TEST_IMAGE_SIZE = {317.f, 400.f};
     if ([keyPath isEqualToString:@"image"]) {
         OGImage *image = (OGImage *)object;
         GHTestLog(@"Image loaded: %@ : %@", image.image, NSStringFromCGSize(image.image.size));
-        GHAssertTrue(CGSizeEqualToSize(image.image.size, TEST_IMAGE_SIZE), @"Unexpected image size");
-        [self notify:kGHUnitWaitStatusSuccess];
+        if (NO == CGSizeEqualToSize(image.image.size, TEST_IMAGE_SIZE)) {
+            [self notify:kGHUnitWaitStatusFailure];
+        } else {
+            [self notify:kGHUnitWaitStatusSuccess];
+        }
         return;
     }
     GHTestLog(@"Unexpected key change...");
