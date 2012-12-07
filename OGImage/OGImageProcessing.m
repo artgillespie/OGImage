@@ -87,10 +87,28 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
 }
 
 - (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block {
+    [self scaleImage:image toSize:size method:OGImageProcessingScale_AspectFit completionBlock:block];
+}
+
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block {
     dispatch_async(_imageProcessingQueue, ^{
-        CGSize newSize = OGAspectFit(image.size, size);
-        newSize.width *= [UIScreen mainScreen].scale;
-        newSize.height *= [UIScreen mainScreen].scale;
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGSize toSize = size;
+        toSize.width *= scale;
+        toSize.height *= scale;
+        CGSize oSize = image.size;
+        oSize.width *= image.scale;
+        oSize.height *= image.scale;
+        CGFloat sRatio = image.size.width / image.size.height;
+        CGFloat dRatio = toSize.width / toSize.height;
+        CGFloat ratio = (dRatio <= sRatio) ? toSize.height / oSize.height : toSize.width / oSize.width;
+        CGSize newSize = CGSizeMake(ceilf(oSize.width * ratio), ceilf(oSize.height * ratio));
+        if (OGImageProcessingScale_AspectFit == method) {
+            newSize = OGAspectFit(image.size, size);
+            newSize.width *= scale;
+            newSize.height *= scale;
+        }
+
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
         if (noErr != err) {
@@ -117,9 +135,26 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
             return;
         }
 
+        void *origDataPtr = dBuffer.data;
+
+        if (OGImageProcessingScale_AspectFill == method) {
+            if (dBuffer.width > toSize.width) {
+                // what's the x offset?
+                int offset = dBuffer.width / 2 - toSize.width / 2;
+                dBuffer.data = dBuffer.data + (offset * 4);
+                dBuffer.width = toSize.width;
+            } else if (dBuffer.height > toSize.height) {
+                // what's the y offset?
+                int row_offset = dBuffer.height / 2 - toSize.height / 2;
+                row_offset *= dBuffer.rowBytes;
+                dBuffer.data = dBuffer.data + row_offset;
+                dBuffer.height = toSize.height;
+            }
+        }
+
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
         free(vBuffer.data);
-        free(dBuffer.data);
+        free(origDataPtr);
         dispatch_async(dispatch_get_main_queue(), ^{
             block(scaledImage, nil);
         });

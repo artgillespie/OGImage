@@ -68,7 +68,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize completionBlock:^(UIImage *image, NSError *error) {
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize method:OGImageProcessingScale_AspectFill completionBlock:^(UIImage *image, NSError *error) {
         if (nil != error) {
             self.error = error;
         } else {
