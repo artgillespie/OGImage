@@ -85,8 +85,7 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
     if ([keyPath isEqualToString:@"scaledImage"]) {
         OGScaledImage *image = (OGScaledImage *)object;
         GHTestLog(@"Image loaded: %@ : %@", image.image, NSStringFromCGSize(image.image.size));
-        CGSize expectedSize = OGAspectFit(TEST_IMAGE_SIZE, TEST_SCALE_SIZE);
-        if (NO == CGSizeEqualToSize(image.scaledImage.size, expectedSize)) {
+        if (NO == CGSizeEqualToSize(image.scaledImage.size, TEST_SCALE_SIZE)) {
             [self notify:kGHUnitWaitStatusFailure];
         } else {
             [self notify:kGHUnitWaitStatusSuccess];
