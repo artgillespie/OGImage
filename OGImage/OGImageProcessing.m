@@ -127,10 +127,14 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         toSize.height *= scale;
 
         if (OGImageProcessingScale_AspectFit == method) {
-            newSize = OGAspectFit(fromSize, toSize);
+            newSize = OGAspectFit(image.size, size);
         } else {
-            newSize = OGAspectFill(fromSize, toSize, &offset);
+            newSize = OGAspectFill(image.size, size, &offset);
         }
+        newSize.width *= scale;
+        newSize.height *= scale;
+        offset.x *= scale;
+        offset.y *= scale;
 
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
