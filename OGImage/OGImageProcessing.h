@@ -20,11 +20,6 @@ typedef NS_ENUM(NSInteger, OGImageProcessingScaleMethod) {
     OGImageProcessingScale_AspectFill
 };
 
-/*
- * Returns the aspect fit size when scaling `from` to `to`
- */
-CGSize OGAspectFit(CGSize from, CGSize to);
-
 @interface OGImageProcessing : NSObject
 
 + (OGImageProcessing *)shared;

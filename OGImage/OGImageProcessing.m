@@ -14,6 +14,11 @@ NSString * const OGImageProcessingErrorDomain = @"OGImageProcessingErrorDomain";
  * Return the size that aspect fits `from` into `to`
  */
 CGSize OGAspectFit(CGSize from, CGSize to) {
+    NSCParameterAssert(0.f != from.width);
+    NSCParameterAssert(0.f != from.height);
+    NSCParameterAssert(0.f != to.width);
+    NSCParameterAssert(0.f != to.height);
+
     if (CGSizeEqualToSize(from, to)) {
         return to;
     }
@@ -25,6 +30,25 @@ CGSize OGAspectFit(CGSize from, CGSize to) {
         return CGSizeMake(ceilf(to.width), ceilf(from.height * (to.width / from.width)));
     }
     return CGSizeZero;
+}
+
+CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
+    NSCParameterAssert(0.f != from.width);
+    NSCParameterAssert(0.f != from.height);
+    NSCParameterAssert(0.f != to.width);
+    NSCParameterAssert(0.f != to.height);
+    NSCParameterAssert(nil != offset);
+    CGFloat sRatio = from.width / from.height;
+    CGFloat dRatio = to.width / to.height;
+    CGFloat ratio = (dRatio <= sRatio) ? to.height / from.height : to.width / from.width;
+    CGSize ret = CGSizeMake(ceilf(from.width * ratio), ceilf(from.height * ratio));
+    if (ret.width > to.width) {
+        offset->x = ceilf(ret.width / 2.f - to.width / 2.f);
+    }
+    if (ret.height > to.height) {
+        offset->y = ceilf(ret.height / 2.f - to.height / 2.f);
+    }
+    return ret;
 }
 
 /*
@@ -93,20 +117,19 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
 - (void)scaleImage:(UIImage *)image toSize:(CGSize)size method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block {
     dispatch_async(_imageProcessingQueue, ^{
         CGFloat scale = [UIScreen mainScreen].scale;
+        CGSize newSize = CGSizeZero;
+        CGPoint offset = CGPointZero;
+        CGSize fromSize = image.size;
+        fromSize.width *= scale;
+        fromSize.height *= scale;
         CGSize toSize = size;
         toSize.width *= scale;
         toSize.height *= scale;
-        CGSize oSize = image.size;
-        oSize.width *= image.scale;
-        oSize.height *= image.scale;
-        CGFloat sRatio = image.size.width / image.size.height;
-        CGFloat dRatio = toSize.width / toSize.height;
-        CGFloat ratio = (dRatio <= sRatio) ? toSize.height / oSize.height : toSize.width / oSize.width;
-        CGSize newSize = CGSizeMake(ceilf(oSize.width * ratio), ceilf(oSize.height * ratio));
+
         if (OGImageProcessingScale_AspectFit == method) {
-            newSize = OGAspectFit(image.size, size);
-            newSize.width *= scale;
-            newSize.height *= scale;
+            newSize = OGAspectFit(fromSize, toSize);
+        } else {
+            newSize = OGAspectFill(fromSize, toSize, &offset);
         }
 
         vImage_Buffer vBuffer;
@@ -138,14 +161,11 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         void *origDataPtr = dBuffer.data;
 
         if (OGImageProcessingScale_AspectFill == method) {
-            if (dBuffer.width > toSize.width) {
-                // what's the x offset?
-                int offset = dBuffer.width / 2 - toSize.width / 2;
-                dBuffer.data = dBuffer.data + (offset * 4);
+            if (0.f < offset.x) {
+                dBuffer.data = dBuffer.data + ((int)offset.x * 4);
                 dBuffer.width = toSize.width;
-            } else if (dBuffer.height > toSize.height) {
-                // what's the y offset?
-                int row_offset = dBuffer.height / 2 - toSize.height / 2;
+            } else if (0.f < offset.y) {
+                int row_offset = (int)offset.y;
                 row_offset *= dBuffer.rowBytes;
                 dBuffer.data = dBuffer.data + row_offset;
                 dBuffer.height = toSize.height;
