@@ -6,6 +6,7 @@
 //
 
 #import "OGCachedImage.h"
+#import "OGImageProcessing.h"
 
 @interface OGScaledImage : OGCachedImage
 
@@ -20,9 +21,20 @@
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ * Scale the image at `url` using the specified method. (see `OGImageProcessingScaleMethod`
+ * for information on scaling methods.)
+ */
+- (id)initWithURL:(NSURL *)url size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage;
+
+/**
  * Scale the given image to `size` and cache it at `key`
  */
 - (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key;
+
+/**
+ * Scale the given image to `size` using `method` and cache it at `key`
+ */
+- (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
 
 /**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.

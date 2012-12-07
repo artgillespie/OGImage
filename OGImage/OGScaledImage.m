@@ -7,7 +7,6 @@
 
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
-#import "OGImageProcessing.h"
 
 NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     return [NSString stringWithFormat:@"%@-%f-%f", origKey, size.width, size.height];
@@ -16,6 +15,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 @implementation OGScaledImage {
     CGSize _scaledSize;
     NSString *_scaledKey;
+    OGImageProcessingScaleMethod _method;
 }
 
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key {
@@ -23,6 +23,10 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (id)initWithURL:(NSURL *)url size:(CGSize)size key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
+    return [self initWithURL:url size:size method:OGImageProcessingScale_AspectFit key:key placeholderImage:placeholderImage];
+}
+
+- (id)initWithURL:(NSURL *)url size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
     NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
@@ -31,6 +35,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
         } else {
             self.key = key;
         }
+        _method = method;
         self.url = url;
         self.scaledImage = placeholderImage;
         _scaledSize = size;
@@ -41,9 +46,14 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key {
+    return [self initWithImage:image size:size method:OGImageProcessingScale_AspectFit key:key];
+}
+
+- (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
     NSParameterAssert(nil != key);
     self = [super init];
     if (nil != self) {
+        _method = method;
         _scaledSize = size;
         _scaledKey = key;
         self.image = image;
@@ -68,7 +78,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize method:OGImageProcessingScale_AspectFill completionBlock:^(UIImage *image, NSError *error) {
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize method:_method completionBlock:^(UIImage *image, NSError *error) {
         if (nil != error) {
             self.error = error;
         } else {
