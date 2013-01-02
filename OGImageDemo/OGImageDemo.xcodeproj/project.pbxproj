@@ -14,6 +14,9 @@
 		C803063116652E8200073395 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C803062F16652E8200073395 /* placeholder@2x.png */; };
 		C80306341665421300073395 /* OGCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C80306331665421300073395 /* OGCachedImage.m */; };
 		C80306351665421300073395 /* OGCachedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C80306331665421300073395 /* OGCachedImage.m */; };
+		C808967C1694DFC0009BE21D /* OGImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C808967B1694DFC0009BE21D /* OGImageRequest.m */; };
+		C808967D1694DFC0009BE21D /* OGImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C808967B1694DFC0009BE21D /* OGImageRequest.m */; };
+		C80896811694ED01009BE21D /* OGImageTestsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */; };
 		C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C84972B0166564D000DB15D1 /* OGImageCache.m */; };
 		C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
 		C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
@@ -60,6 +63,10 @@
 		C803062F16652E8200073395 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
 		C80306321665421300073395 /* OGCachedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGCachedImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C80306331665421300073395 /* OGCachedImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGCachedImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		C808967A1694DFC0009BE21D /* OGImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageRequest.h; sourceTree = "<group>"; };
+		C808967B1694DFC0009BE21D /* OGImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageRequest.m; sourceTree = "<group>"; };
+		C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageTestsAppDelegate.h; sourceTree = "<group>"; };
+		C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageTestsAppDelegate.m; sourceTree = "<group>"; };
 		C84972AF166564D000DB15D1 /* OGImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C84972B0166564D000DB15D1 /* OGImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageProcessing.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -143,6 +150,8 @@
 				C871144516640E510015A743 /* Supporting Files */,
 				C871146016640F7D0015A743 /* OGImageAsyncTests.m */,
 				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
+				C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */,
+				C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */,
 			);
 			path = OGImageTests;
 			sourceTree = "<group>";
@@ -239,6 +248,8 @@
 				C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */,
 				C8975AE8166E09BB00C2D53A /* OGScaledImage.h */,
 				C8975AE9166E09BB00C2D53A /* OGScaledImage.m */,
+				C808967A1694DFC0009BE21D /* OGImageRequest.h */,
+				C808967B1694DFC0009BE21D /* OGImageRequest.m */,
 			);
 			name = OGImage;
 			path = ../../OGImage;
@@ -370,6 +381,8 @@
 				C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */,
 				C86E0BF216680030006063B6 /* OGImageCache.m in Sources */,
 				C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */,
+				C808967D1694DFC0009BE21D /* OGImageRequest.m in Sources */,
+				C80896811694ED01009BE21D /* OGImageTestsAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +400,7 @@
 				C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */,
 				C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */,
 				C8975AEA166E09BB00C2D53A /* OGScaledImage.m in Sources */,
+				C808967C1694DFC0009BE21D /* OGImageRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

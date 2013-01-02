@@ -55,6 +55,11 @@
 @property (nonatomic, strong) NSError *error;
 
 /**
+ * Observe this property to be notified of image download progress.
+ */
+@property (nonatomic, assign) float progress;
+
+/**
  * The image's url (provided to init methods)
  */
 @property (nonatomic, strong) NSURL *url;

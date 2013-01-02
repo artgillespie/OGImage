@@ -6,34 +6,16 @@
 //
 
 #import "OGImageLoader.h"
+#import "OGImageRequest.h"
+#import "DDLog.h"
+
+static const int ddLogLevel = LOG_LEVEL_INFO;
 
 #pragma mark - Constants
 
 const NSInteger OGImageLoadingError = -25555;
 
 static OGImageLoader * OGImageLoaderInstance;
-
-#pragma mark -
-
-@interface _OGImageLoaderInfo : NSObject
-
-+ (_OGImageLoaderInfo *)infoWithURL:(NSURL *)url block:(OGImageLoaderCompletionBlock)block;
-
-@property (nonatomic, strong) NSURL *url;
-@property (nonatomic, copy) OGImageLoaderCompletionBlock block;
-
-@end
-
-@implementation _OGImageLoaderInfo
-
-+ (_OGImageLoaderInfo *)infoWithURL:(NSURL *)url block:(OGImageLoaderCompletionBlock)block {
-    _OGImageLoaderInfo *info = [[_OGImageLoaderInfo alloc] init];
-    info.url = url;
-    info.block = block;
-    return info;
-}
-
-@end
 
 #pragma mark -
 
@@ -92,13 +74,13 @@ static OGImageLoader * OGImageLoaderInstance;
      * The former is a data structure, the latter is a GCD queue, used here in
      * place of a lock or mutex.)
      *
-     * `_OGImageLoaderInfo` instances are pushed onto the LIFO queue (stack) on the
+     * `OGImageRequest` instances are pushed onto the LIFO queue (stack) on the
      * serialization stack. It's not important when this happens, so we `dispatch_async`
      * it.
      *
      * Periodically, a timer (see the dispatch_source `_timer` ivar) will call
      * `checkForWork` (also on `_requestsSerializationQueue`) and fire off a network
-     * request for the most recently added `_OGImageLoaderInfo` in `_requests`, assuming
+     * request for the most recently added `OGImageRequest` in `_requests`, assuming
      * the number of in-flight requests is not greater or equal to `self.maxConcurrentNetworkRequests`
      *
      * The idea here is that if a bunch of image load requests come in in a short
@@ -109,7 +91,12 @@ static OGImageLoader * OGImageLoaderInstance;
      */
     dispatch_async(_requestsSerializationQueue, ^{
         // serialize access to the request LIFO 'queue'
-        _OGImageLoaderInfo *info = [_OGImageLoaderInfo infoWithURL:imageURL block:completionBlock];
+        OGImageRequest *info = [[OGImageRequest alloc] initWithURL:imageURL completionBlock:^(UIImage *image, NSError *error, double timeElapsed){
+            if (_inFlightRequestCount > 0) {
+                _inFlightRequestCount--;
+            }
+            completionBlock(image, error, timeElapsed);
+        } queue:_imageCompletionQueue];
         [_requests addObject:info];
     });
 }
@@ -118,49 +105,11 @@ static OGImageLoader * OGImageLoaderInstance;
 
 - (void)checkForWork {
     if (self.maxConcurrentNetworkRequests > _inFlightRequestCount && 0 < [_requests count]) {
-        _OGImageLoaderInfo *info = [_requests lastObject];
+        OGImageRequest *request = [_requests lastObject];
         [_requests removeLastObject];
-        [self performRequestWithInfo:info];
+        [request retrieveImage];
+        _inFlightRequestCount++;
     }
-}
-
-- (void)performRequestWithInfo:(_OGImageLoaderInfo *)info {
-
-    // TODO: [alg] Should we have separate handling for file URLs?
-
-    NSURLRequest *request = [NSURLRequest requestWithURL:info.url];
-    NSDate *startTime = [NSDate date];
-    [NSURLConnection sendAsynchronousRequest:request queue:_imageCompletionQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        NSTimeInterval elapsed = fabs([startTime timeIntervalSinceNow]);
-        NSError *tmpError = nil;
-        UIImage *tmpImage = nil;
-        if (nil != error) {
-            tmpError = error;
-        } else if (YES == [response isKindOfClass:[NSHTTPURLResponse class]]) {
-            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-            if (200 == httpResponse.statusCode) {
-                if (nil != data) {
-                    tmpImage = [UIImage imageWithData:data];
-                    if (nil == tmpImage) {
-                        // data isn't nil, but we couldn't create an image out of it...
-                        tmpError = [NSError errorWithDomain:NSCocoaErrorDomain code:OGImageLoadingError userInfo:@{NSLocalizedDescriptionKey : @"OGImage: Received data from url, but couldn't create UIImage instance"}];
-                    }
-                }
-            } else {
-                // if we get here, we have an http status code other than 200
-                tmpError = [NSError errorWithDomain:NSCocoaErrorDomain code:OGImageLoadingError userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"OGImage: Received http status code: %d", httpResponse.statusCode]}];
-            }
-        } else if (nil == data) {
-            // in this case, it wasn't an HTTP request and we don't have any data (but there was no error)
-            tmpError = [NSError errorWithDomain:NSCocoaErrorDomain code:OGImageLoadingError userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"OGImage: no image data received."]}];
-        }
-        NSAssert((nil == tmpImage && nil != tmpError) || (nil != tmpImage && nil == tmpError), @"One of tmpImage or tmpError should be non-nil");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            info.block(tmpImage, tmpError, elapsed);
-        });
-        _inFlightRequestCount--;
-    }];
-    _inFlightRequestCount++;
 }
 
 #pragma mark - Properties
