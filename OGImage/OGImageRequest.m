@@ -12,7 +12,7 @@
 static const int ddLogLevel = LOG_LEVEL_INFO;
 
 @implementation OGImageRequest {
-    NSTimeInterval _timestamp;
+    NSDate *_startTime;
     OGImageLoaderCompletionBlock _completionBlock;
     NSOperationQueue *_delegateQueue;
     NSMutableData *_data;
@@ -34,6 +34,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     NSURLRequest *request = [NSURLRequest requestWithURL:self.url];
     NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
     [conn setDelegateQueue:_delegateQueue];
+    _startTime = [[NSDate alloc] init];
     [conn start];
 }
 
@@ -85,7 +86,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
     NSAssert((nil == tmpImage && nil != tmpError) || (nil != tmpImage && nil == tmpError), @"One of tmpImage or tmpError should be non-nil");
     dispatch_async(dispatch_get_main_queue(), ^{
-        _completionBlock(tmpImage, tmpError, _timestamp);
+        _completionBlock(tmpImage, tmpError, -[_startTime timeIntervalSinceNow]);
     });
 }
 
