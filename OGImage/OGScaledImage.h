@@ -27,6 +27,11 @@
 - (id)initWithURL:(NSURL *)url size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ *
+ */
+- (id)initWithURL:(NSURL *)url size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage;
+
+/**
  * Scale the given image to `size` and cache it at `key`
  */
 - (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key;
@@ -35,6 +40,11 @@
  * Scale the given image to `size` using `method` and cache it at `key`
  */
 - (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
+
+/**
+ * Scale the given image to `size` with a rounded rect mask specified by `cornerRadius` using `method` and cache it at `key`
+ */
+- (id)initWithImage:(UIImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
 
 /**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.

@@ -13,6 +13,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 @implementation OGScaledImage {
+    CGFloat _cornerRadius;
     CGSize _scaledSize;
     NSString *_scaledKey;
     OGImageProcessingScaleMethod _method;
@@ -27,6 +28,10 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (id)initWithURL:(NSURL *)url size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
+    return [self initWithURL:url size:size cornerRadius:0.f method:method key:key placeholderImage:placeholderImage];
+}
+
+- (id)initWithURL:(NSURL *)url size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key placeholderImage:(UIImage *)placeholderImage {
     NSParameterAssert(nil != url);
     self = [super init];
     if (nil != self) {
@@ -40,6 +45,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
         self.scaledImage = placeholderImage;
         _scaledSize = size;
         _scaledKey = OGKeyWithSize(self.key, _scaledSize);
+        _cornerRadius = cornerRadius;
         [self loadImageFromURL];
     }
     return self;
@@ -50,12 +56,17 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
+    return [self initWithImage:image size:size cornerRadius:0.f method:method key:key];
+}
+
+- (id)initWithImage:(UIImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
     NSParameterAssert(nil != key);
     self = [super init];
     if (nil != self) {
         _method = method;
         _scaledSize = size;
         _scaledKey = key;
+        _cornerRadius = cornerRadius;
         self.image = image;
         [self doScaleImage:self.image];
     }
@@ -78,7 +89,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:0.f method:_method completionBlock:^(UIImage *image, NSError *error) {
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:_cornerRadius method:_method completionBlock:^(UIImage *image, NSError *error) {
         if (nil != error) {
             self.error = error;
         } else {
