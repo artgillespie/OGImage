@@ -118,6 +118,5 @@ are no external dependencies for the library itself, only for the tests
 ## TODO:
 
 * Sexier demo app, maybe something `UICollectionView`-based.
-* More image processing operations, e.g., adding rounded corners, b&w, etc.
 * More test coverage.
 
