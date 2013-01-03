@@ -78,7 +78,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize method:_method completionBlock:^(UIImage *image, NSError *error) {
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:0.f method:_method completionBlock:^(UIImage *image, NSError *error) {
         if (nil != error) {
             self.error = error;
         } else {

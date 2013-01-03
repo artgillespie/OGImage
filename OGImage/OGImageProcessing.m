@@ -110,11 +110,11 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     return self;
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block {
-    [self scaleImage:image toSize:size method:OGImageProcessingScale_AspectFit completionBlock:block];
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius completionBlock:(OGImageProcessingBlock)block {
+    [self scaleImage:image toSize:size cornerRadius:cornerRadius method:OGImageProcessingScale_AspectFit completionBlock:block];
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block {
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block {
     dispatch_async(_imageProcessingQueue, ^{
         CGFloat scale = [UIScreen mainScreen].scale;
         CGSize newSize = CGSizeZero;
@@ -179,10 +179,71 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
         free(vBuffer.data);
         free(origDataPtr);
+        if (0.f < cornerRadius) {
+            scaledImage = [self applyCornerRadius:cornerRadius toImage:scaledImage];
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             block(scaledImage, nil);
         });
     });
+}
+
+- (UIImage *)applyCornerRadius:(CGFloat)cornerRadius toImage:(UIImage *)origImage {
+    CGSize _size = origImage.size;
+    float _cornerRadius = cornerRadius;
+    // If we're on a retina display, make sure everything is @2x
+    if ([[UIScreen mainScreen] scale] > 1.f) {
+        _size.width *= origImage.scale;
+        _size.height *= origImage.scale;
+        _cornerRadius *= origImage.scale;
+    }
+
+    // Lots of weird math
+    uint32_t bitsPerComponent = 8;
+    uint32_t numberOfComponents = 4;
+    uint32_t dataSize = _size.height * _size.width * (numberOfComponents * bitsPerComponent) / 8;
+    uint8_t *data = (uint8_t *)malloc(dataSize);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    bzero(data, dataSize);
+
+    // REFACTOR: [alg] Is this okay? Before we determined whether we'd save as JPEG or PNG
+    // and set the alpha info appropriately, but this processing code shouldn't
+    // know how we're saving it.
+    CGImageAlphaInfo alphaInfo = kCGImageAlphaPremultipliedLast;
+    CGContextRef context = CGBitmapContextCreate(data, _size.width, _size.height, bitsPerComponent,
+                                                 _size.width * (bitsPerComponent * numberOfComponents) / 8, colorSpace,
+                                                 alphaInfo);
+
+    // Let's round the corners, if desired
+    if (_cornerRadius != 0.0) {
+        CGContextSaveGState(context);
+        CGContextMoveToPoint(context, 0.f, _cornerRadius);
+        CGContextAddArc(context, _cornerRadius, _cornerRadius, _cornerRadius, M_PI, 1.5 * M_PI, 0);
+        CGContextAddLineToPoint(context, _size.width - _cornerRadius, 0.f);
+        CGContextAddArc(context, _size.width - _cornerRadius, _cornerRadius, _cornerRadius, 1.5 * M_PI, 0.f, 0);
+        CGContextAddLineToPoint(context, _size.width, _size.height - _cornerRadius);
+        CGContextAddArc(context, _size.width - _cornerRadius, _size.height - _cornerRadius, _cornerRadius, 0.f, 0.5 * M_PI, 0);
+        CGContextAddLineToPoint(context, _cornerRadius, _size.height);
+        CGContextAddArc(context, _cornerRadius, _size.height - _cornerRadius, _cornerRadius, 0.5 * M_PI, M_PI, 0);
+        CGContextAddLineToPoint(context, 0.f, _cornerRadius);
+        CGContextSaveGState(context);
+        CGContextClip(context);
+    }
+
+    // Create a fresh image from the context
+    CGContextDrawImage(context, CGRectMake(0.f, 0.f, _size.width, _size.height), [origImage CGImage]);
+    if (_cornerRadius != 0.0)
+        CGContextRestoreGState(context);
+    CGImageRef image = CGBitmapContextCreateImage(context);
+    UIImage *ret = [UIImage imageWithCGImage:image scale:origImage.scale orientation:UIImageOrientationUp];
+    if (image)
+        CFRelease(image);
+
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    free(data);
+    context = NULL;
+    return ret;
 }
 
 @end

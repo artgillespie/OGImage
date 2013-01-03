@@ -27,8 +27,8 @@ typedef NS_ENUM(NSInteger, OGImageProcessingScaleMethod) {
 /**
  * Scale `image` to `size` using aspect fit. Note `size` is specified in points.
  */
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size completionBlock:(OGImageProcessingBlock)block;
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius completionBlock:(OGImageProcessingBlock)block;
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block;
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block;
 
 @end
