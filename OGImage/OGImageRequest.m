@@ -7,9 +7,6 @@
 //
 
 #import "OGImageRequest.h"
-#import "DDLog.h"
-
-static const int ddLogLevel = LOG_LEVEL_INFO;
 
 @implementation OGImageRequest {
     NSDate *_startTime;
@@ -41,7 +38,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    DDLogInfo(@"didFailWithError:%@", error);
     self.error = error;
     dispatch_async(dispatch_get_main_queue(), ^{
         _completionBlock(nil, self.error, 0.);
@@ -52,20 +48,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     _httpResponse = (NSHTTPURLResponse *)response;
-    DDLogInfo(@"didReceiveResponse: %@", _httpResponse);
     _contentLength = [_httpResponse.allHeaderFields[@"Content-Length"] intValue];
-    DDLogInfo(@"contentSize: %ld", _contentLength);
     _data = [NSMutableData dataWithCapacity:_contentLength];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     [_data appendData:data];
     self.progress = (float)_data.length / (float)_contentLength;
-    DDLogInfo(@"progress: %f", self.progress);
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    DDLogInfo(@"connectionDidFinishLoading : %ud : %ld", _data.length, _contentLength);
     [self prepareImageAndNotify];
 }
 
