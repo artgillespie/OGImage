@@ -7,6 +7,7 @@
 
 #import "OGImageLoader.h"
 #import "OGImageRequest.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #pragma mark - Constants
 
@@ -108,7 +109,29 @@ static OGImageLoader * OGImageLoaderInstance;
         return;
     } else if ([[imageURL scheme] isEqualToString:@"assets-library"]) {
         dispatch_async(_fileWorkQueue, ^{
+            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+            [library assetForURL:imageURL resultBlock:^(ALAsset *asset) {
+                // TODO: [alg] be smart about orientation and scale
+                UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage];
+                NSError *error = nil;
+                if (nil == image) {
+                    error = [NSError errorWithDomain:OGImageLoadingErrorDomain
+                                                code:OGImageLoadingError
+                                            userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Couldn't load image from asset URL:%@", @""), imageURL]}];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock(image, error, 0.);
+                });
+            } failureBlock:^(NSError *origError) {
+                NSError *error = [NSError errorWithDomain:OGImageLoadingErrorDomain
+                                                     code:OGImageLoadingError
+                                                 userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Couldn't load image from asset URL:%@", @""), imageURL],
+                                                            NSUnderlyingErrorKey : origError}];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock(nil, error, 0.);
+                });
 
+            }];
         });
         return;
     }
