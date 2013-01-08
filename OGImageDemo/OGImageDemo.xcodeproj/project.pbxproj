@@ -17,6 +17,10 @@
 		C808967C1694DFC0009BE21D /* OGImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C808967B1694DFC0009BE21D /* OGImageRequest.m */; };
 		C808967D1694DFC0009BE21D /* OGImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C808967B1694DFC0009BE21D /* OGImageRequest.m */; };
 		C80896811694ED01009BE21D /* OGImageTestsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */; };
+		C8392EAD169CA1E100F0907A /* Origami.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C8392EAC169CA1E100F0907A /* Origami.jpg */; };
+		C8392EB0169CA21700F0907A /* OGImageFileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C8392EAF169CA21700F0907A /* OGImageFileTests.m */; };
+		C8392EB2169CB38200F0907A /* OGImageAssetsLibraryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C8392EB1169CB38200F0907A /* OGImageAssetsLibraryTests.m */; };
+		C8392EB4169CB44800F0907A /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8392EB3169CB44800F0907A /* AssetsLibrary.framework */; };
 		C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C84972B0166564D000DB15D1 /* OGImageCache.m */; };
 		C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
 		C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
@@ -67,6 +71,10 @@
 		C808967B1694DFC0009BE21D /* OGImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageRequest.m; sourceTree = "<group>"; };
 		C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageTestsAppDelegate.h; sourceTree = "<group>"; };
 		C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageTestsAppDelegate.m; sourceTree = "<group>"; };
+		C8392EAC169CA1E100F0907A /* Origami.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Origami.jpg; sourceTree = "<group>"; };
+		C8392EAF169CA21700F0907A /* OGImageFileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageFileTests.m; sourceTree = "<group>"; };
+		C8392EB1169CB38200F0907A /* OGImageAssetsLibraryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageAssetsLibraryTests.m; sourceTree = "<group>"; };
+		C8392EB3169CB44800F0907A /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		C84972AF166564D000DB15D1 /* OGImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C84972B0166564D000DB15D1 /* OGImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageProcessing.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -111,11 +119,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C871144116640E510015A743 /* UIKit.framework in Frameworks */,
-				C871144216640E510015A743 /* Foundation.framework in Frameworks */,
-				C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */,
-				C871145E16640F2E0015A743 /* libPods.a in Frameworks */,
 				C8FADEDB166D5DCA00829179 /* Accelerate.framework in Frameworks */,
+				C8392EB4169CB44800F0907A /* AssetsLibrary.framework in Frameworks */,
+				C871144316640E510015A743 /* CoreGraphics.framework in Frameworks */,
+				C871144216640E510015A743 /* Foundation.framework in Frameworks */,
+				C871145E16640F2E0015A743 /* libPods.a in Frameworks */,
+				C871144116640E510015A743 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,11 +153,22 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		C8392EAA169CA04000F0907A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C8392EAC169CA1E100F0907A /* Origami.jpg */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		C871144416640E510015A743 /* OGImageTests */ = {
 			isa = PBXGroup;
 			children = (
+				C8392EAA169CA04000F0907A /* Resources */,
 				C871144516640E510015A743 /* Supporting Files */,
+				C8392EB1169CB38200F0907A /* OGImageAssetsLibraryTests.m */,
 				C871146016640F7D0015A743 /* OGImageAsyncTests.m */,
+				C8392EAF169CA21700F0907A /* OGImageFileTests.m */,
 				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
 				C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */,
 				C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */,
@@ -194,10 +214,11 @@
 			isa = PBXGroup;
 			children = (
 				C8FADED8166D5DB100829179 /* Accelerate.framework */,
-				C88272181663DBDF007D409F /* UIKit.framework */,
-				C882721A1663DBDF007D409F /* Foundation.framework */,
+				C8392EB3169CB44800F0907A /* AssetsLibrary.framework */,
 				C882721C1663DBDF007D409F /* CoreGraphics.framework */,
+				C882721A1663DBDF007D409F /* Foundation.framework */,
 				467479B3192A45B8984313B7 /* libPods.a */,
+				C88272181663DBDF007D409F /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -330,6 +351,7 @@
 				C871145116640E510015A743 /* Default.png in Resources */,
 				C871145316640E510015A743 /* Default@2x.png in Resources */,
 				C871145516640E510015A743 /* Default-568h@2x.png in Resources */,
+				C8392EAD169CA1E100F0907A /* Origami.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +405,8 @@
 				C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */,
 				C808967D1694DFC0009BE21D /* OGImageRequest.m in Sources */,
 				C80896811694ED01009BE21D /* OGImageTestsAppDelegate.m in Sources */,
+				C8392EB0169CA21700F0907A /* OGImageFileTests.m in Sources */,
+				C8392EB2169CB38200F0907A /* OGImageAssetsLibraryTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
