@@ -86,6 +86,13 @@ static OGImageLoader * OGImageLoaderInstance;
      * available network request.
      *
      */
+    // if this is a file:// or assets-library:// URL, don't bother with a OGImageRequest
+    if ([[imageURL scheme] isEqualToString:@"file"] || [[imageURL scheme] isEqualToString:@"assets-library"]) {
+        NSLog(@"This is a file URL: %@", imageURL);
+        NSError *error = [NSError errorWithDomain:@"OGImageErrorDomain" code:-47 userInfo:nil];
+        completionBlock(nil, error, 0.);
+        return;
+    }
     dispatch_async(_requestsSerializationQueue, ^{
         // serialize access to the request LIFO 'queue'
         OGImageRequest *info = [[OGImageRequest alloc] initWithURL:imageURL completionBlock:^(UIImage *image, NSError *error, double timeElapsed){
