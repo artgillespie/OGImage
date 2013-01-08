@@ -12,6 +12,8 @@
 
 const NSInteger OGImageLoadingError = -25555;
 
+NSString * const OGImageLoadingErrorDomain = @"OGImageLoadingErrorDomain";
+
 static OGImageLoader * OGImageLoaderInstance;
 
 #pragma mark -
@@ -27,6 +29,8 @@ static OGImageLoader * OGImageLoaderInstance;
     NSInteger _inFlightRequestCount;
     // We use this timer to periodically check _requestSerializationQueue for requests to fire off
     dispatch_source_t _timer;
+    // A queue solely for file-loading work (e.g., when we get a `file:` or `assets-library:` URL)
+    dispatch_queue_t _fileWorkQueue;
 }
 
 + (OGImageLoader *)shared {
@@ -48,6 +52,7 @@ static OGImageLoader * OGImageLoaderInstance;
         // make our network completion calls serial so there's no thrashing.
         _imageCompletionQueue.maxConcurrentOperationCount = 1;
         _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _requestsSerializationQueue);
+        _fileWorkQueue = dispatch_queue_create("com.origamilabs.fileWorkQueue", DISPATCH_QUEUE_CONCURRENT);
         dispatch_source_set_event_handler(_timer, ^{
             [self checkForWork];
         });
@@ -72,7 +77,7 @@ static OGImageLoader * OGImageLoaderInstance;
      * place of a lock or mutex.)
      *
      * `OGImageRequest` instances are pushed onto the LIFO queue (stack) on the
-     * serialization stack. It's not important when this happens, so we `dispatch_async`
+     * serialization queue. It's not important when this happens, so we `dispatch_async`
      * it.
      *
      * Periodically, a timer (see the dispatch_source `_timer` ivar) will call
@@ -87,10 +92,24 @@ static OGImageLoader * OGImageLoaderInstance;
      *
      */
     // if this is a file:// or assets-library:// URL, don't bother with a OGImageRequest
-    if ([[imageURL scheme] isEqualToString:@"file"] || [[imageURL scheme] isEqualToString:@"assets-library"]) {
-        NSLog(@"This is a file URL: %@", imageURL);
-        NSError *error = [NSError errorWithDomain:@"OGImageErrorDomain" code:-47 userInfo:nil];
-        completionBlock(nil, error, 0.);
+    if ([[imageURL scheme] isEqualToString:@"file"]) {
+        dispatch_async(_fileWorkQueue, ^{
+            UIImage *image = [UIImage imageWithContentsOfFile:[imageURL path]];
+            NSError *error = nil;
+            if (nil == image) {
+                error = [NSError errorWithDomain:OGImageLoadingErrorDomain
+                                            code:OGImageLoadingError
+                                        userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"Couldn't load image from file URL:%@", @""), imageURL]}];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(image, error, 0.);
+            });
+        });
+        return;
+    } else if ([[imageURL scheme] isEqualToString:@"assets-library"]) {
+        dispatch_async(_fileWorkQueue, ^{
+
+        });
         return;
     }
     dispatch_async(_requestsSerializationQueue, ^{

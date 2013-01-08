@@ -9,6 +9,8 @@
 
 extern const NSInteger OGImageLoadingError;
 
+extern NSString * const OGImageLoadingErrorDomain;
+
 typedef NS_ENUM(NSInteger, OGImageLoaderPriority) {
     OGImageLoaderPriority_Low,
     OGImageLoaderPriority_Default,

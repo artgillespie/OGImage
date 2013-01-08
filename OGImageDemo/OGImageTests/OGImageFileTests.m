@@ -10,6 +10,8 @@
 #import "OGCachedImage.h"
 #import "OGImageCache.h"
 
+static CGSize const OGExpectedSize = {1024.f, 768.f};
+
 @interface OGImageFileTests : GHAsyncTestCase
 
 @end
@@ -26,10 +28,11 @@
         if (nil == image) {
             [self notify:kGHUnitWaitStatusFailure];
         } else {
+            GHAssertTrue(CGSizeEqualToSize(OGExpectedSize, image.image.size), @"Expected image of size %@, got %@", NSStringFromCGSize(OGExpectedSize), NSStringFromCGSize(image.image.size));
             [self notify:kGHUnitWaitStatusSuccess];
         }
     } else if ([keyPath isEqualToString:@"error"]) {
-        [self notify:kGHUnitWaitStatusFailuåre];
+        [self notify:kGHUnitWaitStatusFailure];
     }
 }
 
