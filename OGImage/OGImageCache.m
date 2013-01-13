@@ -134,4 +134,28 @@ NSString *OGImageCachePath() {
     }
 }
 
+- (void)purgeCacheForKey:(NSString *)key andWait:(BOOL)wait {
+    NSParameterAssert(nil != key);
+
+    [self purgeMemoryCacheForKey:key andWait:wait];
+
+    NSString *cachedFilePath = [[self class] filePathForKey:key];
+    
+    void (^purgeFileBlock)(void) =^{
+        [[NSFileManager defaultManager] removeItemAtPath:cachedFilePath error:nil];
+    };
+    
+    if (YES == wait) {
+        dispatch_sync(_cacheFileTasksQueue, purgeFileBlock);
+    } else {
+        dispatch_async(_cacheFileTasksQueue, purgeFileBlock);
+    }
+}
+
+- (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait {
+    NSParameterAssert(nil != key);
+
+    [_memoryCache removeObjectForKey:key];
+}
+
 @end
