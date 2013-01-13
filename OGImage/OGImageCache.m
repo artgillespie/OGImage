@@ -136,9 +136,9 @@ NSString *OGImageCachePath() {
 
 - (void)purgeCacheForKey:(NSString *)key andWait:(BOOL)wait {
     NSParameterAssert(nil != key);
-    
-    [_memoryCache removeObjectForKey:key];
-    
+
+    [self purgeMemoryCacheForKey:key andWait:wait];
+
     NSString *cachedFilePath = [[self class] filePathForKey:key];
     
     void (^purgeFileBlock)(void) =^{
@@ -150,6 +150,12 @@ NSString *OGImageCachePath() {
     } else {
         dispatch_async(_cacheFileTasksQueue, purgeFileBlock);
     }
+}
+
+- (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait {
+    NSParameterAssert(nil != key);
+
+    [_memoryCache removeObjectForKey:key];
 }
 
 @end

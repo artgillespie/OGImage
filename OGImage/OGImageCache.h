@@ -53,4 +53,11 @@ typedef NS_ENUM(NSInteger, OGImageFileFormat) {
  */
 - (void)purgeCacheForKey:(NSString *)key andWait:(BOOL)wait;
 
+/**
+ * Remove a single cached image from in-memory caches. If `wait` is `YES`
+ * this will block the calling thread until the purge is complete.
+ */
+- (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait;
+
+
 @end
