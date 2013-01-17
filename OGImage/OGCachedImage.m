@@ -19,7 +19,7 @@
     self = [super init];
     if (nil != self) {
         if (nil == key) {
-            _key = [OGImageCache MD5:[url absoluteString]];
+            _key = [url absoluteString];
         } else {
             _key = key;
         }

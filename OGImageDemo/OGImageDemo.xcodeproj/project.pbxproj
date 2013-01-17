@@ -22,6 +22,7 @@
 		C8392EB2169CB38200F0907A /* OGImageAssetsLibraryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C8392EB1169CB38200F0907A /* OGImageAssetsLibraryTests.m */; };
 		C8392EB4169CB44800F0907A /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8392EB3169CB44800F0907A /* AssetsLibrary.framework */; };
 		C84972B1166564D000DB15D1 /* OGImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C84972B0166564D000DB15D1 /* OGImageCache.m */; };
+		C862B470169CE88F00C674CF /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8392EB3169CB44800F0907A /* AssetsLibrary.framework */; };
 		C86E0BEC1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
 		C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */; };
 		C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */; };
@@ -132,10 +133,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C88272191663DBDF007D409F /* UIKit.framework in Frameworks */,
-				C882721B1663DBDF007D409F /* Foundation.framework in Frameworks */,
-				C882721D1663DBDF007D409F /* CoreGraphics.framework in Frameworks */,
 				C8FADED9166D5DB100829179 /* Accelerate.framework in Frameworks */,
+				C862B470169CE88F00C674CF /* AssetsLibrary.framework in Frameworks */,
+				C882721D1663DBDF007D409F /* CoreGraphics.framework in Frameworks */,
+				C882721B1663DBDF007D409F /* Foundation.framework in Frameworks */,
+				C88272191663DBDF007D409F /* UIKit.framework in Frameworks */,
 				416DC6759A8046D6AED27FFE /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

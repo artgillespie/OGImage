@@ -112,7 +112,8 @@ static OGImageLoader * OGImageLoaderInstance;
             ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
             [library assetForURL:imageURL resultBlock:^(ALAsset *asset) {
                 // TODO: [alg] be smart about orientation and scale
-                UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage];
+                NSNumber *orientation = [asset valueForProperty:ALAssetPropertyOrientation];
+                UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:1.f orientation:[orientation intValue]];
                 NSError *error = nil;
                 if (nil == image) {
                     error = [NSError errorWithDomain:OGImageLoadingErrorDomain
