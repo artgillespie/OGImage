@@ -36,7 +36,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     self = [super init];
     if (nil != self) {
         if (nil == key) {
-            self.key = [OGImageCache MD5:[url absoluteString]];
+            self.key = [url absoluteString];
         } else {
             self.key = key;
         }
