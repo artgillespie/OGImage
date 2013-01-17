@@ -120,11 +120,19 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         CGSize newSize = CGSizeZero;
         CGPoint offset = CGPointZero;
         CGSize fromSize = image.size;
-        fromSize.width *= scale;
-        fromSize.height *= scale;
+        fromSize.width *= image.scale;
+        fromSize.height *= image.scale;
         CGSize toSize = size;
         toSize.width *= scale;
         toSize.height *= scale;
+
+        // if the two sizes are the same, I mean, come on
+        if (CGSizeEqualToSize(fromSize, toSize)) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(image, nil);
+            });
+            return;
+        }
 
         if (OGImageProcessingScale_AspectFit == method) {
             newSize = OGAspectFit(image.size, size);
