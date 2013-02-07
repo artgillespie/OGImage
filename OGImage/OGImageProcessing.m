@@ -38,10 +38,12 @@ CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
     NSCParameterAssert(0.f != to.width);
     NSCParameterAssert(0.f != to.height);
     NSCParameterAssert(nil != offset);
+    offset->x = 0.f;
+    offset->y = 0.f;
     CGFloat sRatio = from.width / from.height;
     CGFloat dRatio = to.width / to.height;
     CGFloat ratio = (dRatio <= sRatio) ? to.height / from.height : to.width / from.width;
-    CGSize ret = CGSizeMake(ceilf(from.width * ratio), ceilf(from.height * ratio));
+    CGSize ret = CGSizeMake(roundf(from.width * ratio), roundf(from.height * ratio));
     if (ret.width > to.width) {
         offset->x = ceilf(ret.width / 2.f - to.width / 2.f);
     }
@@ -134,6 +136,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
             return;
         }
 
+        NSParameterAssert(toSize.width < fromSize.width && toSize.height < fromSize.height);
         if (OGImageProcessingScale_AspectFit == method) {
             newSize = OGAspectFit(image.size, size);
         } else {
@@ -143,6 +146,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         newSize.height *= scale;
         offset.x *= scale;
         offset.y *= scale;
+        NSParameterAssert(newSize.width < fromSize.width && newSize.height < fromSize.height);
 
         vImage_Buffer vBuffer;
         OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
@@ -159,7 +163,6 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
         dBuffer.height = newSize.height;
         dBuffer.rowBytes = newSize.width * 4;
         dBuffer.data = malloc(newSize.width * newSize.height * 4);
-
         vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
         if (kvImageNoError != vErr) {
             NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
@@ -174,7 +177,17 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
 
         if (OGImageProcessingScale_AspectFill == method) {
             if (0.f < offset.x) {
-                dBuffer.data = dBuffer.data + ((int)offset.x * 4);
+                // TODO: [alg] Well, commenting this out kills the crash (see https://github.com/origamilabs/OGImage/issues/7),
+                //  but kinda breaks aspect fill.
+                //  With this commented out, aspect fills that need to crop horizontally won't center:
+                //  they'll just crop the rightmost pixels.
+                //
+                // Notes:
+                // When we set this offset, it occasionally causes a memcpy crash deep in
+                // CGBitmapContextCreateImage (in the call to VImageBufferToUIImage below)
+                // Not sure what's going on here.
+
+                // dBuffer.data = dBuffer.data + ((int)offset.x * 4);
                 dBuffer.width = toSize.width;
             } else if (0.f < offset.y) {
                 int row_offset = (int)offset.y;
@@ -183,7 +196,6 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
                 dBuffer.height = toSize.height;
             }
         }
-
         UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
         free(vBuffer.data);
         free(origDataPtr);
