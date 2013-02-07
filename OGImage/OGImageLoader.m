@@ -169,15 +169,22 @@ static OGImageLoader * OGImageLoaderInstance;
                 _inFlightRequestCount--;
             }
             // when the request is complete, notify all interested delegates
-            NSMutableArray *lsnrs = _loaderDelegates[[imageURL absoluteString]];
-            for (id<OGImageLoaderDelegate> loaderDelegate in lsnrs) {
-                if (nil == image) {
-                    [loaderDelegate imageLoader:self failedForURL:imageURL error:error];
-                } else {
-                    [loaderDelegate imageLoader:self didLoadImage:image forURL:imageURL];
+            __block NSMutableArray *lsnrs = nil;
+            dispatch_sync(_requestsSerializationQueue, ^{
+                // we need to ensure serial access to the delegate array
+                lsnrs = _loaderDelegates[[imageURL absoluteString]];
+                [_loaderDelegates removeObjectForKey:[imageURL absoluteString]];
+            });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // call back all the delegates on the main queue
+                for (id<OGImageLoaderDelegate> loaderDelegate in lsnrs) {
+                    if (nil == image) {
+                        [loaderDelegate imageLoader:self failedForURL:imageURL error:error];
+                    } else {
+                        [loaderDelegate imageLoader:self didLoadImage:image forURL:imageURL];
+                    }
                 }
-            }
-            [_loaderDelegates removeObjectForKey:[imageURL absoluteString]];
+            });
         } queue:_imageCompletionQueue];
         [_requests addObject:request];
 
