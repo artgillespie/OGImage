@@ -29,17 +29,26 @@
     self.image = image;
 }
 
+#pragma mark - OGImageLoaderDelegate
+
+- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(UIImage *)image forURL:(NSURL *)url {
+    NSParameterAssert([self.url isEqual:url]);
+    if (nil != image) {
+        [self imageDidLoadFromURL:image];
+    }
+}
+
+- (void)imageLoader:(OGImageLoader*)loader failedForURL:(NSURL *)url error:(NSError *)error {
+    NSParameterAssert([self.url isEqual:url]);
+    if (nil != error) {
+        [self _setError:error];
+    }
+}
+
 #pragma mark - Protected
 
 - (void)loadImageFromURL {
-    [[OGImageLoader shared] enqueueImageRequest:_url completionBlock:^(UIImage *image, NSError *error, NSTimeInterval loadTime) {
-        self.loadTime = loadTime;
-        if (nil != image) {
-            [self imageDidLoadFromURL:image];
-        } else if (nil != error) {
-            [self _setError:error];
-        }
-    }];
+    [[OGImageLoader shared] enqueueImageRequest:_url delegate:self];
 }
 
 - (void)_setError:(NSError *)error {

@@ -6,8 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "OGImageLoader.h"
 
-@interface OGImage : NSObject
+@interface OGImage : NSObject <OGImageLoaderDelegate>
 
 /**
  * Will asynchronously load the image at `url`, updating the `image` property
