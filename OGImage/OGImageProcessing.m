@@ -169,8 +169,9 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
 
         if (OGImageProcessingScale_AspectFill == method) {
             if (0.f < offset.x) {
-                // TODO: [alg] Well, commenting this out kills the crash, but kinda breaks aspect fill.
-                //  with this commented out, aspect fills that need to crop horizontally won't center:
+                // TODO: [alg] Well, commenting this out kills the crash (see https://github.com/origamilabs/OGImage/issues/7),
+                //  but kinda breaks aspect fill.
+                //  With this commented out, aspect fills that need to crop horizontally won't center:
                 //  they'll just crop the rightmost pixels.
                 //
                 // Notes:
