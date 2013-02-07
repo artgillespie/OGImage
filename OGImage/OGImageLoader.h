@@ -11,6 +11,16 @@ extern const NSInteger OGImageLoadingError;
 
 extern NSString * const OGImageLoadingErrorDomain;
 
+@class OGImageLoader;
+@protocol OGImageLoaderDelegate <NSObject>
+
+@required
+
+- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(UIImage *)image forURL:(NSURL *)url;
+- (void)imageLoader:(OGImageLoader*)loader failedForURL:(NSURL *)url error:(NSError *)error;
+
+@end
+
 typedef NS_ENUM(NSInteger, OGImageLoaderPriority) {
     OGImageLoaderPriority_Low,
     OGImageLoaderPriority_Default,
@@ -34,7 +44,7 @@ typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error, NSTi
  * Enqueues a request to load the image at `imageURL`. `completionBlock` will always
  * be called on the main queue.
  */
-- (void)enqueueImageRequest:(NSURL *)imageURL completionBlock:(OGImageLoaderCompletionBlock)completionBlock;
+- (void)enqueueImageRequest:(NSURL *)imageURL delegate:(id<OGImageLoaderDelegate>)delegate;
 
 /**
  * The maximum number of concurrent network requests that can be in-flight at
