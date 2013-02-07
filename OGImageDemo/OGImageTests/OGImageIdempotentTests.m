@@ -28,7 +28,9 @@ static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinka
     } else if (_image2 == object) {
         _image2Loaded = YES;
     }
-    [self notify:kGHUnitWaitStatusSuccess];
+    if (_image1Loaded && _image2Loaded) {
+        [self notify:kGHUnitWaitStatusSuccess];
+    }
 }
 
 - (void)testIdempotent {
