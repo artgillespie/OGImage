@@ -8,8 +8,8 @@
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
 
-NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
-    return [NSString stringWithFormat:@"%@-%f-%f", origKey, size.width, size.height];
+NSString *OGKeyWithSize(NSString *origKey, CGSize size, CGFloat cornerRadius) {
+    return [NSString stringWithFormat:@"%@-%f-%f-%f", origKey, size.width, size.height, cornerRadius];
 }
 
 @implementation OGScaledImage {
@@ -44,8 +44,8 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
         self.url = url;
         self.scaledImage = placeholderImage;
         _scaledSize = size;
-        _scaledKey = OGKeyWithSize(self.key, _scaledSize);
         _cornerRadius = cornerRadius;
+        _scaledKey = OGKeyWithSize(self.key, _scaledSize, _cornerRadius);
         [self loadImageFromURL];
     }
     return self;
@@ -84,7 +84,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)loadImageFromURL {
-    [[OGImageCache shared] imageForKey:_scaledKey block:^(UIImage *image) {
+    [[OGImageCache shared] imageForKey:_scaledKey block:^(__OGImage *image) {
         if (nil == image) {
             [super loadImageFromURL];
         } else {
@@ -93,18 +93,18 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     }];
 }
 
-- (void)imageDidLoadFromURL:(UIImage *)image {
+- (void)imageDidLoadFromURL:(__OGImage *)image {
     [super imageDidLoadFromURL:image];
     [self doScaleImage:image];
 }
 
-- (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:_cornerRadius method:_method delegate:self];
+- (void)doScaleImage:(__OGImage *)image {
+    [[OGImageProcessing shared] scaleImage:(__OGImage *)image toSize:_scaledSize cornerRadius:_cornerRadius method:_method delegate:self];
 }
 
 #pragma mark - OGImageProcessingDelegate
 
-- (void)imageProcessing:(OGImageProcessing *)processing didProcessImage:(UIImage *)image {
+- (void)imageProcessing:(OGImageProcessing *)processing didProcessImage:(__OGImage *)image {
     self.scaledImage = image;
     [[OGImageCache shared] setImage:image forKey:_scaledKey];
 }

@@ -31,7 +31,7 @@
 }
 
 - (void)loadImageFromURL {
-    [[OGImageCache shared] imageForKey:_key block:^(UIImage *image) {
+    [[OGImageCache shared] imageForKey:_key block:^(__OGImage *image) {
         if (nil == image) {
             [super loadImageFromURL];
         } else {
@@ -40,7 +40,7 @@
     }];
 }
 
-- (void)imageDidLoadFromURL:(UIImage *)image {
+- (void)imageDidLoadFromURL:(__OGImage *)image {
     [[OGImageCache shared] setImage:image forKey:_key];
     [super imageDidLoadFromURL:image];
 }

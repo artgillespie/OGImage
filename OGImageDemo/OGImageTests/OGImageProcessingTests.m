@@ -96,8 +96,6 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
         }
         return;
     }
-    GHTestLog(@"Unexpected key change...");
-    [self notify:kGHUnitWaitStatusFailure];
 }
 
 - (void)testScaledImage1 {

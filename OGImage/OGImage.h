@@ -44,7 +44,7 @@
  *
  * This method will always be called on the main queue.
  */
-- (void)imageDidLoadFromURL:(UIImage *)image;
+- (void)imageDidLoadFromURL:(__OGImage *)image;
 
 /**
  * Subclasses can override this method to check caches, etc., before initiating
@@ -63,6 +63,23 @@
  * error occurs.
  */
 @property (nonatomic, strong) UIImage *image;
+
+/**
+ * Original image type UTI, e.g., public.jpeg, public.png
+ */
+@property (nonatomic, readonly) NSString *type;
+
+/**
+ * Original image metadata dictionary. This is the same dictionary returned by `CGImageSourceCopyProperties`
+ * See
+ * https://developer.apple.com/library/ios/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_source/ikpg_source.html#//apple_ref/doc/uid/TP40005462-CH218-DontLinkElementID_8
+ */
+@property (nonatomic, readonly) NSDictionary *info;
+
+/**
+ * Original image's alpha info.
+ */
+@property (nonatomic, readonly) CGImageAlphaInfo alphaInfo;
 
 /**
  * Observe this property to be notified if there was an error loading the image.
