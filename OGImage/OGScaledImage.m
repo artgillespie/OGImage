@@ -51,15 +51,15 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size, CGFloat cornerRadius) {
     return self;
 }
 
-- (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key {
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size key:(NSString *)key {
     return [self initWithImage:image size:size method:OGImageProcessingScale_AspectFit key:key];
 }
 
-- (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
     return [self initWithImage:image size:size cornerRadius:0.f method:method key:key];
 }
 
-- (id)initWithImage:(UIImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key {
     NSParameterAssert(nil != key);
     self = [super init];
     if (nil != self) {
@@ -68,7 +68,7 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size, CGFloat cornerRadius) {
         _scaledKey = key;
         _cornerRadius = cornerRadius;
         self.image = image;
-        [self doScaleImage:self.image];
+        [self doScaleImage:(__OGImage *)self.image];
     }
     return self;
 }
