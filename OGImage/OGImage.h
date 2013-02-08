@@ -73,6 +73,9 @@
  * Original image metadata dictionary. This is the same dictionary returned by `CGImageSourceCopyProperties`
  * See
  * https://developer.apple.com/library/ios/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_source/ikpg_source.html#//apple_ref/doc/uid/TP40005462-CH218-DontLinkElementID_8
+ *
+ * (If you're loading an `assets-library://` URL instead of an image file from the network or file system,
+ * this will have the dictionary from `ALAssetRepresentation.metadata`)
  */
 @property (nonatomic, readonly) NSDictionary *info;
 
