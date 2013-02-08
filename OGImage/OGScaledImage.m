@@ -89,14 +89,18 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
 }
 
 - (void)doScaleImage:(UIImage *)image {
-    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:_cornerRadius method:_method completionBlock:^(UIImage *image, NSError *error) {
-        if (nil != error) {
-            self.error = error;
-        } else {
-            self.scaledImage = image;
-            [[OGImageCache shared] setImage:image forKey:_scaledKey];
-        }
-    }];
+    [[OGImageProcessing shared] scaleImage:image toSize:_scaledSize cornerRadius:_cornerRadius method:_method delegate:self];
+}
+
+#pragma mark - OGImageProcessingDelegate
+
+- (void)imageProcessing:(OGImageProcessing *)processing didProcessImage:(UIImage *)image {
+    self.scaledImage = image;
+    [[OGImageCache shared] setImage:image forKey:_scaledKey];
+}
+
+- (void)imageProcessingFailed:(OGImageProcessing *)processing error:(NSError *)error {
+    self.error = error;
 }
 
 @end
