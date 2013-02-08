@@ -25,6 +25,16 @@
     return self;
 }
 
+- (void)addObserver:(NSObject *)observer {
+    [self addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeObserver:(NSObject *)observer {
+    [self removeObserver:observer forKeyPath:@"image"];
+    [self removeObserver:observer forKeyPath:@"error"];
+}
+
 - (void)imageDidLoadFromURL:(UIImage *)image {
     self.image = image;
 }

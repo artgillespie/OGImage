@@ -24,6 +24,20 @@
 - (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ * Convenience method: This is equivalent to calling
+ *    [ogimg addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+ *    [ogimg addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+ */
+- (void)addObserver:(NSObject *)observer;
+
+/**
+ * Convenience method: This is equivalent to calling
+ *    [ogimg removeObserver:observer forKeyPath:@"image"];
+ *    [ogimg removeObserver:observer forKeyPath:@"error"];
+ */
+- (void)removeObserver:(NSObject *)observer;
+
+/**
  * Subclasses can override this method to perform caching, processing, etc., but
  * must make sure that KVO notifications are fired once the
  * `image` property is ready for display.

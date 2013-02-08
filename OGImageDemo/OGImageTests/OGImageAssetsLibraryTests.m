@@ -63,11 +63,9 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
     [self prepare];
     GHAssertNotNil(_assetURL, @"Expect _assetURL to be populated by setUp");
     OGCachedImage *image = [[OGCachedImage alloc] initWithURL:_assetURL key:nil];
-    [image addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
-    [image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+    [image addObserver:self];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self forKeyPath:@"image"];
-    [image removeObserver:self forKeyPath:@"error"];
+    [image removeObserver:self];
 }
 
 @end

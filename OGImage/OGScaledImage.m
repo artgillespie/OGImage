@@ -73,6 +73,16 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size) {
     return self;
 }
 
+- (void)addObserver:(NSObject *)observer {
+    [super addObserver:observer];
+    [self addObserver:observer forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeObserver:(NSObject *)observer {
+    [super removeObserver:observer];
+    [self removeObserver:observer forKeyPath:@"scaledImage"];
+}
+
 - (void)loadImageFromURL {
     [[OGImageCache shared] imageForKey:_scaledKey block:^(UIImage *image) {
         if (nil == image) {
