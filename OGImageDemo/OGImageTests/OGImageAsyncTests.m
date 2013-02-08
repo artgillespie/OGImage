@@ -34,16 +34,14 @@ static const CGSize TEST_IMAGE_SIZE = {317.f, 400.f};
         }
         return;
     }
-    GHTestLog(@"Unexpected key change...");
-    [self notify:kGHUnitWaitStatusUnknown];
 }
 
 - (void)test404 {
     [self prepare];
     OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:FAKE_IMAGE_URL_STRING]];
-    [image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+    [image addObserver:self];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self forKeyPath:@"error"];
+    [image removeObserver:self];
 }
 
 @end

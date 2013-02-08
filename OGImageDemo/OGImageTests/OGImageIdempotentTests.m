@@ -38,9 +38,11 @@ static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinka
     // a single network request with notifications
     [self prepare];
     _image1 = [[OGImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING]];
-    [_image1 addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+    [_image1 addObserver:self];
     _image2 = [[OGImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING]];
-    [_image2 addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+    [_image2 addObserver:self];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:15.f];
+    [_image1 removeObserver:self];
+    [_image2 removeObserver:self];
 }
 @end

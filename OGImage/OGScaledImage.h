@@ -47,6 +47,15 @@
 - (id)initWithImage:(UIImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
 
 /**
+ * Equivalent to adding an observer for @"image", @"scaledImage", & @"error"
+ */
+- (void)addObserver:(NSObject *)observer;
+/**
+ * Equivalent to removing an observer for @"image", @"scaledImage", & @"error"
+ */
+- (void)removeObserver:(NSObject *)observer;
+
+/**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.
  * Clients should listen for KVO notifications on this property and `image` as
  * appropriate.
