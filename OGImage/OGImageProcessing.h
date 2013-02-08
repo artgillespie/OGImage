@@ -7,6 +7,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class OGImageProcessing;
+
+@protocol OGImageProcessingDelegate
+
+@required
+
+- (void)imageProcessing:(OGImageProcessing *)processing didProcessImage:(UIImage *)image;
+- (void)imageProcessingFailed:(OGImageProcessing *)processing error:(NSError *)error;
+
+@end
+
 typedef void (^OGImageProcessingBlock)(UIImage *image, NSError *error);
 
 extern NSString * const OGImageProcessingErrorDomain;
@@ -27,8 +38,8 @@ typedef NS_ENUM(NSInteger, OGImageProcessingScaleMethod) {
 /**
  * Scale `image` to `size` using aspect fit. Note `size` is specified in points.
  */
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius completionBlock:(OGImageProcessingBlock)block;
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius delegate:(id<OGImageProcessingDelegate>)delegate;
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block;
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method delegate:(id<OGImageProcessingDelegate>)delegate;
 
 @end
