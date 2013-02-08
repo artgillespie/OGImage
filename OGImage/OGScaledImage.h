@@ -8,7 +8,7 @@
 #import "OGCachedImage.h"
 #import "OGImageProcessing.h"
 
-@interface OGScaledImage : OGCachedImage
+@interface OGScaledImage : OGCachedImage <OGImageProcessingDelegate>
 
 /**
  * Scale the image at `url` to aspect-fit into `size` (specified in points). Note

@@ -90,8 +90,14 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     return ret;
 }
 
+#pragma mark -
+
 @implementation OGImageProcessing {
     dispatch_queue_t _imageProcessingQueue;
+    // key -> UIImage, value -> NSArray of id<OGImageProcessingDelegate>
+    NSMutableDictionary *_delegates;
+    // mediate access to _delegates;
+    dispatch_queue_t _delegateSerialQueue;
 }
 
 + (OGImageProcessing *)shared {
@@ -108,103 +114,136 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     self = [super init];
     if (self) {
         _imageProcessingQueue = dispatch_queue_create("com.origamilabs.imageProcessing", DISPATCH_QUEUE_CONCURRENT);
+        _delegates = [NSMutableDictionary dictionaryWithCapacity:10];
+        _delegateSerialQueue = dispatch_queue_create("com.origamilabs.imageProcessing.delegateSerialization", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius completionBlock:(OGImageProcessingBlock)block {
-    [self scaleImage:image toSize:size cornerRadius:cornerRadius method:OGImageProcessingScale_AspectFit completionBlock:block];
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius delegate:(id<OGImageProcessingDelegate>)delegate {
+    [self scaleImage:image toSize:size cornerRadius:cornerRadius method:OGImageProcessingScale_AspectFit delegate:delegate];
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method completionBlock:(OGImageProcessingBlock)block {
-    dispatch_async(_imageProcessingQueue, ^{
-        CGFloat scale = [UIScreen mainScreen].scale;
-        CGSize newSize = CGSizeZero;
-        CGPoint offset = CGPointZero;
-        CGSize fromSize = image.size;
-        fromSize.width *= image.scale;
-        fromSize.height *= image.scale;
-        CGSize toSize = size;
-        toSize.width *= scale;
-        toSize.height *= scale;
-
-        // if the two sizes are the same, I mean, come on
-        if (CGSizeEqualToSize(fromSize, toSize)) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(image, nil);
-            });
+- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method delegate:(id<OGImageProcessingDelegate>)delegate {
+    NSString *lsnrKey = [NSString stringWithFormat:@"%p.%@.%f", image, NSStringFromCGSize(size), cornerRadius];
+    dispatch_async(_delegateSerialQueue, ^{
+        NSMutableArray *lsnrs = _delegates[lsnrKey];
+        if (nil != lsnrs) {
+            // we already have a queued block for this combination, so
+            // just register our delegate and return
+            [lsnrs addObject:delegate];
             return;
         }
+        // we didn't already have a queued block for this combination, so create
+        // the delegate array, add our delegate to it, set it using the combination's key
+        // and queue the processing operation for it
+        lsnrs = [NSMutableArray arrayWithObject:delegate];
+        [_delegates setValue:lsnrs forKey:lsnrKey];
+        dispatch_async(_imageProcessingQueue, ^{
+            CGFloat scale = [UIScreen mainScreen].scale;
+            CGSize newSize = CGSizeZero;
+            CGPoint offset = CGPointZero;
+            CGSize fromSize = image.size;
+            fromSize.width *= image.scale;
+            fromSize.height *= image.scale;
+            CGSize toSize = size;
+            toSize.width *= scale;
+            toSize.height *= scale;
 
-        NSParameterAssert(toSize.width < fromSize.width && toSize.height < fromSize.height);
-        if (OGImageProcessingScale_AspectFit == method) {
-            newSize = OGAspectFit(image.size, size);
-        } else {
-            newSize = OGAspectFill(image.size, size, &offset);
-        }
-        newSize.width *= scale;
-        newSize.height *= scale;
-        offset.x *= scale;
-        offset.y *= scale;
-        NSParameterAssert(newSize.width < fromSize.width && newSize.height < fromSize.height);
+            // if the two sizes are the same, I mean, come on
+            if (CGSizeEqualToSize(fromSize, toSize) && 0.f == cornerRadius) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self notifyDelegatesForKey:lsnrKey withImage:image error:nil];
+                });
+                return;
+            }
 
-        vImage_Buffer vBuffer;
-        OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
-        if (noErr != err) {
-            NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
-                                                 code:err userInfo:@{NSLocalizedDescriptionKey : @"Error converting UIImage to vImage"}];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(nil, error);
-            });
-            return;
-        }
-        vImage_Buffer dBuffer;
-        dBuffer.width = newSize.width;
-        dBuffer.height = newSize.height;
-        dBuffer.rowBytes = newSize.width * 4;
-        dBuffer.data = malloc(newSize.width * newSize.height * 4);
-        vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
-        if (kvImageNoError != vErr) {
-            NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
-                                                 code:err userInfo:@{NSLocalizedDescriptionKey : @"Error scaling image"}];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(nil, error);
-            });
-            return;
-        }
+            if (OGImageProcessingScale_AspectFit == method) {
+                newSize = OGAspectFit(image.size, size);
+            } else {
+                newSize = OGAspectFill(image.size, size, &offset);
+            }
+            newSize.width *= scale;
+            newSize.height *= scale;
+            offset.x *= scale;
+            offset.y *= scale;
 
-        void *origDataPtr = dBuffer.data;
+            vImage_Buffer vBuffer;
+            OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
+            if (noErr != err) {
+                NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
+                                                     code:err userInfo:@{NSLocalizedDescriptionKey : @"Error converting UIImage to vImage"}];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self notifyDelegatesForKey:lsnrKey withImage:nil error:error];
+                });
+                return;
+            }
+            vImage_Buffer dBuffer;
+            dBuffer.width = newSize.width;
+            dBuffer.height = newSize.height;
+            dBuffer.rowBytes = newSize.width * 4;
+            dBuffer.data = malloc(newSize.width * newSize.height * 4);
+            vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
+            if (kvImageNoError != vErr) {
+                NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
+                                                     code:err userInfo:@{NSLocalizedDescriptionKey : @"Error scaling image"}];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self notifyDelegatesForKey:lsnrKey withImage:nil error:error];
+                });
+                return;
+            }
 
-        if (OGImageProcessingScale_AspectFill == method) {
-            if (0.f < offset.x) {
-                // TODO: [alg] Well, commenting this out kills the crash (see https://github.com/origamilabs/OGImage/issues/7),
-                //  but kinda breaks aspect fill.
-                //  With this commented out, aspect fills that need to crop horizontally won't center:
-                //  they'll just crop the rightmost pixels.
-                //
-                // Notes:
-                // When we set this offset, it occasionally causes a memcpy crash deep in
-                // CGBitmapContextCreateImage (in the call to VImageBufferToUIImage below)
-                // Not sure what's going on here.
+            void *origDataPtr = dBuffer.data;
 
-                // dBuffer.data = dBuffer.data + ((int)offset.x * 4);
-                dBuffer.width = toSize.width;
-            } else if (0.f < offset.y) {
-                int row_offset = (int)offset.y;
-                row_offset *= dBuffer.rowBytes;
-                dBuffer.data = dBuffer.data + row_offset;
-                dBuffer.height = toSize.height;
+            if (OGImageProcessingScale_AspectFill == method) {
+                if (0.f < offset.x) {
+                    // TODO: [alg] Well, commenting this out kills the crash (see https://github.com/origamilabs/OGImage/issues/7),
+                    //  but kinda breaks aspect fill.
+                    //  With this commented out, aspect fills that need to crop horizontally won't center:
+                    //  they'll just crop the rightmost pixels.
+                    //
+                    // Notes:
+                    // When we set this offset, it occasionally causes a memcpy crash deep in
+                    // CGBitmapContextCreateImage (in the call to VImageBufferToUIImage below)
+                    // Not sure what's going on here.
+
+                    // dBuffer.data = dBuffer.data + ((int)offset.x * 4);
+                    dBuffer.width = toSize.width;
+                } else if (0.f < offset.y) {
+                    int row_offset = (int)offset.y;
+                    row_offset *= dBuffer.rowBytes;
+                    dBuffer.data = dBuffer.data + row_offset;
+                    dBuffer.height = toSize.height;
+                }
+            }
+            UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
+            free(vBuffer.data);
+            free(origDataPtr);
+            if (0.f < cornerRadius) {
+                scaledImage = [self applyCornerRadius:cornerRadius toImage:scaledImage];
+            }
+
+            // notify the interested delegates
+            [self notifyDelegatesForKey:lsnrKey withImage:scaledImage error:nil];
+        });
+    });
+}
+
+- (void)notifyDelegatesForKey:(NSString *)key withImage:(UIImage *)image error:(NSError *)error {
+    __block NSMutableArray *lsnrs;
+    dispatch_sync(_delegateSerialQueue, ^{
+        lsnrs = _delegates[key];
+        [_delegates removeObjectForKey:key];
+    });
+    __weak OGImageProcessing *weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (id<OGImageProcessingDelegate> delegate in lsnrs) {
+            if (nil != error) {
+                [delegate imageProcessingFailed:self error:error];
+            } else {
+                [delegate imageProcessing:weakSelf didProcessImage:image];
             }
         }
-        UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
-        free(vBuffer.data);
-        free(origDataPtr);
-        if (0.f < cornerRadius) {
-            scaledImage = [self applyCornerRadius:cornerRadius toImage:scaledImage];
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            block(scaledImage, nil);
-        });
     });
 }
 
