@@ -13,8 +13,17 @@ over HTTP in a simple, extensible interface.
 
     ```objc
     OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
-    [ogImage addObserver:self forKey:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
-    // there is no step 3!
+    /*
+     * This is shorthand for calling KVO methods for @"image", @"scaledImage", and @"error"
+     */
+    [ogImage addObserver:self];
+
+    // check to see if the image loaded instantly (e.g., from cache)
+    if (nil != ogImage.image) {
+        // we already have an image, so do whatever we need with it, otherwise
+        // we'll be notified in `observeValueInKeyPath` whenever the image changes
+        [self displayImage:ogImage.image];
+    }
     ```
 
 * Networking belongs in the Model. Views (and to some degree, Controllers)
@@ -36,8 +45,10 @@ over HTTP in a simple, extensible interface.
 To use OGImage in your projects, simply add the files in the `OGImage`
 subdirectory to your target.
 
-If you're using `OGScaledImage` and/or `OGImageProcessing`, you'll need to add
-`Accelerate.framework` to your target's "Link Binary With Libraries" build
+You'll need to add `AssetsLibrary.framework` to your target's "Link Binary With
+Libraries" build phase. If you're using `OGScaledImage` and/or
+`OGImageProcessing`, you'll additionally need to add `Accelerate.framework` and
+`AssetsLibrary.framework` to your target's "Link Binary With Libraries" build
 phase.
 
 ## Usage
@@ -53,7 +64,7 @@ placeholder image to use until loading is complete with
 ...
 
 OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:@"http://somedomain.com/someimage.jpg"]];
-[image addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+[image addObserver:self];
 
 ...
 
@@ -87,7 +98,7 @@ OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:scaledSi
  * Note that here we're interested in the `scaledImage` property, not the full-size `image`
  * property.
  */
-[image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+[image addObserver:self];
 
 ...
 
@@ -117,6 +128,6 @@ are no external dependencies for the library itself, only for the tests
 
 ## TODO:
 
-* Sexier demo app, maybe something `UICollectionView`-based.
-* More test coverage.
+See [issues](https://github.com/origamilabs/OGImage/issues)
+
 

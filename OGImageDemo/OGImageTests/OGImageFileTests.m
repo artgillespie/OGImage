@@ -41,11 +41,9 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
     NSURL *imageURL = [[NSBundle mainBundle] URLForResource:@"Origami" withExtension:@"jpg"];
     GHAssertNotNil(imageURL, @"Couldn't get URL for test image");
     OGCachedImage *image = [[OGCachedImage alloc] initWithURL:imageURL key:nil];
-    [image addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
-    [image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+    [image addObserver:self];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self forKeyPath:@"image"];
-    [image removeObserver:self forKeyPath:@"error"];
+    [image removeObserver:self];
 }
 
 @end
