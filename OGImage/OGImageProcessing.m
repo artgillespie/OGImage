@@ -185,6 +185,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
             dBuffer.data = malloc(newSize.width * newSize.height * 4);
             vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
             if (kvImageNoError != vErr) {
+                free(dBuffer.data);
                 NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
                                                      code:err userInfo:@{NSLocalizedDescriptionKey : @"Error scaling image"}];
                 dispatch_async(dispatch_get_main_queue(), ^{
