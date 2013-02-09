@@ -124,7 +124,7 @@ static OGImageLoader * OGImageLoaderInstance;
                 ALAssetRepresentation *jpg = [asset representationForUTI:@"public.jpeg"];
                 CGImageRef jpgImage = jpg.fullResolutionImage;
                 CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(jpgImage);
-                __OGImage *image = [[__OGImage alloc] initWithCGImage:jpg.fullResolutionImage type:@"public.jpeg" info:jpg.metadata alphaInfo:alphaInfo scale:jpg.scale orientation:jpg.orientation];
+                __OGImage *image = [[__OGImage alloc] initWithCGImage:jpg.fullResolutionImage type:@"public.jpeg" info:jpg.metadata alphaInfo:alphaInfo scale:jpg.scale orientation:(UIImageOrientation)jpg.orientation];
                 NSError *error = nil;
                 if (nil == image) {
                     error = [NSError errorWithDomain:OGImageLoadingErrorDomain
