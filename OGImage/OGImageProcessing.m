@@ -56,7 +56,7 @@ CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
 /*
  * Don't forget to free buffer->data.
  */
-OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer) {
+OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer, CGImageAlphaInfo alphaInfo) {
     OSStatus err = noErr;
     CGImageRef cgImage = image.CGImage;
     size_t width = CGImageGetWidth(cgImage);
@@ -69,32 +69,30 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer) {
     CGContextRef ctx = CGBitmapContextCreate(buffer->data,
                                              buffer->width,
                                              buffer->height, 8,
-                                             buffer->rowBytes, colorSpace, kCGImageAlphaPremultipliedFirst);
+                                             buffer->rowBytes, colorSpace, alphaInfo);
     CGContextDrawImage(ctx, CGRectMake(0.f, 0.f, width, height), cgImage);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
     return err;
 }
 
-UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
+CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAlphaInfo alphaInfo) {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreateWithData(buffer->data,
                                                      buffer->width,
                                                      buffer->height,
-                                                     8, buffer->rowBytes, colorSpace, kCGImageAlphaPremultipliedFirst, NULL, NULL);
+                                                     8, buffer->rowBytes, colorSpace, alphaInfo, NULL, NULL);
     CGImageRef theImage = CGBitmapContextCreateImage(ctx);
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
-    UIImage *ret = [UIImage imageWithCGImage:theImage scale:scale orientation:UIImageOrientationUp];
-    CGImageRelease(theImage);
-    return ret;
+    return theImage;
 }
 
 #pragma mark -
 
 @implementation OGImageProcessing {
     dispatch_queue_t _imageProcessingQueue;
-    // key -> UIImage, value -> NSArray of id<OGImageProcessingDelegate>
+    // key -> __OGImage, value -> NSArray of id<OGImageProcessingDelegate>
     NSMutableDictionary *_delegates;
     // mediate access to _delegates;
     dispatch_queue_t _delegateSerialQueue;
@@ -120,11 +118,11 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     return self;
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius delegate:(id<OGImageProcessingDelegate>)delegate {
+- (void)scaleImage:(__OGImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius delegate:(id<OGImageProcessingDelegate>)delegate {
     [self scaleImage:image toSize:size cornerRadius:cornerRadius method:OGImageProcessingScale_AspectFit delegate:delegate];
 }
 
-- (void)scaleImage:(UIImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method delegate:(id<OGImageProcessingDelegate>)delegate {
+- (void)scaleImage:(__OGImage *)image toSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method delegate:(id<OGImageProcessingDelegate>)delegate {
     NSString *lsnrKey = [NSString stringWithFormat:@"%p.%@.%f", image, NSStringFromCGSize(size), cornerRadius];
     dispatch_async(_delegateSerialQueue, ^{
         NSMutableArray *lsnrs = _delegates[lsnrKey];
@@ -158,6 +156,15 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
                 return;
             }
 
+            CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(image.CGImage);
+            if (kCGImageAlphaNone == alphaInfo) {
+                // kCGImageAlphaNone w/8-bit channels not supported
+                alphaInfo = kCGImageAlphaNoneSkipLast;
+            }
+            if (0.f < cornerRadius) {
+                alphaInfo = kCGImageAlphaPremultipliedFirst;
+            }
+
             if (OGImageProcessingScale_AspectFit == method) {
                 newSize = OGAspectFit(image.size, size);
             } else {
@@ -169,7 +176,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
             offset.y *= scale;
 
             vImage_Buffer vBuffer;
-            OSStatus err = UIImageToVImageBuffer(image, &vBuffer);
+            OSStatus err = UIImageToVImageBuffer(image, &vBuffer, alphaInfo);
             if (noErr != err) {
                 NSError *error = [NSError errorWithDomain:OGImageProcessingErrorDomain
                                                      code:err userInfo:@{NSLocalizedDescriptionKey : @"Error converting UIImage to vImage"}];
@@ -205,10 +212,10 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
                     //
                     // Notes:
                     // When we set this offset, it occasionally causes a memcpy crash deep in
-                    // CGBitmapContextCreateImage (in the call to VImageBufferToUIImage below)
+                    // CGBitmapContextCreateImage (in the call to VImageBufferToCGImage below)
                     // Not sure what's going on here.
 
-                    // dBuffer.data = dBuffer.data + ((int)offset.x * 4);
+                    // dBuffer.data = dBuffer.data + ((int)offset.x * bpp);
                     dBuffer.width = toSize.width;
                 } else if (0.f < offset.y) {
                     int row_offset = (int)offset.y;
@@ -217,7 +224,9 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
                     dBuffer.height = toSize.height;
                 }
             }
-            UIImage *scaledImage = VImageBufferToUIImage(&dBuffer, [UIScreen mainScreen].scale);
+            CGImageRef cgImage = VImageBufferToCGImage(&dBuffer, [UIScreen mainScreen].scale, alphaInfo);
+            __OGImage *scaledImage = [[__OGImage alloc] initWithCGImage:cgImage type:image.originalFileType info:image.originalFileProperties alphaInfo:alphaInfo scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];;
+            CGImageRelease(cgImage);
             free(vBuffer.data);
             free(origDataPtr);
             if (0.f < cornerRadius) {
@@ -230,7 +239,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     });
 }
 
-- (void)notifyDelegatesForKey:(NSString *)key withImage:(UIImage *)image error:(NSError *)error {
+- (void)notifyDelegatesForKey:(NSString *)key withImage:(__OGImage *)image error:(NSError *)error {
     __block NSMutableArray *lsnrs;
     dispatch_sync(_delegateSerialQueue, ^{
         lsnrs = _delegates[key];
@@ -248,7 +257,9 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     });
 }
 
-- (UIImage *)applyCornerRadius:(CGFloat)cornerRadius toImage:(UIImage *)origImage {
+- (__OGImage *)applyCornerRadius:(CGFloat)cornerRadius toImage:(__OGImage *)origImage {
+    if (0.f == cornerRadius)
+        return origImage;
     CGSize _size = origImage.size;
     float _cornerRadius = cornerRadius;
     // If we're on a retina display, make sure everything is @2x
@@ -295,7 +306,7 @@ UIImage *VImageBufferToUIImage(vImage_Buffer *buffer, CGFloat scale) {
     if (_cornerRadius != 0.0)
         CGContextRestoreGState(context);
     CGImageRef image = CGBitmapContextCreateImage(context);
-    UIImage *ret = [UIImage imageWithCGImage:image scale:origImage.scale orientation:UIImageOrientationUp];
+    __OGImage *ret = [[__OGImage alloc] initWithCGImage:image type:@"public.png" info:origImage.originalFileProperties alphaInfo:alphaInfo scale:origImage.scale orientation:origImage.imageOrientation];
     if (image)
         CFRelease(image);
 

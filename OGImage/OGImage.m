@@ -7,6 +7,7 @@
 
 #import "OGImage.h"
 #import "OGImageLoader.h"
+#import "__OGImage.h"
 
 @implementation OGImage
 
@@ -35,13 +36,13 @@
     [self removeObserver:observer forKeyPath:@"error"];
 }
 
-- (void)imageDidLoadFromURL:(UIImage *)image {
+- (void)imageDidLoadFromURL:(__OGImage *)image {
     self.image = image;
 }
 
 #pragma mark - OGImageLoaderDelegate
 
-- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(UIImage *)image forURL:(NSURL *)url {
+- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(__OGImage *)image forURL:(NSURL *)url {
     NSParameterAssert([self.url isEqual:url]);
     if (nil != image) {
         [self imageDidLoadFromURL:image];
@@ -53,6 +54,18 @@
     if (nil != error) {
         [self _setError:error];
     }
+}
+
+- (NSString *)type {
+    return ((__OGImage *)_image).originalFileType;
+}
+
+- (NSDictionary *)info {
+    return ((__OGImage *)_image).originalFileProperties;
+}
+
+- (CGImageAlphaInfo)alphaInfo {
+    return ((__OGImage *)_image).originalFileAlphaInfo;
 }
 
 #pragma mark - Protected
