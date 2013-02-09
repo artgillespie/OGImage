@@ -9,11 +9,7 @@
 #import "OGImageLoader.h"
 #import "__OGImage.h"
 
-@implementation OGImage {
-    NSString *_type;
-    NSDictionary *_info;
-    CGImageAlphaInfo _alphaInfo;
-}
+@implementation OGImage
 
 - (id)initWithURL:(NSURL *)url {
     return [self initWithURL:url placeholderImage:nil];
