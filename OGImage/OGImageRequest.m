@@ -7,6 +7,7 @@
 //
 
 #import "OGImageRequest.h"
+#import <ImageIO/ImageIO.h>
 
 @implementation OGImageRequest {
     NSDate *_startTime;
@@ -62,14 +63,14 @@
 }
 
 - (void)prepareImageAndNotify {
-    UIImage *tmpImage = nil;
+    __OGImage *tmpImage = nil;
     NSError *tmpError = nil;
     if (200 == _httpResponse.statusCode) {
         if (nil != _data) {
-            tmpImage = [UIImage imageWithData:_data];
+            tmpImage = [[__OGImage alloc] initWithData:_data];
             if (nil == tmpImage) {
                 // data isn't nil, but we couldn't create an image out of it...
-                tmpError = [NSError errorWithDomain:NSCocoaErrorDomain code:OGImageLoadingError userInfo:@{NSLocalizedDescriptionKey : @"OGImage: Received data from url, but couldn't create UIImage instance"}];
+                tmpError = [NSError errorWithDomain:NSCocoaErrorDomain code:OGImageLoadingError userInfo:@{NSLocalizedDescriptionKey : @"OGImage: Received data from url, but couldn't create __OGImage instance"}];
             }
         }
     } else {

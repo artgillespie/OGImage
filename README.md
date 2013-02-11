@@ -23,6 +23,8 @@ over HTTP in a simple, extensible interface.
         // we already have an image, so do whatever we need with it, otherwise
         // we'll be notified in `observeValueInKeyPath` whenever the image changes
         [self displayImage:ogImage.image];
+        // ooh, we also got all the image's metadata! Sweet!
+        NSDictionary *exifData = [ogImage.originalFileProperties valueForKey:kCGImagePropertyExifDictionary];
     }
     ```
 
@@ -45,11 +47,11 @@ over HTTP in a simple, extensible interface.
 To use OGImage in your projects, simply add the files in the `OGImage`
 subdirectory to your target.
 
-You'll need to add `AssetsLibrary.framework` to your target's "Link Binary With
-Libraries" build phase. If you're using `OGScaledImage` and/or
-`OGImageProcessing`, you'll additionally need to add `Accelerate.framework` and
-`AssetsLibrary.framework` to your target's "Link Binary With Libraries" build
-phase.
+You'll need to add `AssetsLibrary.framework` and `ImageIO.framework` to your
+target's "Link Binary With Libraries" build phase. If you're using
+`OGScaledImage` and/or `OGImageProcessing`, you'll additionally need to add
+`Accelerate.framework` and `AssetsLibrary.framework` to your target's "Link
+Binary With Libraries" build phase.
 
 ## Usage
 

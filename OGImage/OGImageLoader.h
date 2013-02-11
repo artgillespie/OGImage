@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "__OGImage.h"
 
 extern const NSInteger OGImageLoadingError;
 
@@ -16,7 +17,7 @@ extern NSString * const OGImageLoadingErrorDomain;
 
 @required
 
-- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(UIImage *)image forURL:(NSURL *)url;
+- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(__OGImage *)image forURL:(NSURL *)url;
 - (void)imageLoader:(OGImageLoader*)loader failedForURL:(NSURL *)url error:(NSError *)error;
 
 @end
@@ -31,7 +32,7 @@ typedef NS_ENUM(NSInteger, OGImageLoaderPriority) {
  * This block is called when an image is loaded or fails to load. If `error` is
  * nil, `image` should be valid.
  */
-typedef void(^OGImageLoaderCompletionBlock)(UIImage *image, NSError *error, NSTimeInterval loadTime);
+typedef void(^OGImageLoaderCompletionBlock)(__OGImage *image, NSError *error, NSTimeInterval loadTime);
 
 @interface OGImageLoader : NSObject
 

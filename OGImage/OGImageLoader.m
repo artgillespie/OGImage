@@ -100,7 +100,8 @@ static OGImageLoader * OGImageLoaderInstance;
     // if this is a file:// or assets-library:// URL, don't bother with a OGImageRequest
     if ([[imageURL scheme] isEqualToString:@"file"]) {
         dispatch_async(_fileWorkQueue, ^{
-            UIImage *image = [UIImage imageWithContentsOfFile:[imageURL path]];
+            NSData *data = [NSData dataWithContentsOfURL:imageURL];
+            __OGImage *image = [[__OGImage alloc] initWithData:data];
             NSError *error = nil;
             if (nil == image) {
                 error = [NSError errorWithDomain:OGImageLoadingErrorDomain
@@ -120,9 +121,10 @@ static OGImageLoader * OGImageLoaderInstance;
         dispatch_async(_fileWorkQueue, ^{
             ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
             [library assetForURL:imageURL resultBlock:^(ALAsset *asset) {
-                // TODO: [alg] be smart about orientation and scale
-                NSNumber *orientation = [asset valueForProperty:ALAssetPropertyOrientation];
-                UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullResolutionImage scale:1.f orientation:[orientation intValue]];
+                ALAssetRepresentation *jpg = [asset representationForUTI:@"public.jpeg"];
+                CGImageRef jpgImage = jpg.fullResolutionImage;
+                CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(jpgImage);
+                __OGImage *image = [[__OGImage alloc] initWithCGImage:jpg.fullResolutionImage type:@"public.jpeg" info:jpg.metadata alphaInfo:alphaInfo scale:jpg.scale orientation:(UIImageOrientation)jpg.orientation];
                 NSError *error = nil;
                 if (nil == image) {
                     error = [NSError errorWithDomain:OGImageLoadingErrorDomain
@@ -164,7 +166,8 @@ static OGImageLoader * OGImageLoaderInstance;
         }
 
         // we don't have a request out for this url, so create it...
-        OGImageRequest *request = [[OGImageRequest alloc] initWithURL:imageURL completionBlock:^(UIImage *image, NSError *error, double timeElapsed){
+        OGImageRequest *request = [[OGImageRequest alloc] initWithURL:imageURL
+                                                      completionBlock:^(__OGImage *image, NSError *error, double timeElapsed){
             if (_inFlightRequestCount > 0) {
                 _inFlightRequestCount--;
             }
