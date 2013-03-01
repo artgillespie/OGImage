@@ -59,4 +59,7 @@
 
 @property (nonatomic, readonly) CGImageAlphaInfo alphaInfo;
 
+// note this is the TIFF/EXIF orientation number, not UIImageOrientation constant
+@property (nonatomic, readonly) NSInteger originalFileOrientation;
+
 @end

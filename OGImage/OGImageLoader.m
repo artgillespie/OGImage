@@ -100,8 +100,7 @@ static OGImageLoader * OGImageLoaderInstance;
     // if this is a file:// or assets-library:// URL, don't bother with a OGImageRequest
     if ([[imageURL scheme] isEqualToString:@"file"]) {
         dispatch_async(_fileWorkQueue, ^{
-            NSData *data = [NSData dataWithContentsOfURL:imageURL];
-            __OGImage *image = [[__OGImage alloc] initWithData:data];
+            __OGImage *image = [[__OGImage alloc] initWithDataAtURL:imageURL];
             NSError *error = nil;
             if (nil == image) {
                 error = [NSError errorWithDomain:OGImageLoadingErrorDomain

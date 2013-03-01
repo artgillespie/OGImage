@@ -12,6 +12,29 @@
 NSString * const OGImageInfoKey = @"OGImageInfoKey";
 NSString * const OGImageInfoScaleKey = @"OGImageInfoScaleKey";
 
+UIImageOrientation OGEXIFOrientationToUIImageOrientation(NSInteger exif) {
+    switch (exif) {
+        case 1: // landscape left
+            return UIImageOrientationUp;
+        case 3: // landscape right
+            return UIImageOrientationDown;
+        case 8: // portrait down
+            return UIImageOrientationLeft;
+        case 6: // portrait up
+            return UIImageOrientationRight;
+        case 2: //
+            return UIImageOrientationUpMirrored;
+        case 4:
+            return UIImageOrientationDownMirrored;
+        case 5:
+            return UIImageOrientationLeftMirrored;
+        case 7:
+            return UIImageOrientationRightMirrored;
+        default:
+            return UIImageOrientationUp;
+    }
+}
+
 @implementation __OGImage
 
 - (id)initWithDataAtURL:(NSURL *)url {
@@ -66,7 +89,9 @@ NSString * const OGImageInfoScaleKey = @"OGImageInfoScaleKey";
             // do we have an OGImageDictionary?
             _originalFileType = (__bridge NSString *)CGImageSourceGetType(imageSource);
             _originalFileAlphaInfo = CGImageGetAlphaInfo(cgImage);
-            self = [super initWithCGImage:cgImage scale:scale orientation:UIImageOrientationUp];
+            NSDictionary *propDict = (__bridge NSDictionary*)CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+            _originalFileOrientation = [propDict[(__bridge NSString *)kCGImagePropertyOrientation] integerValue];
+            self = [super initWithCGImage:cgImage scale:scale orientation:OGEXIFOrientationToUIImageOrientation(_originalFileOrientation)];
             CGImageRelease(cgImage);
         }
         CFRelease(imageSource);
