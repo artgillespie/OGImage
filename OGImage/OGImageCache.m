@@ -8,6 +8,7 @@
 #import "OGImageCache.h"
 #import "OGImage.h"
 #import <CommonCrypto/CommonDigest.h>
+#import <ImageIO/ImageIO.h>
 
 static OGImageCache *OGImageCacheShared;
 
@@ -65,7 +66,7 @@ NSString *OGImageCachePath() {
 - (void)imageForKey:(NSString *)key block:(OGImageCacheCompletionBlock)block {
     NSParameterAssert(nil != key);
     NSParameterAssert(nil != block);
-    UIImage *image = [_memoryCache objectForKey:key];
+    __OGImage *image = [_memoryCache objectForKey:key];
     if (nil != image) {
         block(image);
         return;
@@ -73,14 +74,7 @@ NSString *OGImageCachePath() {
     dispatch_async(_cacheFileTasksQueue, ^{
         // Check to see if the image is cached locally
         NSString *cachePath = [OGImageCache filePathForKey:(key)];
-        UIImage *image = nil;
-        if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
-            NSData *data = [NSData dataWithContentsOfFile:cachePath];
-            // we assume here that we cached images at the same scale as the device
-            // which makes sense, though there may be cases in the simulator where
-            // you get images at the wrong scale.
-            image = [UIImage imageWithData:data scale:[UIScreen mainScreen].scale];
-        }
+        __OGImage *image = [[__OGImage alloc] initWithDataAtURL:[NSURL fileURLWithPath:cachePath]];
         // if we have the image in the on-disk cache, store it to the in-memory cache
         if (nil != image) {
             [_memoryCache setObject:image forKey:key];
@@ -92,30 +86,20 @@ NSString *OGImageCachePath() {
     });
 }
 
-- (void)setImage:(UIImage *)image forKey:(NSString *)key {
+- (void)setImage:(__OGImage *)image forKey:(NSString *)key {
     NSParameterAssert(nil != image);
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = [OGImageCache filePathForKey:(key)];
-        NSData *imgData = UIImagePNGRepresentation(image);
-        [imgData writeToFile:cachePath atomically:YES];
-    });
-}
-
-- (void)setImage:(UIImage *)image forKey:(NSString *)key format:(OGImageFileFormat)format {
-    NSParameterAssert(nil != image);
-    NSParameterAssert(nil != key);
-    [_memoryCache setObject:image forKey:key];
-    dispatch_async(_cacheFileTasksQueue, ^{
-        NSString *cachePath = [OGImageCache filePathForKey:key];
-        NSData *imgData = nil;
-        if (OGImageFileFormatJPEG == format) {
-            imgData = UIImageJPEGRepresentation(image, 5);
-        } else {
-            imgData = UIImagePNGRepresentation(image);
+        NSURL *fileURL = [NSURL fileURLWithPath:[OGImageCache filePathForKey:key]];
+        NSError *error;
+        if(![image writeToURL:fileURL error:&error]) {
+            NSLog(@"[OGImageCache ERROR] failed to write image with error %@ %s %d", error, __FILE__, __LINE__);
+            return;
         }
-        [imgData writeToFile:cachePath atomically:YES];
+        // make sure the cached file doesn't get backed up to iCloud
+        // http://developer.apple.com/library/ios/#qa/qa1719/_index.html
+        [fileURL setResourceValue:[NSNumber numberWithBool:YES] forKey: NSURLIsExcludedFromBackupKey error:nil];
     });
 }
 
@@ -132,6 +116,30 @@ NSString *OGImageCachePath() {
     } else {
         dispatch_async(_cacheFileTasksQueue, purgeFilesBlock);
     }
+}
+
+- (void)purgeCacheForKey:(NSString *)key andWait:(BOOL)wait {
+    NSParameterAssert(nil != key);
+
+    [self purgeMemoryCacheForKey:key andWait:wait];
+
+    NSString *cachedFilePath = [[self class] filePathForKey:key];
+    
+    void (^purgeFileBlock)(void) =^{
+        [[NSFileManager defaultManager] removeItemAtPath:cachedFilePath error:nil];
+    };
+    
+    if (YES == wait) {
+        dispatch_sync(_cacheFileTasksQueue, purgeFileBlock);
+    } else {
+        dispatch_async(_cacheFileTasksQueue, purgeFileBlock);
+    }
+}
+
+- (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait {
+    NSParameterAssert(nil != key);
+
+    [_memoryCache removeObjectForKey:key];
 }
 
 @end

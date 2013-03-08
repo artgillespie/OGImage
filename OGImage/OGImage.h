@@ -6,8 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "OGImageLoader.h"
 
-@interface OGImage : NSObject
+@interface OGImage : NSObject <OGImageLoaderDelegate>
 
 /**
  * Will asynchronously load the image at `url`, updating the `image` property
@@ -23,13 +24,27 @@
 - (id)initWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage;
 
 /**
+ * Convenience method: This is equivalent to calling
+ *    [ogimg addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+ *    [ogimg addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+ */
+- (void)addObserver:(NSObject *)observer;
+
+/**
+ * Convenience method: This is equivalent to calling
+ *    [ogimg removeObserver:observer forKeyPath:@"image"];
+ *    [ogimg removeObserver:observer forKeyPath:@"error"];
+ */
+- (void)removeObserver:(NSObject *)observer;
+
+/**
  * Subclasses can override this method to perform caching, processing, etc., but
  * must make sure that KVO notifications are fired once the
  * `image` property is ready for display.
  *
  * This method will always be called on the main queue.
  */
-- (void)imageDidLoadFromURL:(UIImage *)image;
+- (void)imageDidLoadFromURL:(__OGImage *)image;
 
 /**
  * Subclasses can override this method to check caches, etc., before initiating
@@ -48,6 +63,26 @@
  * error occurs.
  */
 @property (nonatomic, strong) UIImage *image;
+
+/**
+ * Original image type UTI, e.g., public.jpeg, public.png
+ */
+@property (nonatomic, readonly) NSString *type;
+
+/**
+ * Original image metadata dictionary. This is the same dictionary returned by `CGImageSourceCopyProperties`
+ * See
+ * https://developer.apple.com/library/ios/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_source/ikpg_source.html#//apple_ref/doc/uid/TP40005462-CH218-DontLinkElementID_8
+ *
+ * (If you're loading an `assets-library://` URL instead of an image file from the network or file system,
+ * this will have the dictionary from `ALAssetRepresentation.metadata`)
+ */
+@property (nonatomic, readonly) NSDictionary *info;
+
+/**
+ * Original image's alpha info.
+ */
+@property (nonatomic, readonly) CGImageAlphaInfo alphaInfo;
 
 /**
  * Observe this property to be notified if there was an error loading the image.
