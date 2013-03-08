@@ -7,14 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-@class OGImage;
+@class __OGImage;
 
-typedef void (^OGImageCacheCompletionBlock)(UIImage *image);
-
-typedef NS_ENUM(NSInteger, OGImageFileFormat) {
-    OGImageFileFormatJPEG,
-    OGImageFileFormatPNG
-};
+typedef void (^OGImageCacheCompletionBlock)(__OGImage *image);
 
 @interface OGImageCache : NSObject
 
@@ -31,20 +26,25 @@ typedef NS_ENUM(NSInteger, OGImageFileFormat) {
  */
 - (void)imageForKey:(NSString *)key block:(OGImageCacheCompletionBlock)block;
 
-/**
- * Store `image` in-memory and on disk. Image will be serialized as PNG.
- */
-- (void)setImage:(UIImage *)image forKey:(NSString *)key;
-
-/**
- * Store `image` in-memory and on disk. Image will be serialized as `format`.
- */
-- (void)setImage:(UIImage *)image forKey:(NSString *)key format:(OGImageFileFormat)format;
+- (void)setImage:(__OGImage *)image forKey:(NSString *)key;
 
 /**
  * Remove all cached images from in-memory and on-disk caches. If `wait` is `YES`
  * this will block the calling thread until the purge is complete.
  */
 - (void)purgeCache:(BOOL)wait;
+
+/**
+ * Remove a single cached image from in-memory and on-disk caches. If `wait` is `YES`
+ * this will block the calling thread until the purge is complete.
+ */
+- (void)purgeCacheForKey:(NSString *)key andWait:(BOOL)wait;
+
+/**
+ * Remove a single cached image from in-memory caches. If `wait` is `YES`
+ * this will block the calling thread until the purge is complete.
+ */
+- (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait;
+
 
 @end

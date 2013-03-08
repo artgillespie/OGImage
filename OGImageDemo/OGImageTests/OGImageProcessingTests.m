@@ -96,16 +96,14 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
         }
         return;
     }
-    GHTestLog(@"Unexpected key change...");
-    [self notify:kGHUnitWaitStatusFailure];
 }
 
 - (void)testScaledImage1 {
     [self prepare];
     OGScaledImage *image = [[OGScaledImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING] size:TEST_SCALE_SIZE key:nil];
-    [image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+    [image addObserver:self];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self forKeyPath:@"scaledImage"];
+    [image removeObserver:self];
 }
 
 @end

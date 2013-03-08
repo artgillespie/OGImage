@@ -8,7 +8,7 @@
 #import "OGCachedImage.h"
 #import "OGImageProcessing.h"
 
-@interface OGScaledImage : OGCachedImage
+@interface OGScaledImage : OGCachedImage <OGImageProcessingDelegate>
 
 /**
  * Scale the image at `url` to aspect-fit into `size` (specified in points). Note
@@ -34,17 +34,26 @@
 /**
  * Scale the given image to `size` and cache it at `key`
  */
-- (id)initWithImage:(UIImage *)image size:(CGSize)size key:(NSString *)key;
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size key:(NSString *)key;
 
 /**
  * Scale the given image to `size` using `method` and cache it at `key`
  */
-- (id)initWithImage:(UIImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
 
 /**
  * Scale the given image to `size` with a rounded rect mask specified by `cornerRadius` using `method` and cache it at `key`
  */
-- (id)initWithImage:(UIImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
+- (id)initWithImage:(__OGImage *)image size:(CGSize)size cornerRadius:(CGFloat)cornerRadius method:(OGImageProcessingScaleMethod)method key:(NSString *)key;
+
+/**
+ * Equivalent to adding an observer for @"image", @"scaledImage", & @"error"
+ */
+- (void)addObserver:(NSObject *)observer;
+/**
+ * Equivalent to removing an observer for @"image", @"scaledImage", & @"error"
+ */
+- (void)removeObserver:(NSObject *)observer;
 
 /**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.

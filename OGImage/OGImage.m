@@ -7,6 +7,7 @@
 
 #import "OGImage.h"
 #import "OGImageLoader.h"
+#import "__OGImage.h"
 
 @implementation OGImage
 
@@ -25,21 +26,52 @@
     return self;
 }
 
-- (void)imageDidLoadFromURL:(UIImage *)image {
+- (void)addObserver:(NSObject *)observer {
+    [self addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeObserver:(NSObject *)observer {
+    [self removeObserver:observer forKeyPath:@"image"];
+    [self removeObserver:observer forKeyPath:@"error"];
+}
+
+- (void)imageDidLoadFromURL:(__OGImage *)image {
     self.image = image;
+}
+
+#pragma mark - OGImageLoaderDelegate
+
+- (void)imageLoader:(OGImageLoader*)loader didLoadImage:(__OGImage *)image forURL:(NSURL *)url {
+    NSParameterAssert([self.url isEqual:url]);
+    if (nil != image) {
+        [self imageDidLoadFromURL:image];
+    }
+}
+
+- (void)imageLoader:(OGImageLoader*)loader failedForURL:(NSURL *)url error:(NSError *)error {
+    NSParameterAssert([self.url isEqual:url]);
+    if (nil != error) {
+        [self _setError:error];
+    }
+}
+
+- (NSString *)type {
+    return ((__OGImage *)_image).originalFileType;
+}
+
+- (NSDictionary *)info {
+    return ((__OGImage *)_image).originalFileProperties;
+}
+
+- (CGImageAlphaInfo)alphaInfo {
+    return ((__OGImage *)_image).originalFileAlphaInfo;
 }
 
 #pragma mark - Protected
 
 - (void)loadImageFromURL {
-    [[OGImageLoader shared] enqueueImageRequest:_url completionBlock:^(UIImage *image, NSError *error, NSTimeInterval loadTime) {
-        self.loadTime = loadTime;
-        if (nil != image) {
-            [self imageDidLoadFromURL:image];
-        } else if (nil != error) {
-            [self _setError:error];
-        }
-    }];
+    [[OGImageLoader shared] enqueueImageRequest:_url delegate:self];
 }
 
 - (void)_setError:(NSError *)error {

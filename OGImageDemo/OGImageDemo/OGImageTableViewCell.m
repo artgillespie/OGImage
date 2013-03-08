@@ -52,4 +52,9 @@
     [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)dealloc {
+    [_image removeObserver:self forKeyPath:@"error"];
+    [_image removeObserver:self forKeyPath:@"scaledImage"];
+}
+
 @end
