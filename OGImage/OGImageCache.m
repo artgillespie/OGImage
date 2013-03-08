@@ -97,6 +97,9 @@ NSString *OGImageCachePath() {
             NSLog(@"[OGImageCache ERROR] failed to write image with error %@ %s %d", error, __FILE__, __LINE__);
             return;
         }
+        // make sure the cached file doesn't get backed up to iCloud
+        // http://developer.apple.com/library/ios/#qa/qa1719/_index.html
+        [fileURL setResourceValue:[NSNumber numberWithBool:YES] forKey: NSURLIsExcludedFromBackupKey error:nil];
     });
 }
 
