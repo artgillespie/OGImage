@@ -45,10 +45,10 @@ CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
     CGFloat ratio = (dRatio <= sRatio) ? to.height / from.height : to.width / from.width;
     CGSize ret = CGSizeMake(roundf(from.width * ratio), roundf(from.height * ratio));
     if (ret.width > to.width) {
-        offset->x = ceilf(ret.width / 2.f - to.width / 2.f);
+        offset->x = floorf(ret.width / 2.f - to.width / 2.f);
     }
     if (ret.height > to.height) {
-        offset->y = ceilf(ret.height / 2.f - to.height / 2.f);
+        offset->y = floorf(ret.height / 2.f - to.height / 2.f);
     }
     return ret;
 }
@@ -223,18 +223,12 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
 
             if (OGImageProcessingScale_AspectFill == method) {
                 if (0.f < offset.x) {
-                    // TODO: [alg] Well, commenting this out kills the crash (see https://github.com/origamilabs/OGImage/issues/7),
-                    //  but kinda breaks aspect fill.
-                    //  With this commented out, aspect fills that need to crop horizontally won't center:
-                    //  they'll just crop the rightmost pixels.
-                    //
-                    // Notes:
-                    // When we set this offset, it occasionally causes a memcpy crash deep in
-                    // CGBitmapContextCreateImage (in the call to VImageBufferToCGImage below)
-                    // Not sure what's going on here.
-
-                    // dBuffer.data = dBuffer.data + ((int)offset.x * bpp);
+                    dBuffer.data = dBuffer.data + ((int)offset.x * 4);
                     dBuffer.width = toSize.width;
+                    // this makes the difference for <https://github.com/origamilabs/OGImage/issues/7)>
+                    // which kinda makes sense: depending on how CGBitmapContext treats the underlying
+                    // buffer, a copy could run past the end of the buffer's data (i.e. offset + rowBytes)
+                    dBuffer.height -= 1;
                 } else if (0.f < offset.y) {
                     int row_offset = (int)offset.y;
                     row_offset *= dBuffer.rowBytes;
@@ -243,7 +237,7 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
                 }
             }
             CGImageRef cgImage = VImageBufferToCGImage(&dBuffer, [UIScreen mainScreen].scale, alphaInfo);
-            __OGImage *scaledImage = [[__OGImage alloc] initWithCGImage:cgImage type:image.originalFileType info:image.originalFileProperties alphaInfo:alphaInfo scale:[UIScreen mainScreen].scale orientation:UIImageOrientationRight];
+            __OGImage *scaledImage = [[__OGImage alloc] initWithCGImage:cgImage type:image.originalFileType info:image.originalFileProperties alphaInfo:alphaInfo scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
             CGImageRelease(cgImage);
             free(vBuffer.data);
             free(origDataPtr);
