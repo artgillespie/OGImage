@@ -32,8 +32,12 @@
 }
 
 - (void)removeObserver:(NSObject *)observer {
-    [self removeObserver:observer forKeyPath:@"image"];
-    [self removeObserver:observer forKeyPath:@"error"];
+    @try {
+        [self removeObserver:observer forKeyPath:@"image"];
+    } @catch (NSException *e) {}
+    @try {
+        [self removeObserver:observer forKeyPath:@"error"];
+    } @catch (NSException *e) {}
 }
 
 - (void)imageDidLoadFromURL:(__OGImage *)image {
