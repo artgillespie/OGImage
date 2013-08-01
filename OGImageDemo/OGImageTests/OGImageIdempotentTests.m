@@ -9,6 +9,8 @@
 #import "GHAsyncTestCase.h"
 #import "OGImage.h"
 
+static NSString *KVOContext = @"OGImageIdempotentTests observation";
+
 static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinkagain/wp-content/uploads/2009/05/james-bond.jpg";
 
 @interface OGImageIdempotentTests : GHAsyncTestCase {
@@ -23,13 +25,18 @@ static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinka
 @implementation OGImageIdempotentTests
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (_image1 == object) {
-        _image1Loaded = YES;
-    } else if (_image2 == object) {
-        _image2Loaded = YES;
+    if ((void *)&KVOContext == context) {
+        if (_image1 == object) {
+            _image1Loaded = YES;
+        } else if (_image2 == object) {
+            _image2Loaded = YES;
+        }
+        if (_image1Loaded && _image2Loaded) {
+            [self notify:kGHUnitWaitStatusSuccess];
+        }
     }
-    if (_image1Loaded && _image2Loaded) {
-        [self notify:kGHUnitWaitStatusSuccess];
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -38,11 +45,11 @@ static NSString * const TEST_IMAGE_URL_STRING = @"http://easyquestion.net/thinka
     // a single network request with notifications
     [self prepare];
     _image1 = [[OGImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING]];
-    [_image1 addObserver:self];
+    [_image1 addObserver:self context:&KVOContext];
     _image2 = [[OGImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING]];
-    [_image2 addObserver:self];
+    [_image2 addObserver:self context:&KVOContext];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:15.f];
-    [_image1 removeObserver:self];
-    [_image2 removeObserver:self];
+    [_image1 removeObserver:self context:&KVOContext];
+    [_image2 removeObserver:self context:&KVOContext];
 }
 @end

@@ -10,6 +10,8 @@
 #import "OGCachedImage.h"
 #import "OGImageCache.h"
 
+static NSString *KVOContext = @"OGImageFileTests observation";
+
 static CGSize const OGExpectedSize = {1024.f, 768.f};
 
 @interface OGImageFileTests : GHAsyncTestCase
@@ -23,16 +25,21 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
-        OGCachedImage *image = (OGCachedImage *)object;
-        if (nil == image) {
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"image"]) {
+            OGCachedImage *image = (OGCachedImage *)object;
+            if (nil == image) {
+                [self notify:kGHUnitWaitStatusFailure];
+            } else {
+                GHAssertTrue(CGSizeEqualToSize(OGExpectedSize, image.image.size), @"Expected image of size %@, got %@", NSStringFromCGSize(OGExpectedSize), NSStringFromCGSize(image.image.size));
+                [self notify:kGHUnitWaitStatusSuccess];
+            }
+        } else if ([keyPath isEqualToString:@"error"]) {
             [self notify:kGHUnitWaitStatusFailure];
-        } else {
-            GHAssertTrue(CGSizeEqualToSize(OGExpectedSize, image.image.size), @"Expected image of size %@, got %@", NSStringFromCGSize(OGExpectedSize), NSStringFromCGSize(image.image.size));
-            [self notify:kGHUnitWaitStatusSuccess];
         }
-    } else if ([keyPath isEqualToString:@"error"]) {
-        [self notify:kGHUnitWaitStatusFailure];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -41,9 +48,9 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
     NSURL *imageURL = [[NSBundle mainBundle] URLForResource:@"Origami" withExtension:@"jpg"];
     GHAssertNotNil(imageURL, @"Couldn't get URL for test image");
     OGCachedImage *image = [[OGCachedImage alloc] initWithURL:imageURL key:nil];
-    [image addObserver:self];
+    [image addObserver:self context:&KVOContext];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self];
+    [image removeObserver:self context:&KVOContext];
 }
 
 @end
