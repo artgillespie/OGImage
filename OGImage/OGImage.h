@@ -25,17 +25,17 @@
 
 /**
  * Convenience method: This is equivalent to calling
- *    [ogimg addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
- *    [ogimg addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+ *    [ogimg addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:context];
+ *    [ogimg addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:context];
  */
-- (void)addObserver:(NSObject *)observer;
+- (void)addObserver:(NSObject *)observer context:(void *)context;
 
 /**
  * Convenience method: This is equivalent to calling
- *    [ogimg removeObserver:observer forKeyPath:@"image"];
- *    [ogimg removeObserver:observer forKeyPath:@"error"];
+ *    [ogimg removeObserver:observer forKeyPath:@"image" context:context];
+ *    [ogimg removeObserver:observer forKeyPath:@"error" context:context];
  */
-- (void)removeObserver:(NSObject *)observer;
+- (void)removeObserver:(NSObject *)observer context:(void *)context;
 
 /**
  * Subclasses can override this method to perform caching, processing, etc., but

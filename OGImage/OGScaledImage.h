@@ -49,11 +49,11 @@
 /**
  * Equivalent to adding an observer for @"image", @"scaledImage", & @"error"
  */
-- (void)addObserver:(NSObject *)observer;
+- (void)addObserver:(NSObject *)observer context:(void *)context;
 /**
  * Equivalent to removing an observer for @"image", @"scaledImage", & @"error"
  */
-- (void)removeObserver:(NSObject *)observer;
+- (void)removeObserver:(NSObject *)observer context:(void *)context;
 
 /**
  * The scaled image—The inherited `image` property is set to the full-size image at `url`.

@@ -16,12 +16,12 @@ over HTTP in a simple, extensible interface.
     /*
      * This is shorthand for calling KVO methods for @"image", @"scaledImage", and @"error"
      */
-    [ogImage addObserver:self];
+    [ogImage addObserver:self context:&KVOContext];
 
     // check to see if the image loaded instantly (e.g., from cache)
     if (nil != ogImage.image) {
         // we already have an image, so do whatever we need with it, otherwise
-        // we'll be notified in `observeValueInKeyPath` whenever the image changes
+        // we'll be notified in `observeValueForKeyPath:ofObject:change:context:` whenever the image changes
         [self displayImage:ogImage.image];
         // ooh, we also got all the image's metadata! Sweet!
         NSDictionary *exifData = [ogImage.originalFileProperties valueForKey:kCGImagePropertyExifDictionary];
@@ -66,16 +66,21 @@ placeholder image to use until loading is complete with
 ...
 
 OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:@"http://somedomain.com/someimage.jpg"]];
-[image addObserver:self];
+[image addObserver:self context:&KVOContext];
 
 ...
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
-        // image was loaded!
-        ...
-    } else if ([keyPath isEqualToString:@"error"]) {
-        // error loading image
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"image"]) {
+            // image was loaded!
+            ...
+        } else if ([keyPath isEqualToString:@"error"]) {
+            // error loading image
+        }
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 ```
@@ -100,16 +105,20 @@ OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:scaledSi
  * Note that here we're interested in the `scaledImage` property, not the full-size `image`
  * property.
  */
-[image addObserver:self];
+[image addObserver:self context:&KVOContext];
 
 ...
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"scaledImage"]) {
-        // image was loaded and scaled!
-        ...
-    } else if ([keyPath isEqualToString:@"error"]) {
-        // error loading image
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"scaledImage"]) {
+            // image was loaded and scaled!
+            ...
+        } else if ([keyPath isEqualToString:@"error"]) {
+            // error loading image
+        }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 ```

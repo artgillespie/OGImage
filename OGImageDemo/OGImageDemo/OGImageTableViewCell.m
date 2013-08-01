@@ -9,6 +9,8 @@
 #import "OGImageTableViewCell.h"
 #import "OGScaledImage.h"
 
+static NSString *KVOContext = @"OGImageTableViewCell observation";
+
 @implementation OGImageTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -25,13 +27,18 @@
 #pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
-    if ([keyPath isEqualToString:@"scaledImage"]) {
-        self.imageView.image = self.image.scaledImage;
-        self.textLabel.text = [[self.image.url path] lastPathComponent];
-        self.detailTextLabel.text = [NSString stringWithFormat:@"%.2f", self.image.loadTime];
-    } else if ([keyPath isEqualToString:@"error"]) {
-        
+    if( (void *)&KVOContext == context ) {
+        NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
+        if ([keyPath isEqualToString:@"scaledImage"]) {
+            self.imageView.image = self.image.scaledImage;
+            self.textLabel.text = [[self.image.url path] lastPathComponent];
+            self.detailTextLabel.text = [NSString stringWithFormat:@"%.2f", self.image.loadTime];
+        } else if ([keyPath isEqualToString:@"error"]) {
+            
+        }
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -42,19 +49,19 @@
      * When the cell's image is set, we want to first make sure we're no longer listening
      * for any KVO notifications on the cell's previous image.
      */
-    [_image removeObserver:self forKeyPath:@"error"];
-    [_image removeObserver:self forKeyPath:@"scaledImage"];
+    [_image removeObserver:self forKeyPath:@"error" context:&KVOContext];
+    [_image removeObserver:self forKeyPath:@"scaledImage" context:&KVOContext];
     _image = image;
     self.imageView.image = _image.scaledImage;
     self.textLabel.text = [[self.image.url path] lastPathComponent];
     self.detailTextLabel.text = NSLocalizedString(@"Loading", @"");
-    [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
-    [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+    [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:&KVOContext];
+    [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:&KVOContext];
 }
 
 - (void)dealloc {
-    [_image removeObserver:self forKeyPath:@"error"];
-    [_image removeObserver:self forKeyPath:@"scaledImage"];
+    [_image removeObserver:self forKeyPath:@"error" context:&KVOContext];
+    [_image removeObserver:self forKeyPath:@"scaledImage" context:&KVOContext];
 }
 
 @end

@@ -11,6 +11,8 @@
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
 
+static NSString *KVOContext = @"OGImageProcessingTests observation";
+
 extern CGSize OGAspectFit(CGSize from, CGSize to);
 extern CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset);
 
@@ -81,29 +83,34 @@ static const CGSize TEST_SCALE_SIZE = {128.f, 128.f};
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSAssert(YES == [NSThread isMainThread], @"Expected `observeValueForKeyPath` to only be called on main thread");
-    if ([keyPath isEqualToString:@"scaledImage"]) {
-        OGScaledImage *image = (OGScaledImage *)object;
-        GHTestLog(@"Image loaded: %@ : %@", image.image, NSStringFromCGSize(image.image.size));
-        CGSize retinaSize = TEST_SCALE_SIZE;
-        retinaSize.width *= [UIScreen mainScreen].scale;
-        retinaSize.height *= [UIScreen mainScreen].scale;
-        CGSize expectedSize = OGAspectFit(TEST_IMAGE_SIZE, TEST_SCALE_SIZE);
-        if (NO == CGSizeEqualToSize(image.scaledImage.size, expectedSize)) {
-            [self notify:kGHUnitWaitStatusFailure];
-        } else {
-            [self notify:kGHUnitWaitStatusSuccess];
+    if ((void *)&KVOContext == context) {
+        NSAssert(YES == [NSThread isMainThread], @"Expected `observeValueForKeyPath` to only be called on main thread");
+        if ([keyPath isEqualToString:@"scaledImage"]) {
+            OGScaledImage *image = (OGScaledImage *)object;
+            GHTestLog(@"Image loaded: %@ : %@", image.image, NSStringFromCGSize(image.image.size));
+            CGSize retinaSize = TEST_SCALE_SIZE;
+            retinaSize.width *= [UIScreen mainScreen].scale;
+            retinaSize.height *= [UIScreen mainScreen].scale;
+            CGSize expectedSize = OGAspectFit(TEST_IMAGE_SIZE, TEST_SCALE_SIZE);
+            if (NO == CGSizeEqualToSize(image.scaledImage.size, expectedSize)) {
+                [self notify:kGHUnitWaitStatusFailure];
+            } else {
+                [self notify:kGHUnitWaitStatusSuccess];
+            }
+            return;
         }
-        return;
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
 - (void)testScaledImage1 {
     [self prepare];
     OGScaledImage *image = [[OGScaledImage alloc] initWithURL:[NSURL URLWithString:TEST_IMAGE_URL_STRING] size:TEST_SCALE_SIZE key:nil];
-    [image addObserver:self];
+    [image addObserver:self context:&KVOContext];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self];
+    [image removeObserver:self context:&KVOContext];
 }
 
 @end
