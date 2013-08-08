@@ -19,7 +19,7 @@
     self = [super init];
     if (nil != self) {
         if (nil == key) {
-            _key = [url absoluteString];
+            _key = [NSString stringWithFormat:@"%@-Unscaled", [url absoluteString]];
         } else {
             _key = key;
         }

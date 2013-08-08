@@ -89,7 +89,7 @@ UIImageOrientation OGEXIFOrientationToUIImageOrientation(NSInteger exif) {
             // do we have an OGImageDictionary?
             _originalFileType = (__bridge NSString *)CGImageSourceGetType(imageSource);
             _originalFileAlphaInfo = CGImageGetAlphaInfo(cgImage);
-            NSDictionary *propDict = (__bridge NSDictionary*)CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL);
+            NSDictionary *propDict = CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(imageSource, 0, NULL));
             _originalFileOrientation = [propDict[(__bridge NSString *)kCGImagePropertyOrientation] integerValue];
             self = [super initWithCGImage:cgImage scale:scale orientation:OGEXIFOrientationToUIImageOrientation(_originalFileOrientation)];
             CGImageRelease(cgImage);

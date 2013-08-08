@@ -1,6 +1,13 @@
 OGImage
 =======
 
+## Backwards compatibility
+
+Note that 0.0.4 on the master branch breaks backwards compatibility with < 0.0.3. You'll need to
+change all your `addObserver:` calls to `addObserver:context:` and `removeObserver:`
+to `removeObserver:context:` See [Pull Request 23](https://github.com/origamilabs/OGImage/pull/23) for
+more information.
+
 ## Introduction
 
 The idea behind `OGImage` is to encapsulate best practices for loading images
@@ -12,16 +19,20 @@ over HTTP in a simple, extensible interface.
   you can load, cache, and scale an image with the following call:
 
     ```objc
+    static NSString *KVOContext = @"OGImage observation";
+
+    ...
+
     OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
     /*
      * This is shorthand for calling KVO methods for @"image", @"scaledImage", and @"error"
      */
-    [ogImage addObserver:self];
+    [ogImage addObserver:self context:&KVOContext];
 
     // check to see if the image loaded instantly (e.g., from cache)
     if (nil != ogImage.image) {
         // we already have an image, so do whatever we need with it, otherwise
-        // we'll be notified in `observeValueInKeyPath` whenever the image changes
+        // we'll be notified in `observeValueForKeyPath:ofObject:change:context:` whenever the image changes
         [self displayImage:ogImage.image];
         // ooh, we also got all the image's metadata! Sweet!
         NSDictionary *exifData = [ogImage.originalFileProperties valueForKey:kCGImagePropertyExifDictionary];
@@ -63,19 +74,26 @@ placeholder image to use until loading is complete with
 ```objc
 #import "OGImage.h"
 
+static NSString *KVOContext = @"OGImage observation";
+
 ...
 
 OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:@"http://somedomain.com/someimage.jpg"]];
-[image addObserver:self];
+[image addObserver:self context:&KVOContext];
 
 ...
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
-        // image was loaded!
-        ...
-    } else if ([keyPath isEqualToString:@"error"]) {
-        // error loading image
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"image"]) {
+            // image was loaded!
+            ...
+        } else if ([keyPath isEqualToString:@"error"]) {
+            // error loading image
+        }
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 ```
@@ -87,6 +105,10 @@ bending OGImage to your needs via subclassing.
 ```objc
 
 #import "OGScaledImage.h"
+
+static NSString *KVOContext = @"OGImage observation";
+
+...
 
 /*
  * The image at `imageURL` will be loaded from one of in-memory cache, disk cache or
@@ -100,16 +122,20 @@ OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:scaledSi
  * Note that here we're interested in the `scaledImage` property, not the full-size `image`
  * property.
  */
-[image addObserver:self];
+[image addObserver:self context:&KVOContext];
 
 ...
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"scaledImage"]) {
-        // image was loaded and scaled!
-        ...
-    } else if ([keyPath isEqualToString:@"error"]) {
-        // error loading image
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"scaledImage"]) {
+            // image was loaded and scaled!
+            ...
+        } else if ([keyPath isEqualToString:@"error"]) {
+            // error loading image
+        }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 ```
@@ -127,6 +153,11 @@ directory.
 Note that you *do not* need cocoapods to use `OGImage` in your projects--there
 are no external dependencies for the library itself, only for the tests
 (GHUnit) and demo (CocoaLumberjack)
+
+## Key-Value Observing
+
+If you haven't used KVO before or if you're rusty, be sure check out [Key-Value Observing Programming Guide](http://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html) 
+and [Dave Dribin's excellent 'Proper Key-Value Observer Usage'](http://www.dribin.org/dave/blog/archives/2008/09/24/proper_kvo_usage/)
 
 ## TODO:
 
