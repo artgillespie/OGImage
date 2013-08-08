@@ -53,6 +53,11 @@ CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
     return ret;
 }
 
+void OGClearVImageBuffer(vImage_Buffer *buffer) {
+    Pixel_8888 c = {0, 0, 0, 0};
+    vImageBufferFill_ARGB8888(buffer, c, 0);
+}
+
 /*
  * Don't forget to free buffer->data.
  */
@@ -77,6 +82,7 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer, CGImageAlp
     buffer->width = width;
     buffer->height = height;
     buffer->rowBytes = width * 4;
+    OGClearVImageBuffer(buffer);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreate(buffer->data,
                                              buffer->width,
@@ -207,7 +213,12 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
             dBuffer.width = newSize.width;
             dBuffer.height = newSize.height;
             dBuffer.rowBytes = newSize.width * 4;
-            dBuffer.data = malloc(newSize.width * newSize.height * 4);
+            CGFloat xHeight = 0.f;
+            if (0.f < offset.x) {
+                xHeight = 1;
+            }
+            dBuffer.data = malloc(newSize.width * (newSize.height + xHeight) * 4);
+            OGClearVImageBuffer(&dBuffer);
             vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
             if (kvImageNoError != vErr) {
                 free(dBuffer.data);
@@ -225,10 +236,6 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
                 if (0.f < offset.x) {
                     dBuffer.data = dBuffer.data + ((int)offset.x * 4);
                     dBuffer.width = toSize.width;
-                    // this makes the difference for <https://github.com/origamilabs/OGImage/issues/7)>
-                    // which kinda makes sense: depending on how CGBitmapContext treats the underlying
-                    // buffer, a copy could run past the end of the buffer's data (i.e. offset + rowBytes)
-                    dBuffer.height -= 1;
                 } else if (0.f < offset.y) {
                     int row_offset = (int)offset.y;
                     row_offset *= dBuffer.rowBytes;
@@ -289,9 +296,6 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     bzero(data, dataSize);
 
-    // REFACTOR: [alg] Is this okay? Before we determined whether we'd save as JPEG or PNG
-    // and set the alpha info appropriately, but this processing code shouldn't
-    // know how we're saving it.
     CGImageAlphaInfo alphaInfo = kCGImageAlphaPremultipliedLast;
     CGContextRef context = CGBitmapContextCreate(data, _size.width, _size.height, bitsPerComponent,
                                                  _size.width * (bitsPerComponent * numberOfComponents) / 8, colorSpace,

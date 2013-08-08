@@ -12,6 +12,8 @@
 
 #import <AssetsLibrary/AssetsLibrary.h>
 
+static NSString *KVOContext = @"OGImageAssetsLibraryTests observation";
+
 static CGSize const OGExpectedSize = {1024.f, 768.f};
 
 @interface OGImageAssetsLibraryTests : GHAsyncTestCase
@@ -44,18 +46,23 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"image"]) {
-        OGCachedImage *image = (OGCachedImage *)object;
-        if (nil != image.image) {
-            GHAssertTrue(CGSizeEqualToSize(OGExpectedSize, image.image.size), @"Expected image of size %@, got %@", NSStringFromCGSize(OGExpectedSize), NSStringFromCGSize(image.image.size));
-            [self notify:kGHUnitWaitStatusSuccess];
-        } else {
+    if ((void *)&KVOContext == context) {
+        if ([keyPath isEqualToString:@"image"]) {
+            OGCachedImage *image = (OGCachedImage *)object;
+            if (nil != image.image) {
+                GHAssertTrue(CGSizeEqualToSize(OGExpectedSize, image.image.size), @"Expected image of size %@, got %@", NSStringFromCGSize(OGExpectedSize), NSStringFromCGSize(image.image.size));
+                [self notify:kGHUnitWaitStatusSuccess];
+            } else {
+                [self notify:kGHUnitWaitStatusFailure];
+            }
+        } else if ([keyPath isEqualToString:@"error"]) {
+            OGCachedImage *image = (OGCachedImage *)object;
+            GHFail(@"Got error loading OGCachedImage: %@", image.error);
             [self notify:kGHUnitWaitStatusFailure];
         }
-    } else if ([keyPath isEqualToString:@"error"]) {
-        OGCachedImage *image = (OGCachedImage *)object;
-        GHFail(@"Got error loading OGCachedImage: %@", image.error);
-        [self notify:kGHUnitWaitStatusFailure];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -63,9 +70,9 @@ static CGSize const OGExpectedSize = {1024.f, 768.f};
     [self prepare];
     GHAssertNotNil(_assetURL, @"Expect _assetURL to be populated by setUp");
     OGCachedImage *image = [[OGCachedImage alloc] initWithURL:_assetURL key:nil];
-    [image addObserver:self];
+    [image addObserver:self context:&KVOContext];
     [self waitForStatus:kGHUnitWaitStatusSuccess timeout:10.];
-    [image removeObserver:self];
+    [image removeObserver:self context:&KVOContext];
 }
 
 @end

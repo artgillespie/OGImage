@@ -73,14 +73,14 @@ NSString *OGKeyWithSize(NSString *origKey, CGSize size, CGFloat cornerRadius) {
     return self;
 }
 
-- (void)addObserver:(NSObject *)observer {
-    [super addObserver:observer];
-    [self addObserver:observer forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:nil];
+- (void)addObserver:(NSObject *)observer context:(void *)context {
+    [super addObserver:observer context:context];
+    [self addObserver:observer forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:context];
 }
 
-- (void)removeObserver:(NSObject *)observer {
-    [super removeObserver:observer];
-    [self removeObserver:observer forKeyPath:@"scaledImage"];
+- (void)removeObserver:(NSObject *)observer context:(void *)context {
+    [super removeObserver:observer context:context];
+    [self removeObserver:observer forKeyPath:@"scaledImage" context:context];
 }
 
 - (void)loadImageFromURL {

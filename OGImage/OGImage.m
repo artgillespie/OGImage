@@ -26,14 +26,18 @@
     return self;
 }
 
-- (void)addObserver:(NSObject *)observer {
-    [self addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+- (void)addObserver:(NSObject *)observer context:(void *)context {
+    [self addObserver:observer forKeyPath:@"image" options:NSKeyValueObservingOptionNew context:context];
+    [self addObserver:observer forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:context];
 }
 
-- (void)removeObserver:(NSObject *)observer {
-    [self removeObserver:observer forKeyPath:@"image"];
-    [self removeObserver:observer forKeyPath:@"error"];
+- (void)removeObserver:(NSObject *)observer context:(void *)context {
+    @try {
+        [self removeObserver:observer forKeyPath:@"image" context:context];
+    } @catch (NSException *e) {}
+    @try {
+        [self removeObserver:observer forKeyPath:@"error" context:context];
+    } @catch (NSException *e) {}
 }
 
 - (void)imageDidLoadFromURL:(__OGImage *)image {
