@@ -1,6 +1,12 @@
 OGImage
 =======
 
+## Backwards compatibility
+
+Note that 0.0.3 on the master branch breaks backwards compatibility. You'll need to
+change all your `addObserver:` calls to `addObserver:context:` and `removeObserver:`
+to `removeObserver:context:`
+
 ## Introduction
 
 The idea behind `OGImage` is to encapsulate best practices for loading images
@@ -12,6 +18,10 @@ over HTTP in a simple, extensible interface.
   you can load, cache, and scale an image with the following call:
 
     ```objc
+    static NSString *KVOContext = @"OGImage observation";
+
+    ...
+
     OGScaledImage *ogImage = [[OGScaledImage alloc] initWithURL:imageURL size:renderSize key:nil];
     /*
      * This is shorthand for calling KVO methods for @"image", @"scaledImage", and @"error"
@@ -63,6 +73,8 @@ placeholder image to use until loading is complete with
 ```objc
 #import "OGImage.h"
 
+static NSString *KVOContext = @"OGImage observation";
+
 ...
 
 OGImage *image = [[OGImage alloc] initWithURL:[NSURL URLWithString:@"http://somedomain.com/someimage.jpg"]];
@@ -92,6 +104,10 @@ bending OGImage to your needs via subclassing.
 ```objc
 
 #import "OGScaledImage.h"
+
+static NSString *KVOContext = @"OGImage observation";
+
+...
 
 /*
  * The image at `imageURL` will be loaded from one of in-memory cache, disk cache or
@@ -136,6 +152,11 @@ directory.
 Note that you *do not* need cocoapods to use `OGImage` in your projects--there
 are no external dependencies for the library itself, only for the tests
 (GHUnit) and demo (CocoaLumberjack)
+
+## Key-Value Observing
+
+If you haven't used KVO before or if you're rusty, be sure check out [Key-Value Observing Programming Guide](http://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html) 
+and [Dave Dribin's excellent 'Proper Key-Value Observer Usage'](http://www.dribin.org/dave/blog/archives/2008/09/24/proper_kvo_usage/)
 
 ## TODO:
 
