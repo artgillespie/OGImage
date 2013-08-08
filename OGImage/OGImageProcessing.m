@@ -236,10 +236,6 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
                 if (0.f < offset.x) {
                     dBuffer.data = dBuffer.data + ((int)offset.x * 4);
                     dBuffer.width = toSize.width;
-                    // this makes the difference for <https://github.com/origamilabs/OGImage/issues/7)>
-                    // which kinda makes sense: depending on how CGBitmapContext treats the underlying
-                    // buffer, a copy could run past the end of the buffer's data (i.e. offset + rowBytes)
-                    // dBuffer.height -= 1;
                 } else if (0.f < offset.y) {
                     int row_offset = (int)offset.y;
                     row_offset *= dBuffer.rowBytes;
