@@ -53,6 +53,11 @@ CGSize OGAspectFill(CGSize from, CGSize to, CGPoint *offset) {
     return ret;
 }
 
+void OGClearVImageBuffer(vImage_Buffer *buffer) {
+    Pixel_8888 c = {0, 0, 0, 0};
+    vImageBufferFill_ARGB8888(buffer, c, 0);
+}
+
 /*
  * Don't forget to free buffer->data.
  */
@@ -77,6 +82,7 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer, CGImageAlp
     buffer->width = width;
     buffer->height = height;
     buffer->rowBytes = width * 4;
+    OGClearVImageBuffer(buffer);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreate(buffer->data,
                                              buffer->width,
@@ -212,6 +218,7 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
                 xHeight = 1;
             }
             dBuffer.data = malloc(newSize.width * (newSize.height + xHeight) * 4);
+            OGClearVImageBuffer(&dBuffer);
             vImage_Error vErr = vImageScale_ARGB8888(&vBuffer, &dBuffer, NULL, kvImageNoFlags);
             if (kvImageNoError != vErr) {
                 free(dBuffer.data);
