@@ -3,9 +3,10 @@ OGImage
 
 ## Backwards compatibility
 
-Note that 0.0.3 on the master branch breaks backwards compatibility. You'll need to
+Note that 0.0.4 on the master branch breaks backwards compatibility with < 0.0.3. You'll need to
 change all your `addObserver:` calls to `addObserver:context:` and `removeObserver:`
-to `removeObserver:context:`
+to `removeObserver:context:` See [Pull Request 23](https://github.com/origamilabs/OGImage/pull/23) for
+more information.
 
 ## Introduction
 
