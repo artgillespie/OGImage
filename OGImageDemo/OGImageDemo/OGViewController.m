@@ -8,6 +8,7 @@
 
 #import "OGViewController.h"
 #import "OGScaledImage.h"
+#import "OGImageCache.h"
 #import "OGImageTableViewCell.h"
 
 @interface OGViewController ()
@@ -20,8 +21,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // purge the disk cache of any image that hasn't been
+    // accessed more recently than 2 minutes ago. This is pretty contrived;
+    // You'd probably do this in `application:didFinishLaunchingWithOptions:` or
+    // `applicationDidEnterBackground` or similar.
+    NSDate *since = [NSDate dateWithTimeIntervalSinceNow:-120.];
+    [[OGImageCache shared] purgeDiskCacheWithDate:since wait:YES];
     [self loadJSON];
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {

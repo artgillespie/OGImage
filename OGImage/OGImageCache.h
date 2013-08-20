@@ -46,5 +46,12 @@ typedef void (^OGImageCacheCompletionBlock)(__OGImage *image);
  */
 - (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait;
 
+/**
+ * Remove cached images from disk that haven't been accessed since `date`
+ * If `wait` is `YES` this will block the calling thread until the purge
+ * is complete.
+ */
+- (void)purgeDiskCacheWithDate:(NSDate *)date wait:(BOOL)wait;
+
 
 @end

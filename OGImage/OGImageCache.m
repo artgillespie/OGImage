@@ -24,6 +24,18 @@ NSString *OGImageCachePath() {
     return cachePath;
 }
 
+NSURL *OGImageCacheURL() {
+    // generate the cache path: <app>/Library/Application Support/<bundle identifier>/OGImageCache,
+    // creating the directories as needed
+    NSArray *array = [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask];
+    if (nil == array || 0 == [array count]) {
+        return nil;
+    }
+    NSURL *cacheURL = [[array[0] URLByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]] URLByAppendingPathComponent:@"OGImageCache"];
+    [[NSFileManager defaultManager] createDirectoryAtURL:cacheURL withIntermediateDirectories:YES attributes:nil error:nil];
+    return cacheURL;
+}
+
 @implementation OGImageCache {
     NSCache *_memoryCache;
     dispatch_queue_t _cacheFileTasksQueue;
@@ -140,6 +152,27 @@ NSString *OGImageCachePath() {
     NSParameterAssert(nil != key);
 
     [_memoryCache removeObjectForKey:key];
+}
+
+- (void)purgeDiskCacheWithDate:(NSDate *)date wait:(BOOL)wait {
+    void (^purgeFilesBlock)(void) = ^{
+        NSURL *cacheURL = OGImageCacheURL();
+        for (NSURL *fileURL in [[NSFileManager defaultManager] enumeratorAtURL:cacheURL includingPropertiesForKeys:@[NSURLContentAccessDateKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil]) {
+            NSDate *accessDate;
+            if (NO == [fileURL getResourceValue:&accessDate forKey:NSURLContentAccessDateKey error:nil]) {
+                return;
+            }
+            if (NSOrderedDescending == [date compare:accessDate]) {
+                [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            }
+        }
+    };
+
+    if (YES == wait) {
+        dispatch_sync(_cacheFileTasksQueue, purgeFilesBlock);
+    } else {
+        dispatch_async(_cacheFileTasksQueue, purgeFilesBlock);
+    }
 }
 
 @end
