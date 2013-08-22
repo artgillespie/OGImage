@@ -19,6 +19,8 @@ typedef void (^OGImageCacheCompletionBlock)(__OGImage *image);
 
 + (NSString *)filePathForKey:(NSString *)key;
 
++ (NSURL *)fileURLForKey:(NSString *)key;
+
 /**
  * Check in-memory and on-disk caches for image corresponding to `key`. `block`
  * called on main queue when check is complete. If `image` parameter is `nil`,

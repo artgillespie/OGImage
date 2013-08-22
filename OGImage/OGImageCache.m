@@ -12,18 +12,6 @@
 
 static OGImageCache *OGImageCacheShared;
 
-NSString *OGImageCachePath() {
-    // generate the cache path: <app>/Library/Application Support/<bundle identifier>/OGImageCache,
-    // creating the directories as needed
-    NSArray *array = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    if (nil == array || 0 == [array count]) {
-        return nil;
-    }
-    NSString *cachePath = [[array[0] stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]] stringByAppendingPathComponent:@"OGImageCache"];
-    [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:nil];
-    return cachePath;
-}
-
 NSURL *OGImageCacheURL() {
     // generate the cache path: <app>/Library/Application Support/<bundle identifier>/OGImageCache,
     // creating the directories as needed
@@ -62,7 +50,11 @@ NSURL *OGImageCacheURL() {
 }
 
 + (NSString *)filePathForKey:(NSString *)key {
-    return [OGImageCachePath() stringByAppendingPathComponent:[OGImageCache MD5:key]];
+    return [[OGImageCache fileURLForKey:key] path];
+}
+
++ (NSURL *)fileURLForKey:(NSString *)key {
+    return [OGImageCacheURL() URLByAppendingPathComponent:[OGImageCache MD5:key]];
 }
 
 - (id)init {
@@ -97,8 +89,8 @@ NSURL *OGImageCacheURL() {
     dispatch_suspend(_cacheFileTasksQueue);
     dispatch_async(_cacheFileReadQueue, ^{
         // Check to see if the image is cached locally
-        NSString *cachePath = [OGImageCache filePathForKey:(key)];
-        __OGImage *image = [[__OGImage alloc] initWithDataAtURL:[NSURL fileURLWithPath:cachePath]];
+        NSURL *cacheURL = [OGImageCache fileURLForKey:(key)];
+        __OGImage *image = [[__OGImage alloc] initWithDataAtURL:cacheURL];
         // if we have the image in the on-disk cache, store it to the in-memory cache
         if (nil != image) {
             [_memoryCache setObject:image forKey:key];
@@ -116,7 +108,7 @@ NSURL *OGImageCacheURL() {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSURL *fileURL = [NSURL fileURLWithPath:[OGImageCache filePathForKey:key]];
+        NSURL *fileURL = [OGImageCache fileURLForKey:key];
         NSError *error;
         if(![image writeToURL:fileURL error:&error]) {
             NSLog(@"[OGImageCache ERROR] failed to write image with error %@ %s %d", error, __FILE__, __LINE__);
@@ -131,9 +123,8 @@ NSURL *OGImageCacheURL() {
 - (void)purgeCache:(BOOL)wait {
     [_memoryCache removeAllObjects];
     void (^purgeFilesBlock)(void) = ^{
-        NSString *cachePath = OGImageCachePath();
-        for (NSString *file in [[NSFileManager defaultManager] enumeratorAtPath:cachePath]) {
-            [[NSFileManager defaultManager] removeItemAtPath:[cachePath stringByAppendingPathComponent:file] error:nil];
+        for (NSURL *url in [[NSFileManager defaultManager] enumeratorAtURL:OGImageCacheURL() includingPropertiesForKeys:nil options:0 errorHandler:nil]) {
+            [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         }
     };
     if (YES == wait) {
@@ -148,10 +139,10 @@ NSURL *OGImageCacheURL() {
 
     [self purgeMemoryCacheForKey:key andWait:wait];
 
-    NSString *cachedFilePath = [[self class] filePathForKey:key];
+    NSURL *cachedFileURL = [[self class] fileURLForKey:key];
     
     void (^purgeFileBlock)(void) =^{
-        [[NSFileManager defaultManager] removeItemAtPath:cachedFilePath error:nil];
+        [[NSFileManager defaultManager] removeItemAtURL:cachedFileURL error:nil];
     };
     
     if (YES == wait) {
