@@ -63,7 +63,7 @@ NSURL *OGImageCacheURL() {
         _memoryCache = [[NSCache alloc] init];
         [_memoryCache setName:@"com.origamilabs.OGImageCache"];
         /*
-         * We use the 'queue-jumping' pattern outlined in WWDC 2012 Session 201: "Mastering Grand Central Dispatch"
+         * We use the 'queue-jumping' pattern outlined in WWDC 2011 Session 201: "Mastering Grand Central Dispatch"
          * We place lower-priority tasks (writing, purging) on a serial queue that has its
          * target queue set to our high-priority (read) queue. Whenever we submit a high-priority
          * block, we suspend the lower-priority queue for the duration of the block.
