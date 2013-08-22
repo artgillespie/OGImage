@@ -8,6 +8,7 @@
 
 #import "OGViewController.h"
 #import "OGScaledImage.h"
+#import "OGImageCache.h"
 #import "OGImageTableViewCell.h"
 
 @interface OGViewController ()
@@ -21,7 +22,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadJSON];
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {
