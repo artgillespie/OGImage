@@ -19,6 +19,8 @@ typedef void (^OGImageCacheCompletionBlock)(__OGImage *image);
 
 + (NSString *)filePathForKey:(NSString *)key;
 
++ (NSURL *)fileURLForKey:(NSString *)key;
+
 /**
  * Check in-memory and on-disk caches for image corresponding to `key`. `block`
  * called on main queue when check is complete. If `image` parameter is `nil`,
@@ -45,10 +47,6 @@ typedef void (^OGImageCacheCompletionBlock)(__OGImage *image);
  * this will block the calling thread until the purge is complete.
  */
 - (void)purgeMemoryCacheForKey:(NSString *)key andWait:(BOOL)wait;
-
-/**
- *
- */
 
 /**
  * Remove cached images from disk that haven't been accessed since `date`
