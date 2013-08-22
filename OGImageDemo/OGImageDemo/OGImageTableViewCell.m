@@ -32,9 +32,11 @@ static NSString *KVOContext = @"OGImageTableViewCell observation";
         if ([keyPath isEqualToString:@"scaledImage"]) {
             self.imageView.image = self.image.scaledImage;
             self.textLabel.text = [[self.image.url path] lastPathComponent];
-            self.detailTextLabel.text = [NSString stringWithFormat:@"%.2f", self.image.loadTime];
         } else if ([keyPath isEqualToString:@"error"]) {
-            
+            self.detailTextLabel.textColor = [UIColor redColor];
+            self.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%@", @""), [self.image.error localizedDescription]];
+            self.imageView.image = self.image.scaledImage;
+            [self setNeedsLayout];
         }
     }
     else {
@@ -45,23 +47,20 @@ static NSString *KVOContext = @"OGImageTableViewCell observation";
 #pragma mark - Properties
 
 - (void)setImage:(OGScaledImage *)image {
+    self.detailTextLabel.text = @"";
     /*
      * When the cell's image is set, we want to first make sure we're no longer listening
      * for any KVO notifications on the cell's previous image.
      */
-    [_image removeObserver:self forKeyPath:@"error" context:&KVOContext];
-    [_image removeObserver:self forKeyPath:@"scaledImage" context:&KVOContext];
+    [_image removeObserver:self context:&KVOContext];
     _image = image;
-    self.imageView.image = _image.scaledImage;
+    [_image addObserver:self context:&KVOContext];
     self.textLabel.text = [[self.image.url path] lastPathComponent];
-    self.detailTextLabel.text = NSLocalizedString(@"Loading", @"");
-    [_image addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:&KVOContext];
-    [_image addObserver:self forKeyPath:@"scaledImage" options:NSKeyValueObservingOptionNew context:&KVOContext];
+    self.imageView.image = _image.scaledImage;
 }
 
 - (void)dealloc {
-    [_image removeObserver:self forKeyPath:@"error" context:&KVOContext];
-    [_image removeObserver:self forKeyPath:@"scaledImage" context:&KVOContext];
+    [_image removeObserver:self context:&KVOContext];
 }
 
 @end
