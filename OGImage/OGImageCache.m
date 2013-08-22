@@ -38,6 +38,7 @@ NSURL *OGImageCacheURL() {
 
 @implementation OGImageCache {
     NSCache *_memoryCache;
+    dispatch_queue_t _cacheFileReadQueue;
     dispatch_queue_t _cacheFileTasksQueue;
 }
 
@@ -69,8 +70,18 @@ NSURL *OGImageCacheURL() {
     if (self) {
         _memoryCache = [[NSCache alloc] init];
         [_memoryCache setName:@"com.origamilabs.OGImageCache"];
+        /*
+         * We use the 'queue-jumping' pattern outlined in WWDC 2012 Session 201: "Mastering Grand Central Dispatch"
+         * We place lower-priority tasks (writing, purging) on a serial queue that has its
+         * target queue set to our high-priority (read) queue. Whenever we submit a high-priority
+         * block, we suspend the lower-priority queue for the duration of the block.
+         *
+         * This way, writes and purges never cause cache reads to wait in the queue.
+         */
+        _cacheFileReadQueue = dispatch_queue_create("com.origamilabs.OGImageCache.read", DISPATCH_QUEUE_SERIAL);
+        dispatch_set_target_queue(_cacheFileReadQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         _cacheFileTasksQueue = dispatch_queue_create("com.origamilabs.OGImageCache.filetasks", DISPATCH_QUEUE_SERIAL);
-        dispatch_set_target_queue(_cacheFileTasksQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        dispatch_set_target_queue(_cacheFileTasksQueue, _cacheFileReadQueue);
     }
     return self;
 }
@@ -83,7 +94,8 @@ NSURL *OGImageCacheURL() {
         block(image);
         return;
     }
-    dispatch_async(_cacheFileTasksQueue, ^{
+    dispatch_suspend(_cacheFileTasksQueue);
+    dispatch_async(_cacheFileReadQueue, ^{
         // Check to see if the image is cached locally
         NSString *cachePath = [OGImageCache filePathForKey:(key)];
         __OGImage *image = [[__OGImage alloc] initWithDataAtURL:[NSURL fileURLWithPath:cachePath]];
@@ -95,6 +107,7 @@ NSURL *OGImageCacheURL() {
         dispatch_async(dispatch_get_main_queue(), ^{
             block(image);
         });
+        dispatch_resume(_cacheFileTasksQueue);
     });
 }
 
@@ -154,8 +167,8 @@ NSURL *OGImageCacheURL() {
     [_memoryCache removeObjectForKey:key];
 }
 
-- (void)purgeDiskCacheWithDate:(NSDate *)date wait:(BOOL)wait {
-    void (^purgeFilesBlock)(void) = ^{
+- (void)purgeDiskCacheOfImagesLastAccessedBefore:(NSDate *)date {
+    dispatch_async(_cacheFileTasksQueue, ^{
         NSURL *cacheURL = OGImageCacheURL();
         for (NSURL *fileURL in [[NSFileManager defaultManager] enumeratorAtURL:cacheURL includingPropertiesForKeys:@[NSURLContentAccessDateKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil]) {
             NSDate *accessDate;
@@ -166,13 +179,7 @@ NSURL *OGImageCacheURL() {
                 [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
             }
         }
-    };
-
-    if (YES == wait) {
-        dispatch_sync(_cacheFileTasksQueue, purgeFilesBlock);
-    } else {
-        dispatch_async(_cacheFileTasksQueue, purgeFilesBlock);
-    }
+    });
 }
 
 @end
