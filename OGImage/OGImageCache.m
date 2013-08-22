@@ -122,10 +122,15 @@ NSURL *OGImageCacheURL() {
 
 - (void)purgeCache:(BOOL)wait {
     [_memoryCache removeAllObjects];
+    UIBackgroundTaskIdentifier taskId = UIBackgroundTaskInvalid;
+    taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    }];
     void (^purgeFilesBlock)(void) = ^{
         for (NSURL *url in [[NSFileManager defaultManager] enumeratorAtURL:OGImageCacheURL() includingPropertiesForKeys:nil options:0 errorHandler:nil]) {
             [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         }
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
     };
     if (YES == wait) {
         dispatch_sync(_cacheFileTasksQueue, purgeFilesBlock);
@@ -159,6 +164,10 @@ NSURL *OGImageCacheURL() {
 }
 
 - (void)purgeDiskCacheOfImagesLastAccessedBefore:(NSDate *)date {
+    UIBackgroundTaskIdentifier taskId = UIBackgroundTaskInvalid;
+    taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    }];
     dispatch_async(_cacheFileTasksQueue, ^{
         NSURL *cacheURL = OGImageCacheURL();
         for (NSURL *fileURL in [[NSFileManager defaultManager] enumeratorAtURL:cacheURL includingPropertiesForKeys:@[NSURLContentAccessDateKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil]) {
@@ -170,6 +179,7 @@ NSURL *OGImageCacheURL() {
                 [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
             }
         }
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
     });
 }
 
