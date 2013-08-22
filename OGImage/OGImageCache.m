@@ -12,20 +12,21 @@
 
 static OGImageCache *OGImageCacheShared;
 
-NSString *OGImageCachePath() {
+NSURL *OGImageCacheURL() {
     // generate the cache path: <app>/Library/Application Support/<bundle identifier>/OGImageCache,
     // creating the directories as needed
-    NSArray *array = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSArray *array = [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask];
     if (nil == array || 0 == [array count]) {
         return nil;
     }
-    NSString *cachePath = [[array[0] stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]] stringByAppendingPathComponent:@"OGImageCache"];
-    [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:nil];
-    return cachePath;
+    NSURL *cacheURL = [[array[0] URLByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]] URLByAppendingPathComponent:@"OGImageCache"];
+    [[NSFileManager defaultManager] createDirectoryAtURL:cacheURL withIntermediateDirectories:YES attributes:nil error:nil];
+    return cacheURL;
 }
 
 @implementation OGImageCache {
     NSCache *_memoryCache;
+    dispatch_queue_t _cacheFileReadQueue;
     dispatch_queue_t _cacheFileTasksQueue;
 }
 
@@ -49,7 +50,11 @@ NSString *OGImageCachePath() {
 }
 
 + (NSString *)filePathForKey:(NSString *)key {
-    return [OGImageCachePath() stringByAppendingPathComponent:[OGImageCache MD5:key]];
+    return [[OGImageCache fileURLForKey:key] path];
+}
+
++ (NSURL *)fileURLForKey:(NSString *)key {
+    return [OGImageCacheURL() URLByAppendingPathComponent:[OGImageCache MD5:key]];
 }
 
 - (id)init {
@@ -57,8 +62,18 @@ NSString *OGImageCachePath() {
     if (self) {
         _memoryCache = [[NSCache alloc] init];
         [_memoryCache setName:@"com.origamilabs.OGImageCache"];
+        /*
+         * We use the 'queue-jumping' pattern outlined in WWDC 2011 Session 201: "Mastering Grand Central Dispatch"
+         * We place lower-priority tasks (writing, purging) on a serial queue that has its
+         * target queue set to our high-priority (read) queue. Whenever we submit a high-priority
+         * block, we suspend the lower-priority queue for the duration of the block.
+         *
+         * This way, writes and purges never cause cache reads to wait in the queue.
+         */
+        _cacheFileReadQueue = dispatch_queue_create("com.origamilabs.OGImageCache.read", DISPATCH_QUEUE_SERIAL);
+        dispatch_set_target_queue(_cacheFileReadQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         _cacheFileTasksQueue = dispatch_queue_create("com.origamilabs.OGImageCache.filetasks", DISPATCH_QUEUE_SERIAL);
-        dispatch_set_target_queue(_cacheFileTasksQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        dispatch_set_target_queue(_cacheFileTasksQueue, _cacheFileReadQueue);
     }
     return self;
 }
@@ -71,10 +86,11 @@ NSString *OGImageCachePath() {
         block(image);
         return;
     }
-    dispatch_async(_cacheFileTasksQueue, ^{
+    dispatch_suspend(_cacheFileTasksQueue);
+    dispatch_async(_cacheFileReadQueue, ^{
         // Check to see if the image is cached locally
-        NSString *cachePath = [OGImageCache filePathForKey:(key)];
-        __OGImage *image = [[__OGImage alloc] initWithDataAtURL:[NSURL fileURLWithPath:cachePath]];
+        NSURL *cacheURL = [OGImageCache fileURLForKey:(key)];
+        __OGImage *image = [[__OGImage alloc] initWithDataAtURL:cacheURL];
         // if we have the image in the on-disk cache, store it to the in-memory cache
         if (nil != image) {
             [_memoryCache setObject:image forKey:key];
@@ -83,6 +99,7 @@ NSString *OGImageCachePath() {
         dispatch_async(dispatch_get_main_queue(), ^{
             block(image);
         });
+        dispatch_resume(_cacheFileTasksQueue);
     });
 }
 
@@ -91,7 +108,7 @@ NSString *OGImageCachePath() {
     NSParameterAssert(nil != key);
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
-        NSURL *fileURL = [NSURL fileURLWithPath:[OGImageCache filePathForKey:key]];
+        NSURL *fileURL = [OGImageCache fileURLForKey:key];
         NSError *error;
         if(![image writeToURL:fileURL error:&error]) {
             NSLog(@"[OGImageCache ERROR] failed to write image with error %@ %s %d", error, __FILE__, __LINE__);
@@ -105,11 +122,15 @@ NSString *OGImageCachePath() {
 
 - (void)purgeCache:(BOOL)wait {
     [_memoryCache removeAllObjects];
+    UIBackgroundTaskIdentifier taskId = UIBackgroundTaskInvalid;
+    taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    }];
     void (^purgeFilesBlock)(void) = ^{
-        NSString *cachePath = OGImageCachePath();
-        for (NSString *file in [[NSFileManager defaultManager] enumeratorAtPath:cachePath]) {
-            [[NSFileManager defaultManager] removeItemAtPath:[cachePath stringByAppendingPathComponent:file] error:nil];
+        for (NSURL *url in [[NSFileManager defaultManager] enumeratorAtURL:OGImageCacheURL() includingPropertiesForKeys:nil options:0 errorHandler:nil]) {
+            [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         }
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
     };
     if (YES == wait) {
         dispatch_sync(_cacheFileTasksQueue, purgeFilesBlock);
@@ -123,10 +144,10 @@ NSString *OGImageCachePath() {
 
     [self purgeMemoryCacheForKey:key andWait:wait];
 
-    NSString *cachedFilePath = [[self class] filePathForKey:key];
+    NSURL *cachedFileURL = [[self class] fileURLForKey:key];
     
     void (^purgeFileBlock)(void) =^{
-        [[NSFileManager defaultManager] removeItemAtPath:cachedFilePath error:nil];
+        [[NSFileManager defaultManager] removeItemAtURL:cachedFileURL error:nil];
     };
     
     if (YES == wait) {
@@ -140,6 +161,26 @@ NSString *OGImageCachePath() {
     NSParameterAssert(nil != key);
 
     [_memoryCache removeObjectForKey:key];
+}
+
+- (void)purgeDiskCacheOfImagesLastAccessedBefore:(NSDate *)date {
+    UIBackgroundTaskIdentifier taskId = UIBackgroundTaskInvalid;
+    taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    }];
+    dispatch_async(_cacheFileTasksQueue, ^{
+        NSURL *cacheURL = OGImageCacheURL();
+        for (NSURL *fileURL in [[NSFileManager defaultManager] enumeratorAtURL:cacheURL includingPropertiesForKeys:@[NSURLContentAccessDateKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil]) {
+            NSDate *accessDate;
+            if (NO == [fileURL getResourceValue:&accessDate forKey:NSURLContentAccessDateKey error:nil]) {
+                return;
+            }
+            if (NSOrderedDescending == [date compare:accessDate]) {
+                [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            }
+        }
+        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    });
 }
 
 @end
