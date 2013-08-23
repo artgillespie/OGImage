@@ -13,9 +13,28 @@ more information.
 The idea behind `OGImage` is to encapsulate best practices for loading images
 over HTTP in a simple, extensible interface.
 
+### OGImageView
+
+If all you need is to load an image and display it in a `UIImageView`, check out
+`OGImageView`, a `UIImageView` subclass that adds a single method:
+
+```objc
+
+   [cell.ogImageView setImageURL:someURL placeholder:[UIImage imageNamed:@"placeholder"]];
+
+```
+
+This one call will handle fetching the image at `someURL` (regardless of whether it's a network, file
+or even `assets-library:` url), scaling it to the `OGImageView`s `bounds.size` obeying `contentMode` *and*
+caching it in memory and on-disk, and swapping out your placeholder image with the new image.
+
+Furthermore, if `setImageURL:placeholder:` is called on an existing `OGImageView` instance (e.g., when
+its containing `UITableViewCell` is recycled) `OGImageView` will behave as you'd expect: It loses interest
+in the previously requested URL and the current URL is given first priority for fetching/processing.
+
 ### Philosophy
 
-* The default use case should be *ridiculously* simple to execute. In OGImage,
+* The default use case should be *ridiculously* simple to execute (see `[OGImageView]`(#OGImageView)). In OGImage,
   you can load, cache, and scale an image with the following call:
 
     ```objc
