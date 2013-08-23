@@ -34,7 +34,7 @@ in the previously requested URL and the current URL is given first priority for 
 
 ### Philosophy
 
-* The default use case should be *ridiculously* simple to execute (see `[OGImageView]`(#OGImageView)). In OGImage,
+* The default use case should be *ridiculously* simple to execute (see `[OGImageView](#OGImageView)`). In OGImage,
   you can load, cache, and scale an image with the following call:
 
     ```objc
