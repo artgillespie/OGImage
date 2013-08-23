@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class OGScaledImage;
+#import "OGImageView.h"
 
 @interface OGImageTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) OGScaledImage *image;
+@property (nonatomic, readonly, strong) OGImageView *ogImageView;
 
 @end

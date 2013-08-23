@@ -57,6 +57,7 @@
 		C88272321663DBDF007D409F /* OGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C88272311663DBDF007D409F /* OGViewController.m */; };
 		C88272351663DBDF007D409F /* OGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C88272331663DBDF007D409F /* OGViewController.xib */; };
 		C882723E1663E5B0007D409F /* OGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C882723D1663E5B0007D409F /* OGImage.m */; };
+		C88AE28F17C7EDD4002A34C7 /* OGImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C88AE28E17C7EDD4002A34C7 /* OGImageView.m */; };
 		C8975AEA166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
 		C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
 		C8FADED9166D5DB100829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
@@ -119,6 +120,8 @@
 		C88272341663DBDF007D409F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/OGViewController.xib; sourceTree = "<group>"; };
 		C882723C1663E5B0007D409F /* OGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C882723D1663E5B0007D409F /* OGImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		C88AE28D17C7EDD4002A34C7 /* OGImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGImageView.h; sourceTree = "<group>"; };
+		C88AE28E17C7EDD4002A34C7 /* OGImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageView.m; sourceTree = "<group>"; };
 		C8975AE8166E09BB00C2D53A /* OGScaledImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGScaledImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C8975AE9166E09BB00C2D53A /* OGScaledImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGScaledImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C8FADED8166D5DB100829179 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -272,6 +275,8 @@
 		C882723B1663E570007D409F /* OGImage */ = {
 			isa = PBXGroup;
 			children = (
+				C83BE57C16C5904600D82A1A /* __OGImage.h */,
+				C83BE57D16C5904600D82A1A /* __OGImage.m */,
 				C80306321665421300073395 /* OGCachedImage.h */,
 				C80306331665421300073395 /* OGCachedImage.m */,
 				C882723C1663E5B0007D409F /* OGImage.h */,
@@ -282,12 +287,12 @@
 				C8711464166417DE0015A743 /* OGImageLoader.m */,
 				C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */,
 				C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */,
-				C8975AE8166E09BB00C2D53A /* OGScaledImage.h */,
-				C8975AE9166E09BB00C2D53A /* OGScaledImage.m */,
 				C808967A1694DFC0009BE21D /* OGImageRequest.h */,
 				C808967B1694DFC0009BE21D /* OGImageRequest.m */,
-				C83BE57C16C5904600D82A1A /* __OGImage.h */,
-				C83BE57D16C5904600D82A1A /* __OGImage.m */,
+				C88AE28D17C7EDD4002A34C7 /* OGImageView.h */,
+				C88AE28E17C7EDD4002A34C7 /* OGImageView.m */,
+				C8975AE8166E09BB00C2D53A /* OGScaledImage.h */,
+				C8975AE9166E09BB00C2D53A /* OGScaledImage.m */,
 			);
 			name = OGImage;
 			path = ../../OGImage;
@@ -445,6 +450,7 @@
 				C8975AEA166E09BB00C2D53A /* OGScaledImage.m in Sources */,
 				C808967C1694DFC0009BE21D /* OGImageRequest.m in Sources */,
 				C83BE57E16C5904600D82A1A /* __OGImage.m in Sources */,
+				C88AE28F17C7EDD4002A34C7 /* OGImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

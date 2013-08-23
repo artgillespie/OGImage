@@ -7,7 +7,6 @@
 //
 
 #import "OGViewController.h"
-#import "OGScaledImage.h"
 #import "OGImageTableViewCell.h"
 
 @interface OGViewController ()
@@ -20,13 +19,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = NSLocalizedString(@"OGImageDemo", @"");
     [self loadJSON];
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)loadJSON {
@@ -62,11 +60,11 @@
     OGImageTableViewCell *cell = (OGImageTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:OGImageCellIdentifier];
     if (nil == cell) {
         cell = [[OGImageTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:OGImageCellIdentifier];
+        cell.ogImageView.contentMode = UIViewContentModeScaleAspectFill;
     }
     NSURL *imageURL = [NSURL URLWithString:_urls[indexPath.row]];
-    CGFloat imageSide = self.tableView.rowHeight;
-    OGScaledImage *image = [[OGScaledImage alloc] initWithURL:imageURL size:CGSizeMake(imageSide, imageSide) cornerRadius:0.f method:OGImageProcessingScale_AspectFill key:nil placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    cell.image = image;
+    [cell.ogImageView setImageURL:imageURL placeholder:[UIImage imageNamed:@"placeholder"]];
+    cell.textLabel.text = [imageURL lastPathComponent];
     return cell;
 }
 
