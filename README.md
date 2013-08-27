@@ -20,7 +20,7 @@ If all you need is to load an image and display it in a `UIImageView`, check out
 
 ```objc
 
-   [cell.ogImageView setImageURL:someURL placeholder:[UIImage imageNamed:@"placeholder"]];
+[cell.ogImageView setImageURL:someURL placeholder:[UIImage imageNamed:@"placeholder"]];
 
 ```
 
