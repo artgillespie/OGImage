@@ -104,8 +104,13 @@ NSURL *OGImageCacheURL() {
 }
 
 - (void)setImage:(__OGImage *)image forKey:(NSString *)key {
+    // assert for developers, and guard against production crashes
     NSParameterAssert(nil != image);
     NSParameterAssert(nil != key);
+    if (nil == image || nil == key) {
+        return;
+    }
+    
     [_memoryCache setObject:image forKey:key];
     dispatch_async(_cacheFileTasksQueue, ^{
         NSURL *fileURL = [OGImageCache fileURLForKey:key];

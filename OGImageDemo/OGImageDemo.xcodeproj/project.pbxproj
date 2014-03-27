@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		416DC6759A8046D6AED27FFE /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 467479B3192A45B8984313B7 /* libPods.a */; };
+		9C46672118D39709008960BA /* moldex-logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 9C46672018D39709008960BA /* moldex-logo.gif */; };
+		9C46672318D39EA7008960BA /* OGImageProblematicProcessingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */; };
 		C803062A166526A900073395 /* james_bond.json in Resources */ = {isa = PBXBuildFile; fileRef = C8030629166526A900073395 /* james_bond.json */; };
 		C803062D1665295A00073395 /* OGImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C803062C1665295A00073395 /* OGImageTableViewCell.m */; };
 		C803063016652E8200073395 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = C803062E16652E8200073395 /* placeholder.png */; };
@@ -66,6 +68,8 @@
 
 /* Begin PBXFileReference section */
 		467479B3192A45B8984313B7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C46672018D39709008960BA /* moldex-logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "moldex-logo.gif"; sourceTree = "<group>"; };
+		9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageProblematicProcessingTests.m; sourceTree = "<group>"; };
 		9F932054786D4C9BA76B5EBE /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		C8030629166526A900073395 /* james_bond.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = james_bond.json; path = "Demo Data/james_bond.json"; sourceTree = "<group>"; };
 		C803062B1665295A00073395 /* OGImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -86,9 +90,9 @@
 		C83BE57C16C5904600D82A1A /* __OGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = __OGImage.h; sourceTree = "<group>"; };
 		C83BE57D16C5904600D82A1A /* __OGImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = __OGImage.m; sourceTree = "<group>"; };
 		C84972AF166564D000DB15D1 /* OGImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		C84972B0166564D000DB15D1 /* OGImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		C84972B0166564D000DB15D1 /* OGImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C86E0BEA1667FE36006063B6 /* OGImageProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageProcessing.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageProcessing.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		C86E0BEB1667FE36006063B6 /* OGImageProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageProcessing.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageProcessingTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C871143F16640E510015A743 /* OGImageTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGImageTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C871144616640E510015A743 /* OGImageTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGImageTests-Info.plist"; sourceTree = "<group>"; };
@@ -173,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				C8392EAC169CA1E100F0907A /* Origami.jpg */,
+				9C46672018D39709008960BA /* moldex-logo.gif */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -187,6 +192,7 @@
 				C8392EAF169CA21700F0907A /* OGImageFileTests.m */,
 				C87C645E16C46C70006217C9 /* OGImageIdempotentTests.m */,
 				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
+				9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */,
 				C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */,
 				C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */,
 			);
@@ -371,6 +377,7 @@
 			files = (
 				C871144916640E510015A743 /* InfoPlist.strings in Resources */,
 				C871145116640E510015A743 /* Default.png in Resources */,
+				9C46672118D39709008960BA /* moldex-logo.gif in Resources */,
 				C871145316640E510015A743 /* Default@2x.png in Resources */,
 				C871145516640E510015A743 /* Default-568h@2x.png in Resources */,
 				C8392EAD169CA1E100F0907A /* Origami.jpg in Resources */,
@@ -417,6 +424,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C871144B16640E510015A743 /* main.m in Sources */,
+				9C46672318D39EA7008960BA /* OGImageProblematicProcessingTests.m in Sources */,
 				C871146116640F7D0015A743 /* OGImageAsyncTests.m in Sources */,
 				C8711462166410CD0015A743 /* OGImage.m in Sources */,
 				C8711466166417E20015A743 /* OGImageLoader.m in Sources */,
