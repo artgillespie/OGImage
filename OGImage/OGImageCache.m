@@ -41,7 +41,7 @@ NSURL *OGImageCacheURL() {
 + (NSString *)MD5:(NSString *)string {
     const char *d = [string UTF8String];
     unsigned char r[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(d, strlen(d), r);
+    CC_MD5(d, (CC_LONG)strlen(d), r);
     NSMutableString *hexString = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH];
     for (int ii = 0; ii < CC_MD5_DIGEST_LENGTH; ++ii) {
         [hexString appendFormat:@"%02x", r[ii]];
