@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Origami Labs. All rights reserved.
 //
 
-#import "GHAsyncTestCase.h"
+#import <GHUnit/GHAsyncTestCase.h>
 #import "OGImage.h"
 
 static NSString *KVOContext = @"OGImageIdempotentTests observation";

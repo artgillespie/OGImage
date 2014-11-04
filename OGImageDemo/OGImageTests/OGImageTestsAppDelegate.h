@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Origami Labs. All rights reserved.
 //
 
-#import "GHUnitIOSAppDelegate.h"
+#import <GHUnit/GHUnitIOSAppDelegate.h>
 
 @interface OGImageTestsAppDelegate : GHUnitIOSAppDelegate
 

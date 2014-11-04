@@ -7,7 +7,7 @@
 //
 
 #import <Accelerate/Accelerate.h>
-#import <GHUnitIOS/GHUnit.h>
+#import <GHUnit/GHUnit.h>
 #import "OGImageProcessing.h"
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
