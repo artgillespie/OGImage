@@ -64,6 +64,7 @@
 		C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
 		C8FADED9166D5DB100829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
 		C8FADEDB166D5DCA00829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
+		F68541041A096AED001D6727 /* OGImageScaleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F68541031A096AED001D6727 /* OGImageScaleTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -130,6 +131,7 @@
 		C8975AE8166E09BB00C2D53A /* OGScaledImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGScaledImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C8975AE9166E09BB00C2D53A /* OGScaledImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGScaledImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C8FADED8166D5DB100829179 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		F68541031A096AED001D6727 /* OGImageScaleTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageScaleTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +205,7 @@
 				C87C645E16C46C70006217C9 /* OGImageIdempotentTests.m */,
 				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
 				9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */,
+				F68541031A096AED001D6727 /* OGImageScaleTests.m */,
 				C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */,
 				C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */,
 			);
@@ -440,6 +443,7 @@
 				C8711466166417E20015A743 /* OGImageLoader.m in Sources */,
 				C80306351665421300073395 /* OGCachedImage.m in Sources */,
 				C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */,
+				F68541041A096AED001D6727 /* OGImageScaleTests.m in Sources */,
 				C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */,
 				C86E0BF216680030006063B6 /* OGImageCache.m in Sources */,
 				C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */,

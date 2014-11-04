@@ -18,16 +18,17 @@
  *
  * When you create an __OGImage with a fileURL or NSData instance, it uses the
  * Image I/O framework under the hood to find out about the file's format, metadata
- * and alpha. Additionally, if the file ends with the extension `.@2x`, __OGImage
- * will set UIImage's `scale` property correctly.
+ * and alpha. Additionally, if the file ends with an extension like `.@2x`,
+ * __OGImage will set UIImage's `scale` property correctly.
  *
  * When you save an __OGImage using `writeToURL`, it will automatically choose
  * the best format based on the current alpha properties and original file format.
- * Additionally, if the superclass' property `scale` is `2.f`, `writeToURL` will
- * automatically append the `.@2x` suffix. (Ultimately, this `.@2x` stuff is
- * an implementation detail: If you're not worried about cache internals, you
- * don't need to worry about this. Just use keys normally and `__OGImage` and
- * friends will figure everything out for you.
+ * Additionally, if the superclass' property `scale` is > 1, `writeToURL` will
+ * automatically append a resolution suffix like `.@2x`.
+ * 
+ * (Ultimately, this `.@2x` stuff is an implementation detail: If you're not
+ * worried about cache internals, you don't need to worry about this. Just use
+ * keys normally and `__OGImage` and friends will figure everything out for you.
  */
 
 @interface __OGImage : UIImage
