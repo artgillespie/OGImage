@@ -7,15 +7,17 @@
 //
 
 #import "OGImageTableViewCell.h"
-#import "OGScaledImage.h"
-
-static NSString *KVOContext = @"OGImageTableViewCell observation";
 
 @implementation OGImageTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        OGImageView *tmp = [[OGImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.bounds.size.height, self.bounds.size.height)];
+        tmp.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [self.contentView addSubview:tmp];
+        _ogImageView = tmp;
+        _ogImageView.clipsToBounds = YES;
     }
     return self;
 }
@@ -24,43 +26,15 @@ static NSString *KVOContext = @"OGImageTableViewCell observation";
     [super setSelected:selected animated:animated];
 }
 
-#pragma mark - KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if( (void *)&KVOContext == context ) {
-        NSAssert(YES == [NSThread isMainThread], @"KVO fired on thread other than main...");
-        if ([keyPath isEqualToString:@"scaledImage"]) {
-            self.imageView.image = self.image.scaledImage;
-            self.textLabel.text = [[self.image.url path] lastPathComponent];
-        } else if ([keyPath isEqualToString:@"error"]) {
-            self.detailTextLabel.textColor = [UIColor redColor];
-            self.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%@", @""), [self.image.error localizedDescription]];
-            self.imageView.image = self.image.scaledImage;
-            [self setNeedsLayout];
-        }
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    // move the textLabel over to accomodate the ogImageView
+    CGRect f = self.textLabel.frame;
+    f.origin.x = self.ogImageView.bounds.size.width + 5.f;
+    if (self.bounds.size.width - 10.f < f.origin.x + f.size.width) {
+        f.size.width = self.bounds.size.width - 10.f - f.origin.x;
     }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-#pragma mark - Properties
-
-- (void)setImage:(OGScaledImage *)image {
-    self.detailTextLabel.text = @"";
-    /*
-     * When the cell's image is set, we want to first make sure we're no longer listening
-     * for any KVO notifications on the cell's previous image.
-     */
-    [_image removeObserver:self context:&KVOContext];
-    _image = image;
-    [_image addObserver:self context:&KVOContext];
-    self.textLabel.text = [[self.image.url path] lastPathComponent];
-    self.imageView.image = _image.scaledImage;
-}
-
-- (void)dealloc {
-    [_image removeObserver:self context:&KVOContext];
+    self.textLabel.frame = f;
 }
 
 @end

@@ -88,15 +88,21 @@ OSStatus UIImageToVImageBuffer(UIImage *image, vImage_Buffer *buffer, CGImageAlp
                                              buffer->width,
                                              buffer->height, 8,
                                              buffer->rowBytes, colorSpace, alphaInfo);
-    if (UIImageOrientationRight == image.imageOrientation) {
-        CGContextRotateCTM(ctx, -M_PI/2.f);
-        CGContextTranslateCTM(ctx, -(CGFloat)height, 0.f);
-    } else if (UIImageOrientationLeft == image.imageOrientation) {
-        CGContextRotateCTM(ctx, M_PI/2.f);
-        CGContextTranslateCTM(ctx, 0.f, -(CGFloat)width);
+    if (NULL == ctx) {
+        free(buffer->data);
+        buffer->data = NULL;
+        err = OGImageProcessingError;
+    } else {
+        if (UIImageOrientationRight == image.imageOrientation) {
+            CGContextRotateCTM(ctx, -M_PI/2.f);
+            CGContextTranslateCTM(ctx, -(CGFloat)height, 0.f);
+        } else if (UIImageOrientationLeft == image.imageOrientation) {
+            CGContextRotateCTM(ctx, M_PI/2.f);
+            CGContextTranslateCTM(ctx, 0.f, -(CGFloat)width);
+        }
+        CGContextDrawImage(ctx, CGRectMake(0.f, 0.f, CGImageGetWidth(cgImage), CGImageGetHeight(cgImage)), cgImage);
+        CGContextRelease(ctx);
     }
-    CGContextDrawImage(ctx, CGRectMake(0.f, 0.f, CGImageGetWidth(cgImage), CGImageGetHeight(cgImage)), cgImage);
-    CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
     return err;
 }
@@ -184,6 +190,9 @@ CGImageRef VImageBufferToCGImage(vImage_Buffer *buffer, CGFloat scale, CGImageAl
             if (kCGImageAlphaNone == alphaInfo) {
                 // kCGImageAlphaNone w/8-bit channels not supported
                 alphaInfo = kCGImageAlphaNoneSkipLast;
+            } else if (kCGImageAlphaFirst == alphaInfo || kCGImageAlphaLast == alphaInfo) {
+                // non-premultiplied contexts are not supported
+                alphaInfo = kCGImageAlphaPremultipliedFirst;
             }
             if (0.f < cornerRadius) {
                 alphaInfo = kCGImageAlphaPremultipliedFirst;
