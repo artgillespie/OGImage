@@ -64,13 +64,15 @@
 		C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C8975AE9166E09BB00C2D53A /* OGScaledImage.m */; };
 		C8FADED9166D5DB100829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
 		C8FADEDB166D5DCA00829179 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8FADED8166D5DB100829179 /* Accelerate.framework */; };
+		F68541041A096AED001D6727 /* OGImageScaleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F68541031A096AED001D6727 /* OGImageScaleTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		467479B3192A45B8984313B7 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		613EC03F3D03DD7743B0B058 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		623F95686DC456957AC440BC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		9C46672018D39709008960BA /* moldex-logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "moldex-logo.gif"; sourceTree = "<group>"; };
 		9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageProblematicProcessingTests.m; sourceTree = "<group>"; };
-		9F932054786D4C9BA76B5EBE /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		C8030629166526A900073395 /* james_bond.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = james_bond.json; path = "Demo Data/james_bond.json"; sourceTree = "<group>"; };
 		C803062B1665295A00073395 /* OGImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGImageTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C803062C1665295A00073395 /* OGImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGImageTableViewCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -129,6 +131,7 @@
 		C8975AE8166E09BB00C2D53A /* OGScaledImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OGScaledImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C8975AE9166E09BB00C2D53A /* OGScaledImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OGScaledImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C8FADED8166D5DB100829179 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		F68541031A096AED001D6727 /* OGImageScaleTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OGImageScaleTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18B84B7401884D0C718750AB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				623F95686DC456957AC440BC /* Pods.debug.xcconfig */,
+				613EC03F3D03DD7743B0B058 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		C80306271665269B00073395 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +205,7 @@
 				C87C645E16C46C70006217C9 /* OGImageIdempotentTests.m */,
 				C86E0BF01667FF9E006063B6 /* OGImageProcessingTests.m */,
 				9C46672218D39EA7008960BA /* OGImageProblematicProcessingTests.m */,
+				F68541031A096AED001D6727 /* OGImageScaleTests.m */,
 				C808967F1694ED01009BE21D /* OGImageTestsAppDelegate.h */,
 				C80896801694ED01009BE21D /* OGImageTestsAppDelegate.m */,
 			);
@@ -220,7 +233,7 @@
 				C871144416640E510015A743 /* OGImageTests */,
 				C88272171663DBDF007D409F /* Frameworks */,
 				C88272151663DBDF007D409F /* Products */,
-				9F932054786D4C9BA76B5EBE /* Pods.xcconfig */,
+				18B84B7401884D0C718750AB /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -349,7 +362,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = OG;
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Origami Labs";
 			};
 			buildConfigurationList = C882720E1663DBDF007D409F /* Build configuration list for PBXProject "OGImageDemo" */;
@@ -414,7 +427,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -430,6 +443,7 @@
 				C8711466166417E20015A743 /* OGImageLoader.m in Sources */,
 				C80306351665421300073395 /* OGCachedImage.m in Sources */,
 				C86E0BED1667FE36006063B6 /* OGImageProcessing.m in Sources */,
+				F68541041A096AED001D6727 /* OGImageScaleTests.m in Sources */,
 				C86E0BF11667FF9E006063B6 /* OGImageProcessingTests.m in Sources */,
 				C86E0BF216680030006063B6 /* OGImageCache.m in Sources */,
 				C8975AEB166E09BB00C2D53A /* OGScaledImage.m in Sources */,
@@ -494,7 +508,7 @@
 /* Begin XCBuildConfiguration section */
 		C871145616640E510015A743 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			baseConfigurationReference = 623F95686DC456957AC440BC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -507,7 +521,7 @@
 		};
 		C871145716640E510015A743 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			baseConfigurationReference = 613EC03F3D03DD7743B0B058 /* Pods.release.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -541,6 +555,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -579,7 +594,7 @@
 		};
 		C88272391663DBDF007D409F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			baseConfigurationReference = 623F95686DC456957AC440BC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OGImageDemo/OGImageDemo-Prefix.pch";
@@ -591,7 +606,7 @@
 		};
 		C882723A1663DBDF007D409F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F932054786D4C9BA76B5EBE /* Pods.xcconfig */;
+			baseConfigurationReference = 613EC03F3D03DD7743B0B058 /* Pods.release.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OGImageDemo/OGImageDemo-Prefix.pch";

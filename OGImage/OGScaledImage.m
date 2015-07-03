@@ -9,7 +9,7 @@
 #import "OGImageCache.h"
 
 NSString *OGKeyWithSize(NSString *origKey, CGSize size, CGFloat cornerRadius, OGImageProcessingScaleMethod method) {
-    return [NSString stringWithFormat:@"%@-%f-%f-%f-%d", origKey, size.width, size.height, cornerRadius, method];
+    return [NSString stringWithFormat:@"%@-%f-%f-%f-%ld", origKey, size.width, size.height, cornerRadius, (long)method];
 }
 
 @implementation OGScaledImage {

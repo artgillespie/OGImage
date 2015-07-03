@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Origami Labs, Inc.. All rights reserved.
 //
 
-#import <GHUnitIOS/GHUnit.h>
+#import <GHUnit/GHUnit.h>
 #import "OGImage.h"
 #import "OGImageLoader.h"
 

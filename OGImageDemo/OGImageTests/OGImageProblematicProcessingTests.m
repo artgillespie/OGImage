@@ -7,7 +7,7 @@
 //
 
 #import <Accelerate/Accelerate.h>
-#import <GHUnitIOS/GHUnit.h>
+#import <GHUnit/GHUnit.h>
 #import "OGImageProcessing.h"
 #import "OGScaledImage.h"
 #import "OGImageCache.h"
@@ -111,12 +111,12 @@ static const CGSize TEST_SCALE_SIZE = {100.f, 20.f};
 
 - (void)handleFailureInMethod:(SEL)selector object:(id)object file:(NSString *)fileName lineNumber:(NSInteger)line description:(NSString *)format, ...
 {
-  NSLog(@"Assertion failure (ignored): %@ for object %@ in %@#%i", NSStringFromSelector(selector), object, fileName, line);
+  NSLog(@"Assertion failure (ignored): %@ for object %@ in %@#%li", NSStringFromSelector(selector), object, fileName, (long)line);
 }
 
 - (void)handleFailureInFunction:(NSString *)functionName file:(NSString *)fileName lineNumber:(NSInteger)line description:(NSString *)format, ...
 {
-  NSLog(@"Assertion failure (ignored): %@ in %@#%i", functionName, fileName, line);
+  NSLog(@"Assertion failure (ignored): %@ in %@#%li", functionName, fileName, (long)line);
 }
 
 @end

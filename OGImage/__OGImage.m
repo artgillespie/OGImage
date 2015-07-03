@@ -35,17 +35,39 @@ UIImageOrientation OGEXIFOrientationToUIImageOrientation(NSInteger exif) {
     }
 }
 
+NSString *OGResolutionSuffixForScale(CGFloat scale) {
+  return [NSString stringWithFormat:@"@%.0fx", scale];
+}
+
 @implementation __OGImage
 
 - (id)initWithDataAtURL:(NSURL *)url {
     CGFloat scale = 1.f;
     if (NO == [[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
-        url = [url URLByAppendingPathExtension:@"@2x"];
-        if (NO == [[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
-            // no such file
+        // handling of scaled images is still limited, but at a practical level, the odds of seeing scale factors > 10 seem pretty long
+        // try to optimize by starting with screen rez of device
+        // possible that directory enumeration might be faster? but generally, hard to prove the negative proposition that there's no file
+        scale = [[UIScreen mainScreen] scale];
+        NSURL *scaledURL = [url URLByAppendingPathExtension:OGResolutionSuffixForScale(scale)];
+        if (YES == [[NSFileManager defaultManager] fileExistsAtPath:[scaledURL path]]) {
+            url = scaledURL;
+        }
+        else {
+            // no file at the device resolution; try others
+            // ??? or should we refuse to load images at mis-matched rez?
+            for (scale = 2.f; scale < 11.f; ++scale) {
+                if( scale != [[UIScreen mainScreen] scale] ) {
+                    scaledURL = [url URLByAppendingPathExtension:OGResolutionSuffixForScale(scale)];
+                    if (YES == [[NSFileManager defaultManager] fileExistsAtPath:[scaledURL path]]) {
+                        url = scaledURL;
+                        break;
+                    }
+                }
+            }
+        }
+        if( url != scaledURL ) {
             return nil;
         }
-        scale = 2.f;
     }
     NSData *data = [NSData dataWithContentsOfURL:url];
     return [self initWithData:data scale:scale];
@@ -114,8 +136,8 @@ UIImageOrientation OGEXIFOrientationToUIImageOrientation(NSInteger exif) {
             imgType = @"public.jpeg";
         }
     }
-    if (2.f == self.scale) {
-        fileURL = [fileURL URLByAppendingPathExtension:@"@2x"];
+    if (1.f < self.scale) {
+        fileURL = [fileURL URLByAppendingPathExtension:OGResolutionSuffixForScale(self.scale)];
     }
     CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, (__bridge CFStringRef)imgType, 1, NULL);
     if (NULL == imageDestination) {
